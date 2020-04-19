@@ -6,10 +6,11 @@ const DEFAULT = {
   TEMP_HITPOINTS_ATTRIBUTE: 'attributes.hp.temp',
 };
 
+const DELAY = 400;
 const CONFIG = {...DEFAULT};
 
 let tokenHealthDisplayed = false;
-let dialog;
+let dialog, timer;
 
 /**
  * Shorthand, thanks minor-qol =)
@@ -97,7 +98,9 @@ const displayOverlay = async () => {
     buttons,
     default: 'damage',
     close: () => {
-      tokenHealthDisplayed = false;
+      timer = setTimeout(() => {
+        tokenHealthDisplayed = false;
+      }, DELAY);
     },
   }).render(true);
 };
@@ -182,6 +185,7 @@ Hooks.once('ready', () => {
     },
   });
 
+  // Store the settings immediately
   CONFIG.TOGGLE_KEY = game.settings.get('token-health', 'toggleKey');
   CONFIG.HITPOINTS_ATTRIBUTE = game.settings.get('token-health', 'hpSource');
   CONFIG.TEMP_HITPOINTS_ATTRIBUTE = game.settings.get(

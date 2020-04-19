@@ -2,7 +2,8 @@
 
 ## 0.1.2 (2020-04-19)
 
-- avoid printing the custom key in input when opening dialog
+- fix custom key being printed in the input when opening dialog
+- fix dialog being retoggled when validating and auto-closing with Enter key
 
 ## 0.1.1 (2020-04-19)
 
