@@ -129,9 +129,10 @@ const onToggle = event => {
  *
  * @param {KeyboardEvent} event The keyboard event
  * @param {string} key The pressed key
+ * @param {Boolean} up Is the button up
  */
-const handleKeys = function (event, key) {
-  if (!this.hasFocus && key === CONFIG.TOGGLE_KEY) onToggle(event);
+const handleKeys = function (event, key, up) {
+  if (!this.hasFocus && !up && key === CONFIG.TOGGLE_KEY) onToggle(event);
 };
 
 /**
