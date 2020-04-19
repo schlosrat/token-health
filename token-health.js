@@ -114,7 +114,8 @@ const onEscape = () => {
 /**
  * Open the dialog on ToggleKey
  */
-const onToggle = () => {
+const onToggle = event => {
+  event.preventDefault();
   if (!tokenHealthDisplayed && canvas.tokens.controlled.length > 0) {
     displayOverlay().catch(console.error);
   }
@@ -127,7 +128,7 @@ const onToggle = () => {
  * @param {string} key The pressed key
  */
 const handleKeys = function (event, key) {
-  if (!this.hasFocus && key === CONFIG.TOGGLE_KEY) onToggle();
+  if (!this.hasFocus && key === CONFIG.TOGGLE_KEY) onToggle(event);
 };
 
 /**
