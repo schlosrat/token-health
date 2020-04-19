@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.3 (2020-04-19)
+
+- fix some issues with dialog toggling with other interactions on FoundryVTT
+
 ## 0.1.2 (2020-04-19)
 
 - fix custom key being printed in the input when opening dialog
