@@ -57,8 +57,8 @@ const applyDamage = async (html, isDamage) => {
 
     // Prepare the update
     return actor.update({
-      [CONFIG.TEMP_HITPOINTS_ATTRIBUTE]: `data.${newTempHP}`,
-      [CONFIG.HITPOINTS_ATTRIBUTE]: `data.${newHP}`,
+      [`data.${CONFIG.TEMP_HITPOINTS_ATTRIBUTE}`]: newTempHP,
+      [`data.${CONFIG.HITPOINTS_ATTRIBUTE}`]: newHP,
     });
   });
 
