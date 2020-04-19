@@ -1,0 +1,11 @@
+{
+  "TOKEN_HEALTH.Amount": "Amount",
+  "TOKEN_HEALTH.Dialog_Title": "Deal Damage/Healing to selected Token(s)",
+  "TOKEN_HEALTH.Dialog_Help": "Enter the number of points of damage or healing. Press Enter to validate as damage. If you use negative numbers, they will be interpreted as healing.",
+  "TOKEN_HEALTH.Heal": "Heal",
+  "TOKEN_HEALTH.Damage": "Damage (<kbd>⏎</kbd>)",
+  "TOKEN_HEALTH.toggleKeyName": "Token Health toggle key",
+  "TOKEN_HEALTH.toggleKeyHint": "Will display a dialog to enter damage/healing for selected tokens",
+  "TOKEN_HEALTH.hp": "Hit Points Source",
+  "TOKEN_HEALTH.tempHp": "Temporary Hit Points Source"
+}

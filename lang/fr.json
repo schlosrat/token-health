@@ -1,0 +1,11 @@
+{
+  "TOKEN_HEALTH.Amount": "Montant",
+  "TOKEN_HEALTH.Dialog_Title": "Appliquer des dégâts/soins aux tokens sélectionnés",
+  "TOKEN_HEALTH.Dialog_Help": "Entrer le nombre de points de dégâts ou de soins. Presser la touche Entrée pour valider en tant que dégâts. Les nombres négatifs sont interprétés comme des soins.",
+  "TOKEN_HEALTH.Heal": "Soins",
+  "TOKEN_HEALTH.Damage": "Dégâts",
+  "TOKEN_HEALTH.toggleKeyName": "Touche Token Health",
+  "TOKEN_HEALTH.toggleKeyHint": "Affiche une fenêtre pour entrer les dégâts/soins à pour les tokens sélectionnés.",
+  "TOKEN_HEALTH.hp": "Source des points de vie",
+  "TOKEN_HEALTH.tempHp": "Source des points de vie temporaires"
+}

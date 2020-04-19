@@ -1,0 +1,23 @@
+{
+  "name": "token-health",
+  "title": "Token Health",
+  "description": "Apply damage/healing to multiple tokens with a few keystrokes",
+  "author": "thorni",
+  "version": "0.1.0",
+  "minimumCoreVersion": "0.5.5",
+  "compatibleCoreVersion": "0.5.5",
+  "styles": ["token-health.css"],
+  "esmodules": ["contrib/settings-extender.js","token-health.js"],
+  "languages": [
+    {
+      "lang": "en",
+      "name": "English",
+      "path": "lang/en.json"
+    },
+    {
+      "lang": "fr",
+      "name": "Français",
+      "path": "lang/fr.json"
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "name": "token-health",
+  "private": true,
+  "scripts": {
+    "start": "node-sass -w --output-style compressed token-health.scss token-health.css"
+  },
+  "devDependencies": {
+    "foundry-pc-types": "https://gitlab.com/foundry-projects/foundry-pc/foundry-pc-types.git",
+    "node-sass": "^4.13.1",
+    "prettier": "^2.0.4"
+  },
+  "prettier": {
+    "trailingComma": "es5",
+    "bracketSpacing": false,
+    "jsxBracketSameLine": false,
+    "singleQuote": true,
+    "arrowParens": "avoid"
+  }
+}

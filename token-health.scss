@@ -1,0 +1,50 @@
+$fade-color: #4b4a44;
+
+$types: (
+  heal: #cae9ca,
+  damage: #d46e61,
+);
+
+.dialog .dialog-buttons.token-health button {
+  cursor: pointer;
+  border-style: solid;
+
+  &:hover {
+    box-shadow: none;
+  }
+
+  @each $type, $color in $types {
+    &[data-button='#{$type}'] {
+      background-color: $color;
+      border-color: darken($color, 20%);
+      border-style: solid;
+      transition: background-color 0.2s ease;
+
+      &:hover {
+        background-color: darken($color, 10%);
+      }
+    }
+  }
+}
+
+.form-token-health {
+  .form-group {
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 1em;
+  }
+
+  input[type='number'] {
+    border: 1px solid black;
+    box-shadow: none;
+    outline: none;
+    padding: 0.5em;
+    font-size: 2em;
+    display: inline-block;
+    font-variant-numeric: tabular-nums;
+  }
+
+  small {
+    color: $fade-color;
+  }
+}
