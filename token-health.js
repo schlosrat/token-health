@@ -117,8 +117,12 @@ const onEscape = () => {
 /**
  * Open the dialog on ToggleKey
  */
-const onToggle = event => {
+const onToggle = (event, key) => {
   event.preventDefault();
+
+  // Make sure to call only once.
+  keyboard._handled.add(key);
+
   if (!tokenHealthDisplayed && canvas.tokens.controlled.length > 0) {
     displayOverlay().catch(console.error);
   }
@@ -132,7 +136,9 @@ const onToggle = event => {
  * @param {Boolean} up Is the button up
  */
 const handleKeys = function (event, key, up) {
-  if (!this.hasFocus && !up && key === CONFIG.TOGGLE_KEY) onToggle(event);
+  if (up || this.hasFocus) return;
+
+  if (key === CONFIG.TOGGLE_KEY) onToggle(event, key);
 };
 
 /**
