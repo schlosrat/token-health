@@ -156,6 +156,9 @@ Hooks.once('ready', () => {
     default: DEFAULT.TOGGLE_KEY,
     scope: 'user',
     config: true,
+    onChange: key => {
+      CONFIG.TOGGLE_KEY = key;
+    },
   });
   game.settings.register('token-health', 'hpSource', {
     name: i18n('TOKEN_HEALTH.hp'),
@@ -163,6 +166,9 @@ Hooks.once('ready', () => {
     default: DEFAULT.HITPOINTS_ATTRIBUTE,
     scope: 'client',
     config: true,
+    onChange: key => {
+      CONFIG.HITPOINTS_ATTRIBUTE = key;
+    },
   });
   game.settings.register('token-health', 'tempHpSource', {
     name: i18n('TOKEN_HEALTH.tempHp'),
@@ -170,6 +176,9 @@ Hooks.once('ready', () => {
     default: DEFAULT.TEMP_HITPOINTS_ATTRIBUTE,
     scope: 'client',
     config: true,
+    onChange: key => {
+      CONFIG.TEMP_HITPOINTS_ATTRIBUTE = key;
+    },
   });
 
   CONFIG.TOGGLE_KEY = game.settings.get('token-health', 'toggleKey');
