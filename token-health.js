@@ -175,7 +175,7 @@ Hooks.once('ready', () => {
     name: i18n('TOKEN_HEALTH.hp'),
     type: String,
     default: DEFAULT.HITPOINTS_ATTRIBUTE,
-    scope: 'client',
+    scope: 'world',
     config: true,
     onChange: key => {
       CONFIG.HITPOINTS_ATTRIBUTE = key;
@@ -185,7 +185,7 @@ Hooks.once('ready', () => {
     name: i18n('TOKEN_HEALTH.tempHp'),
     type: String,
     default: DEFAULT.TEMP_HITPOINTS_ATTRIBUTE,
-    scope: 'client',
+    scope: 'world',
     config: true,
     onChange: key => {
       CONFIG.TEMP_HITPOINTS_ATTRIBUTE = key;
