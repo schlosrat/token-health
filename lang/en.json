@@ -6,6 +6,8 @@
   "TOKEN_HEALTH.Damage": "Damage (<kbd>⏎</kbd>)",
   "TOKEN_HEALTH.toggleKeyName": "Token Health toggle key",
   "TOKEN_HEALTH.toggleKeyHint": "Will display a dialog to enter damage/healing for selected tokens",
-  "TOKEN_HEALTH.hp": "Hit Points Source",
-  "TOKEN_HEALTH.tempHp": "Temporary Hit Points Source"
+  "TOKEN_HEALTH.hp": "Current Hit Points Source",
+  "TOKEN_HEALTH.hpMax": "Max Hit Points Source",
+  "TOKEN_HEALTH.tempHp": "Temporary Hit Points Source",
+  "TOKEN_HEALTH.tempHpHint": "Leave this empty if there is no temp HP management in your system"
 }
