@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.4 (2020-04-22)
+
+- fix module on other systems than dnd5e
+- fix settings not used correctly
+
 ## 0.1.3 (2020-04-19)
 
 - fix some issues with dialog toggling with other interactions on FoundryVTT
