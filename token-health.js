@@ -68,32 +68,36 @@ const applyDamage = async (html, isDamage) => {
  *
  * @returns {Promise<void>}
  */
-const displayOverlay = async reverted => {
+const displayOverlay = async isDamage => {
   tokenHealthDisplayed = true;
+
+  const buttons = {
+    heal: {
+      icon: "<i class='fas fa-plus-circle'></i>",
+      label: `${i18n('TOKEN_HEALTH.Heal')}  <kbd>⮐</kbd>`,
+      callback: html => applyDamage(html, isDamage),
+      condition: !isDamage,
+    },
+    damage: {
+      icon: "<i class='fas fa-minus-circle'></i>",
+      label: `${i18n('TOKEN_HEALTH.Damage')}  <kbd>⮐</kbd>`,
+      callback: html => applyDamage(html, isDamage),
+      condition: isDamage,
+    },
+  };
 
   const content = await renderTemplate(
     `modules/token-health/templates/token-health.hbs`
   );
 
-  const buttons = {
-    heal: {
-      icon: "<i class='fas fa-plus-circle'></i>",
-      label: i18n('TOKEN_HEALTH.Heal'),
-      callback: html => applyDamage(html, false),
-    },
-    damage: {
-      icon: "<i class='fas fa-minus-circle'></i>",
-      label: i18n('TOKEN_HEALTH.Damage'),
-      callback: html => applyDamage(html, true),
-    },
-  };
-
   // Render the dialog
   dialog = new TokenHealthDialog({
-    title: i18n('TOKEN_HEALTH.Dialog_Title'),
-    content,
+    title: isDamage
+      ? i18n('TOKEN_HEALTH.Dialog_Damage_Title')
+      : i18n('TOKEN_HEALTH.Dialog_Heal_Title'),
     buttons,
-    default: reverted ? 'heal' : 'damage',
+    content,
+    default: isDamage ? 'damage' : 'heal',
     close: () => {
       timer = setTimeout(() => {
         tokenHealthDisplayed = false;
@@ -114,7 +118,7 @@ const onEscape = () => {
 /**
  * Open the dialog on ToggleKey
  */
-const toggle = (event, key, reverted = false) => {
+const toggle = (event, key, isDamage = true) => {
   event.preventDefault();
 
   // Make sure to call only once.
@@ -122,7 +126,7 @@ const toggle = (event, key, reverted = false) => {
 
   // Don't display if no tokens are controlled.
   if (!tokenHealthDisplayed && canvas.tokens.controlled.length > 0) {
-    displayOverlay(reverted).catch(console.error);
+    displayOverlay(isDamage).catch(console.error);
   }
 };
 
@@ -143,7 +147,7 @@ const handleKeys = function (event, key, up) {
   // Alt key is pressed.
   const toggleKeyAlt = KeyBinding.parse(CONFIG.TOGGLE_KEY_ALT);
   if (KeyBinding.eventIsForBinding(event, toggleKeyAlt))
-    toggle(event, key, true);
+    toggle(event, key, false);
 };
 
 /**
