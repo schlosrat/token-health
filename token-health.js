@@ -6,7 +6,7 @@ import {i18n} from './ui.js';
 const DELAY = 400;
 
 let tokenHealthDisplayed = false;
-let dialog, timer;
+let dialog, timer, KeyBinding;
 
 /**
  * Extend Dialog class to force focus on the input
@@ -68,7 +68,7 @@ const applyDamage = async (html, isDamage) => {
  *
  * @returns {Promise<void>}
  */
-const displayOverlay = async () => {
+const displayOverlay = async reverted => {
   tokenHealthDisplayed = true;
 
   const content = await renderTemplate(
@@ -93,7 +93,7 @@ const displayOverlay = async () => {
     title: i18n('TOKEN_HEALTH.Dialog_Title'),
     content,
     buttons,
-    default: 'damage',
+    default: reverted ? 'heal' : 'damage',
     close: () => {
       timer = setTimeout(() => {
         tokenHealthDisplayed = false;
@@ -114,14 +114,15 @@ const onEscape = () => {
 /**
  * Open the dialog on ToggleKey
  */
-const onToggle = (event, key) => {
+const toggle = (event, key, reverted = false) => {
   event.preventDefault();
 
   // Make sure to call only once.
   keyboard._handled.add(key);
 
+  // Don't display if no tokens are controlled.
   if (!tokenHealthDisplayed && canvas.tokens.controlled.length > 0) {
-    displayOverlay().catch(console.error);
+    displayOverlay(reverted).catch(console.error);
   }
 };
 
@@ -135,7 +136,14 @@ const onToggle = (event, key) => {
 const handleKeys = function (event, key, up) {
   if (up || this.hasFocus) return;
 
-  if (key === CONFIG.TOGGLE_KEY) onToggle(event, key);
+  // Base key is pressed.
+  const toggleKeyBase = KeyBinding.parse(CONFIG.TOGGLE_KEY_BASE);
+  if (KeyBinding.eventIsForBinding(event, toggleKeyBase)) toggle(event, key);
+
+  // Alt key is pressed.
+  const toggleKeyAlt = KeyBinding.parse(CONFIG.TOGGLE_KEY_ALT);
+  if (KeyBinding.eventIsForBinding(event, toggleKeyAlt))
+    toggle(event, key, true);
 };
 
 /**
@@ -158,4 +166,7 @@ Hooks.once('ready', () => {
 
   // Initialize settings
   settings();
+
+  // Use Azzurite settings-extender
+  KeyBinding = window.Azzu.SettingsTypes.KeyBinding;
 });

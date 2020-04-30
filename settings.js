@@ -4,7 +4,8 @@ const MODULE_NAME = 'token-health';
 
 export const CONFIG = {};
 const DEFAULT = {
-  TOGGLE_KEY: 'Enter',
+  TOGGLE_KEY_BASE: 'Enter',
+  TOGGLE_KEY_ALT: 'Shift + Enter',
   HITPOINTS_ATTRIBUTE: '',
   MAX_HITPOINTS_ATTRIBUTE: '',
   TEMP_HITPOINTS_ATTRIBUTE: '',
@@ -49,21 +50,34 @@ const initSetting = (key, setting) => {
   return config;
 };
 
+const KeyBinding = window.Azzu.SettingsTypes.KeyBinding;
+
 /**
  * Register settings
  */
 export default () => {
   setDefaults();
 
-  CONFIG.TOGGLE_KEY = initSetting('toggleKey', {
+  CONFIG.TOGGLE_KEY_BASE = initSetting('toggleKey', {
     name: i18n('TOKEN_HEALTH.toggleKeyName'),
     hint: i18n('TOKEN_HEALTH.toggleKeyHint'),
-    type: window.Azzu.SettingsTypes.KeyBinding,
-    default: DEFAULT.TOGGLE_KEY,
+    type: KeyBinding,
+    default: DEFAULT.TOGGLE_KEY_BASE,
     scope: 'user',
     config: true,
     onChange: key => {
-      CONFIG.TOGGLE_KEY = key;
+      CONFIG.TOGGLE_KEY_BASE = key;
+    },
+  });
+  CONFIG.TOGGLE_KEY_ALT = initSetting('toggleKeyAlt', {
+    name: i18n('TOKEN_HEALTH.toggleKeyAltName'),
+    hint: i18n('TOKEN_HEALTH.toggleKeyAltHint'),
+    type: KeyBinding,
+    default: DEFAULT.TOGGLE_KEY_ALT,
+    scope: 'user',
+    config: true,
+    onChange: key => {
+      CONFIG.TOGGLE_KEY_ALT = key;
     },
   });
   CONFIG.HITPOINTS_ATTRIBUTE = initSetting('hpSource', {
