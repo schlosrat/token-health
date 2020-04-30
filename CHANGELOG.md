@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.5 (2020-04-30)
+
+- add default settings for pf2 (thanks @kenster421)
+
 ## 0.1.4 (2020-04-22)
 
 - fix module on other systems than dnd5e
