@@ -15,7 +15,7 @@ const DEFAULT = {
  */
 const setDefaults = () => {
   // Default to system values
-  if (game.system.id === 'dnd5e') {
+  if (game.system.id === 'dnd5e' || game.system.id === 'pf2e') {
     DEFAULT.HITPOINTS_ATTRIBUTE = 'attributes.hp.value';
     DEFAULT.MAX_HITPOINTS_ATTRIBUTE = 'attributes.hp.max';
     DEFAULT.TEMP_HITPOINTS_ATTRIBUTE = 'attributes.hp.temp';
