@@ -2,16 +2,17 @@
 
 ## 0.1.5 (2020-04-30)
 
-- add default settings for pf2 (thanks @kenster421)
+- add default settings for pf2 (thanks @kenster421) #6
+- add a new keyboard shortcut to apply healing (suggested by @apoapostolov) #7
 
 ## 0.1.4 (2020-04-22)
 
-- fix module on other systems than dnd5e
+- fix module on other systems than dnd5e (thanks @Joonasm) #4
 - fix settings not used correctly
 
 ## 0.1.3 (2020-04-19)
 
-- fix some issues with dialog toggling with other interactions on FoundryVTT
+- fix some issues with dialog toggling with other interactions on FoundryVTT (thanks @apoapostolov) #1
 
 ## 0.1.2 (2020-04-19)
 
