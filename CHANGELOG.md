@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.6 (2020-05-02)
+
+- add missing translation strings
+- improve readme
+
 ## 0.1.5 (2020-04-30)
 
 - add default settings for pf2 (thanks @kenster421) #6
