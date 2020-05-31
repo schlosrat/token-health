@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.7 (2020-05-31)
+
+- update settings extender
+
 ## 0.1.6 (2020-05-02)
 
 - add missing translation strings
