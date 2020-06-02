@@ -2,6 +2,8 @@
 
 Apply damage/healing with a few keystrokes to all selected tokens at once.
 
+⚠️ If your version is 0.1.3, you will have to reinstall the module.
+
 ## Description
 
 This is a module for [FoundryVTT](https://foundryvtt.com/) intended for GMs that want to apply damage or healing more easily. Without this mod, you have to click several times to adjust the hit points of a token. With Token Health installed, you can hit Enter, enter the damage and hit Enter again. 
