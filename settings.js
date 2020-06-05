@@ -1,4 +1,4 @@
-import {i18n} from './ui.js';
+import { i18n } from './ui.js';
 
 const MODULE_NAME = 'token-health';
 
@@ -6,6 +6,8 @@ export const CONFIG = {};
 const DEFAULT = {
   TOGGLE_KEY_BASE: 'Enter',
   TOGGLE_KEY_ALT: 'Shift + Enter',
+  TOGGLE_KEY_TARGET: 'Alt + Enter',
+  TOGGLE_KEY_TARGET_ALT: 'Alt + Shift + Enter',
   HITPOINTS_ATTRIBUTE: '',
   MAX_HITPOINTS_ATTRIBUTE: '',
   TEMP_HITPOINTS_ATTRIBUTE: '',
@@ -78,6 +80,28 @@ export default () => {
     config: true,
     onChange: key => {
       CONFIG.TOGGLE_KEY_ALT = key;
+    },
+  });
+  CONFIG.TOGGLE_KEY_TARGET = initSetting('toggleKeyTarget', {
+    name: i18n('TOKEN_HEALTH.toggleKeyTargetName'),
+    hint: i18n('TOKEN_HEALTH.toggleKeyTargetHint'),
+    type: KeyBinding,
+    default: DEFAULT.TOGGLE_KEY_TARGET,
+    scope: 'user',
+    config: true,
+    onChange: key => {
+      CONFIG.TOGGLE_KEY_TARGET = key;
+    },
+  });
+  CONFIG.TOGGLE_KEY_TARGET_ALT = initSetting('toggleKeyTargetAlt', {
+    name: i18n('TOKEN_HEALTH.toggleKeyTargetAltName'),
+    hint: i18n('TOKEN_HEALTH.toggleKeyTargetAltHint'),
+    type: KeyBinding,
+    default: DEFAULT.TOGGLE_KEY_TARGET_ALT,
+    scope: 'user',
+    config: true,
+    onChange: key => {
+      CONFIG.TOGGLE_KEY_TARGET_ALT = key;
     },
   });
   CONFIG.HITPOINTS_ATTRIBUTE = initSetting('hpSource', {
