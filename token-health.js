@@ -46,7 +46,7 @@ const applyDamage = async (html, isDamage) => {
       dt = damage > 0 ? Math.min(tmp, damage) : 0;
 
     const newTempHP = tmp - dt;
-    const newHP = Math.clamped(hp - (damage - dt), 0, max);
+    const newHP = Math.max(hp - (damage - dt), max);
 
     const updates = {_id: actor.id, isToken: actor.isToken};
 
