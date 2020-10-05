@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.1 (2020-10-05)
+
+- forgot the download link
+
 ## 0.2.0 (2020-10-05)
 
 - add feature to apply damage/healing to targeted tokens (thanks @AJAnderson) #10
