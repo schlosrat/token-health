@@ -1,7 +1,7 @@
 // @ts-check
 
-import settings, { CONFIG } from './settings.js';
-import { i18n } from './ui.js';
+import settings, {CONFIG} from './settings.js';
+import {i18n} from './ui.js';
 
 const DELAY = 400;
 
@@ -28,15 +28,18 @@ class TokenHealthDialog extends Dialog {
  *
  * @param {HTMLElement} html The html element
  * @param {boolean} isDamage Is the amount a damage? false if it's healing
+ * @param {boolean} isTargeted Is it a targeted token?
  * @returns {Promise<Entity|Entity[]>}
  */
-const applyDamage = async (html, isDamage, isTargetted) => {
+const applyDamage = async (html, isDamage, isTargeted) => {
   const value = html.find('input[type=number]').val();
   const damage = isDamage ? Number(value) : value * -1;
 
-  const tokens = isTargetted ? Array.from(game.user.targets) : canvas.tokens.controlled;
+  const tokens = isTargeted
+    ? Array.from(game.user.targets)
+    : canvas.tokens.controlled;
 
-  const promises = tokens.map(({ id, actor }) => {
+  const promises = tokens.map(({actor}) => {
     // Handle temp hp if any
     const data = actor.data.data;
     const hp = getProperty(data, CONFIG.HITPOINTS_ATTRIBUTE);
@@ -49,7 +52,7 @@ const applyDamage = async (html, isDamage, isTargetted) => {
     const newTempHP = tmp - dt;
     const newHP = Math.clamped(hp - (damage - dt), 0, max);
 
-    const updates = { _id: actor.id, isToken: actor.isToken };
+    const updates = {_id: actor.id, isToken: actor.isToken};
 
     if (CONFIG.HITPOINTS_ATTRIBUTE)
       updates[`data.${CONFIG.HITPOINTS_ATTRIBUTE}`] = newHP;
@@ -69,20 +72,20 @@ const applyDamage = async (html, isDamage, isTargetted) => {
  *
  * @returns {Promise<void>}
  */
-const displayOverlay = async (isDamage, isTargetted = false) => {
+const displayOverlay = async (isDamage, isTargeted = false) => {
   tokenHealthDisplayed = true;
 
   const buttons = {
     heal: {
       icon: "<i class='fas fa-plus-circle'></i>",
       label: `${i18n('TOKEN_HEALTH.Heal')}  <kbd>⮐</kbd>`,
-      callback: html => applyDamage(html, isDamage, isTargetted),
+      callback: html => applyDamage(html, isDamage, isTargeted),
       condition: !isDamage,
     },
     damage: {
       icon: "<i class='fas fa-minus-circle'></i>",
       label: `${i18n('TOKEN_HEALTH.Damage')}  <kbd>⮐</kbd>`,
-      callback: html => applyDamage(html, isDamage, isTargetted),
+      callback: html => applyDamage(html, isDamage, isTargeted),
       condition: isDamage,
     },
   };
@@ -91,11 +94,13 @@ const displayOverlay = async (isDamage, isTargetted = false) => {
     `modules/token-health/templates/token-health.hbs`
   );
 
+  let dialogTitle = `TOKEN_HEALTH.Dialog_${isDamage ? 'Damage' : 'Heal'}_Title${
+    isTargeted ? '_targeted' : ''
+  }`;
+
   // Render the dialog
   dialog = new TokenHealthDialog({
-    title: isDamage
-      ? i18n('TOKEN_HEALTH.Dialog_Damage_Title')
-      : i18n('TOKEN_HEALTH.Dialog_Heal_Title'),
+    title: i18n(dialogTitle),
     buttons,
     content,
     default: isDamage ? 'damage' : 'heal',
@@ -127,14 +132,17 @@ const toggle = (event, key, isDamage = true, isTarget = false) => {
 
   // Don't display if no tokens are controlled. Don't display as well if we were trying
   // to apply damage to targets
-  if (!tokenHealthDisplayed && canvas.tokens.controlled.length > 0 && !isTarget) {
+  if (
+    !tokenHealthDisplayed &&
+    canvas.tokens.controlled.length > 0 &&
+    !isTarget
+  ) {
     displayOverlay(isDamage).catch(console.error);
   }
-  // Don't display if no tokents targetted and we were trying to attack selected
+  // Don't display if no tokens are targeted and we were trying to attack selected
   if (!tokenHealthDisplayed && game.user.targets.size > 0 && isTarget) {
     displayOverlay(isDamage, isTarget).catch(console.error);
   }
-
 };
 
 /**
@@ -156,16 +164,15 @@ const handleKeys = function (event, key, up) {
   if (KeyBinding.eventIsForBinding(event, toggleKeyAlt))
     toggle(event, key, false);
 
-  // Targetting key is pressed
+  // Targeting key is pressed
   const toggleKeyTarget = KeyBinding.parse(CONFIG.TOGGLE_KEY_TARGET);
   if (KeyBinding.eventIsForBinding(event, toggleKeyTarget))
     toggle(event, key, true, true);
 
-  // Alt Targetting key is pressed
+  // Alt Targeting key is pressed
   const toggleKeyTargetAlt = KeyBinding.parse(CONFIG.TOGGLE_KEY_TARGET_ALT);
   if (KeyBinding.eventIsForBinding(event, toggleKeyTargetAlt))
     toggle(event, key, false, true);
-
 };
 
 /**
