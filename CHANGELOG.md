@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.2.0 (2020-10-05)
+
+- add feature to apply damage/healing to targeted tokens (thanks @AJAnderson) #10
+- allow negative hp (thanks @emdant) #11
+
 ## 0.1.7 (2020-05-31)
 
 - update settings extender
