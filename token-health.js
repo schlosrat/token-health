@@ -2,6 +2,7 @@
 
 import settings, {CONFIG} from './settings.js';
 import {i18n} from './ui.js';
+import getNewHP from './getNewHP.js';
 
 const DELAY = 400;
 
@@ -33,7 +34,7 @@ class TokenHealthDialog extends Dialog {
  */
 const applyDamage = async (html, isDamage, isTargeted) => {
   const value = html.find('input[type=number]').val();
-  const damage = isDamage ? Number(value) : value * -1;
+  const damage = isDamage ? Number(value) : Number(value) * -1;
 
   const tokens = isTargeted
     ? Array.from(game.user.targets)
@@ -46,19 +47,19 @@ const applyDamage = async (html, isDamage, isTargeted) => {
     const max = getProperty(data, CONFIG.MAX_HITPOINTS_ATTRIBUTE);
     const temp = getProperty(data, CONFIG.TEMP_HITPOINTS_ATTRIBUTE);
 
-    const tmp = parseInt(temp) || 0,
-      dt = damage > 0 ? Math.min(tmp, damage) : 0;
+    const [newHP, newTempHP] = getNewHP(hp, max, temp, damage, {
+      allowNegative: CONFIG.ALLOW_NEGATIVE,
+    });
 
-    const newTempHP = tmp - dt;
-    const newHP = Math.max(hp - (damage - dt), max);
-
-    const updates = {_id: actor.id, isToken: actor.isToken};
-
-    if (CONFIG.HITPOINTS_ATTRIBUTE)
-      updates[`data.${CONFIG.HITPOINTS_ATTRIBUTE}`] = newHP;
-
-    if (CONFIG.TEMP_HITPOINTS_ATTRIBUTE)
-      updates[`data.${CONFIG.TEMP_HITPOINTS_ATTRIBUTE}`] = newTempHP;
+    const updates = {
+      _id: actor.id,
+      isToken: actor.isToken,
+      [`data.${CONFIG.HITPOINTS_ATTRIBUTE || 'attributes.hp.value'}`]: newHP,
+      [`data.${
+        CONFIG.TEMP_HITPOINTS_ATTRIBUTE || 'attributes.hp.temp'
+      }`]: newTempHP,
+    };
+    console.log(updates);
 
     // Prepare the update
     return actor.update(updates);

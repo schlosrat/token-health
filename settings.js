@@ -1,4 +1,4 @@
-import { i18n } from './ui.js';
+import {i18n} from './ui.js';
 
 const MODULE_NAME = 'token-health';
 
@@ -11,6 +11,7 @@ const DEFAULT = {
   HITPOINTS_ATTRIBUTE: '',
   MAX_HITPOINTS_ATTRIBUTE: '',
   TEMP_HITPOINTS_ATTRIBUTE: '',
+  ALLOW_NEGATIVE: false,
 };
 
 /**
@@ -133,6 +134,17 @@ export default () => {
     config: true,
     onChange: key => {
       CONFIG.TEMP_HITPOINTS_ATTRIBUTE = key;
+    },
+  });
+  CONFIG.ALLOW_NEGATIVE = initSetting('allowNegative', {
+    name: i18n('TOKEN_HEALTH.allowNegative'),
+    hint: i18n('TOKEN_HEALTH.allowNegativeHint'),
+    type: Boolean,
+    default: DEFAULT.ALLOW_NEGATIVE,
+    scope: 'world',
+    config: true,
+    onChange: key => {
+      CONFIG.ALLOW_NEGATIVE = key;
     },
   });
 };

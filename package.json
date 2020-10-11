@@ -2,10 +2,15 @@
   "name": "token-health",
   "private": true,
   "scripts": {
-    "start": "node-sass -w --output-style compressed token-health.scss token-health.css"
+    "start": "node-sass -w --output-style compressed token-health.scss token-health.css",
+    "test": "jest"
   },
   "devDependencies": {
+    "@babel/core": "^7.11.6",
+    "@babel/preset-env": "^7.11.5",
+    "babel-jest": "^26.5.2",
     "foundry-pc-types": "https://gitlab.com/foundry-projects/foundry-pc/foundry-pc-types.git",
+    "jest": "^26.5.2",
     "node-sass": "^4.13.1",
     "prettier": "^2.0.4"
   },

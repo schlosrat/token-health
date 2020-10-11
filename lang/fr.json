@@ -18,5 +18,7 @@
   "TOKEN_HEALTH.hp": "Source des points de vie actuels",
   "TOKEN_HEALTH.hpMax": "Source des points de vie maximum",
   "TOKEN_HEALTH.tempHp": "Source des points de vie temporaires",
-  "TOKEN_HEALTH.tempHpHint": "Laisser vide si le système actuel ne gère pas les points de temporaires"
+  "TOKEN_HEALTH.tempHpHint": "Laisser vide si le système actuel ne gère pas les points de temporaires",
+  "TOKEN_HEALTH.allowNegative": "Permettre des points de vie négatifs",
+  "TOKEN_HEALTH.allowNegativeHint": "Certains systèmes permettent d'avoir des points de vie négatifs (PF1)"
 }

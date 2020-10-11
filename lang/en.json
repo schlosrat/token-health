@@ -18,5 +18,7 @@
   "TOKEN_HEALTH.hp": "Current Hit Points Source",
   "TOKEN_HEALTH.hpMax": "Max Hit Points Source",
   "TOKEN_HEALTH.tempHp": "Temporary Hit Points Source",
-  "TOKEN_HEALTH.tempHpHint": "Leave this empty if there is no temp HP management in your system"
+  "TOKEN_HEALTH.tempHpHint": "Leave this empty if there is no temp HP management in your system",
+  "TOKEN_HEALTH.allowNegative": "Allow Negative Hit Points",
+  "TOKEN_HEALTH.allowNegativeHint": "Some systems allow negative hit points (PF1)"
 }
