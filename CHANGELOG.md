@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.2.2 (2020-10-11)
+
+- add config for negative HP values (defaults to true with Pathfinder 1e)
+- fix wrong applied values #17
+
 ## 0.2.1 (2020-10-05)
 
 - forgot the download link
