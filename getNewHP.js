@@ -10,7 +10,7 @@
  */
 const getNewHP = (currentHP, maxHP, tempHP, value, options = {}) => {
   // Store the temp HP value
-  const tmp = Number(tempHP) ?? 0;
+  const tmp = tempHP != null ? Number(tempHP) : 0;
 
   // Calculate value to apply on temp only
   const dt = value > 0 ? Math.min(tmp, value) : 0;
