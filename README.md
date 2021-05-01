@@ -30,10 +30,14 @@ NOTE: Some settings are game system specific and may not work correctly (or at a
 
 - Press the **toggle key** and enter a value to apply **damage** to the selected token(s)
 - Press the **toggle key** and enter a ***negative value*** to apply **healing** to the selected token(s)
+
 ![screenshot](screenshot_0.png)
+
 - Press the **alternate toggle key** and enter a value to apply **healing** to the selected token(s)
 - Press the **alternate toggle key** and enter a ***negative value*** to apply **damage** to the selected token(s)
+
 ![screenshot](screenshot_2.png)
+
 - Combine above with the <kbd>Alt</kbd> key to apply to targeted token(s) instead of slected token(s)
 
 - Multiple tokens may be selected. The name for each token selected will appear in the title bar of the dialog box.
