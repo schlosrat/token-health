@@ -1,7 +1,30 @@
 <form class="form-token-health" id="token-health" autocomplete="off" onsubmit="event.preventDefault();">
-    <div class="form-group">
-        <label for="token-health-input">{{localize "TOKEN_HEALTH.Amount"}}</label>
-        <input id="token-health-input" type="number" data-dtype="Number" name="amount" min="0" max="999"/>
-          <p><small>{{localize "TOKEN_HEALTH.Dialog_Help"}}</small></p>
+    <div class="form-group" style="flex-direction: column; height: 250px">
+        {{#if thumbnails}}
+            <div style="flex-direction: row; white-space: nowrap; width: 380px; text-align: center;">
+                {{#each thumbnails as |t idx|}}
+                    <img src="{{t.image}}" style="border: none; margin: 5px; max-width: 100px; opacity: {{t.opacity}}"/>
+                {{/each}}
+            </div>
+        {{/if}}
+        <div class="flexrow">
+            <b><large><label style="margin: 5px" for="token-health-input">{{localize "TOKEN_HEALTH.Amount"}}</label></large></b>
+            <input id="token-health-input" type="number" data-dtype="Number" name="amount" min="0" max="999"/>
+            {{#if allowPenetratingDamage}}
+                <label style="margin-left: 25px" for="token-health-checkbox">{{localize "TOKEN_HEALTH.DamageType"}}</label>
+                <select id="token-health-damage-type" name="damage-type">
+                    <option value="impact">Impact</option>
+                    <option value="ballistic">Ballistic</option>
+                    <option Value="penetrating">Penetrating</option>
+                </select>
+            {{/if}}
+        </div>
+        {{#if allowPenetratingDamage}}
+            <div class="row">
+                <label style="margin: 15px"><input type="radio" name="subtype" value="wound" {{{isChecked defaultSubtype "wound"}}}>Wound</label>
+                <label style="margin: 15px"><input type="radio" name="subtype" value="stun" {{{isChecked defaultSubtype "stun"}}}>Stun</label>
+            </div>
+        {{/if}}
+        <p><small>{{helpText}}</small></p>
     </div>
 </form>
