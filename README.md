@@ -30,11 +30,11 @@ NOTE: Some settings are game system specific and may not work correctly (or at a
 
 - Press the **toggle key** and enter a value to apply **damage** to the selected token(s)
 - Press the **toggle key** and enter a ***negative value*** to apply **healing** to the selected token(s)
-- ![screenshot](screenshot_0.png)
+![screenshot](screenshot_0.png)
 - Press the **alternate toggle key** and enter a value to apply **healing** to the selected token(s)
 - Press the **alternate toggle key** and enter a ***negative value*** to apply **damage** to the selected token(s)
+![screenshot](screenshot_2.png)
 - Combine above with the <kbd>Alt</kbd> key to apply to targeted token(s) instead of slected token(s)
-- ![screenshot](screenshot_2.png)
 
 - Multiple tokens may be selected. The name for each token selected will appear in the title bar of the dialog box.
 - Up to four selected token icons will also be shown inside the dialog box with decreasing opacity (the fourth is cut off)
@@ -55,9 +55,11 @@ NOTE: Some settings are game system specific and may not work correctly (or at a
 
 ### AGE System Specific Features
 
+- Damage Buyoff may be selected from the Module Configuration Screen (implements Injured and Wounded conditions)
 - Damage Type may be selected from the pull down menu to the right of the Amount entry field
 - Damage Subtype may be selected from the radio buttons below the Amount entry field
-- Damage Buyoff may be selected from the Module Configuration Screen (implements Injured and Wounded conditions)
+	- Wound damage may result in death and can trigger Damage Buyoff if that feature is enabled via Module Settings
+	- Stun damage never results in death but can cause unconsciousness
 - Additional Belter translation of Token Chat messages if the effected token has it's Origin set to Belter (Specific to The Expanse)
 
 ![screenshot](screenshot_1.png)
