@@ -1,5 +1,60 @@
 # Changelog
 
+## 0.3.0 (2021-05-01)
+
+- Transferred repository from tonifisler to schlosrat to fold in fixes and updates listed below
+- Fixed incorrect handling of a blank/empty setting for TEMP_HITPOINTS_ATTRIBUTE
+- Code cleanup so that only one update call is made per possible path through the code
+- Updated compatibleCoreVersion to 0.7.9
+
+- Dialog Box Improvements:
+  - Added name of token(s) to dialog header - Thanks itamarcu!
+  - Added thumbnails of token(s) inside dialog box above the Amount entry box - Thanks itamarcu!
+  - Added pulldown menu for Damage Type (See Damage Mitigation and Damage Type Features added below)
+  - Added radio buttons for Damage Subtype (Only present if playing age-system. See AGE Specific Features added below)
+
+- Token Chat Capability:
+  - Added Token Chat capability to generate chat messages from each affected token indicating their reaction/result
+  - Token Chat messages are localized for language with user configurable overrides through module settings
+  - General token chat messages visible to all indicate token reaction, but not number of points damage/healing
+  - GM-Only token chat messages indicate the actual amount of damage/healing done to each token
+  - Token Chat Situations:
+    - More than 1 point of damage/healing done
+    - Just 1 point of damage/healing done
+    - No damage/healing done
+    - Token takes Injured condition (AGE System specific)
+    - Token takes Wounded condition (AGE System specific)
+    - Token takes Unconscious condition as detemined by health <= to user configurable KO threashold
+    - Token takes Dead condition as detemined by health <= to user configurable death threashold
+    - Damage applied to already dead token
+
+- Health State Thresholds:
+  - User configurable health threashold for Unconscious (default: health = 0)
+  - User configurable threashold for Death (default: health = 0, may be set lower for some games)
+  - Token states for unconcious, dying, dead tracked thorough token flags
+
+- Damage Mitigation Feature:
+  - Allow for up to three token attributes to be specificed for damage mitigation by Damage Type
+  - This allows for armor/toughness/etc. to automatically reduce the amount of damage done - no reduction of healing
+
+- Damage Type Feature: (only present if Damage Mitigation is turned on
+  - Implemented Damage Types: Impact (default), Ballistic, and Penetrating (bypasses all mitigation)
+  - NOTE: The default Damage Types are defined for the AGE system, but may be used for other systems where damage mitigation is allowed
+
+- AGE System Specific Features:
+  - AGE-System dependent module features only executed for AGE-System games to prevents conflicts with other systems
+  - Added correct automatic configuration for AGE System (game.system.id === 'age-system')
+  - Implemented Damage Subtypes: Wound (default) & Stun (will not take token beyond unconcious)
+  - Added User Configurable setting to permit Damage Byoff
+  - Implemented a Damage Buyoff system to automate damage mitigation by token taking Injured or Wounded conditions
+  - Added Belter translations so Token Chat sounds more like what a Belter might really say (only if token is a Belter)
+
+- Language Translation Updates:
+  - Extended English and French localizations for token chat an other new features (lang/en.json, lang/fs.json)
+  - Updated Espanol (Spanish) language translation (lang/es.json) - Thanks ForjaSalvaje#2419!
+  - Added Deutche (German) language translation (lang/de.json) - Thanks, dabri0n#1632!
+
+
 ## 0.2.2 (2020-10-11)
 
 - add config for negative HP values (defaults to true with Pathfinder 1e)
