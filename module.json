@@ -2,17 +2,17 @@
   "name": "token-health",
   "title": "Token Health",
   "description": "Apply damage/healing to multiple tokens with a few keystrokes",
-  "author": "thorni",
-  "version": "0.2.2",
+  "author": "schlosrat",
+  "version": "0.3.0",
   "minimumCoreVersion": "0.5.5",
-  "compatibleCoreVersion": "0.7.3",
+  "compatibleCoreVersion": "0.7.9",
   "styles": ["token-health.css"],
   "esmodules": ["contrib/settings-extender.js","token-health.js"],
-  "url": "https://github.com/tonifisler/foundry-token-health",
-  "manifest": "https://raw.githubusercontent.com/tonifisler/foundry-token-health/master/module.json",
-  "download": "https://github.com/tonifisler/foundry-token-health/archive/0.2.2.zip",
-  "changelog": "https://github.com/tonifisler/foundry-token-health/blob/master/CHANGELOG.md",
-  "readme": "https://github.com/tonifisler/foundry-token-health/blob/master/README.md",
+  "url": "https://github.com/schlosrat/token-health",
+  "manifest": "https://raw.githubusercontent.com/schlosrat/token-health/master/module.json",
+  "download": "https://github.com/schlosrat/token-health/archive/refs/tags/0.3.0.zip",
+  "changelog": "https://github.com/schlosrat/token-health/blob/master/CHANGELOG.md",
+  "readme": "https://github.com/schlosrat/token-health/blob/master/README.md",
   "languages": [
     {
       "lang": "en",
@@ -23,6 +23,16 @@
       "lang": "fr",
       "name": "Français",
       "path": "lang/fr.json"
+    },
+    {
+      "lang": "es",
+      "name": "Español",
+      "path": "lang/es.json"
+    },
+    {
+      "lang": "de",
+      "name": "Deutsch",
+      "path": "lang/de.json"
     }
   ]
 }
