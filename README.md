@@ -22,7 +22,7 @@ NOTE: Some settings are game system specific and may not work correctly (or at a
 ### Use Token Health
 
 1. Select/target one or multiple token(s)
-1. Press the **toggle key** (default: <kbd>Enter</kbd>) to display the Damage dialog or the **alternate toggle key** (default: <kbd>Shift</kbd> + <kbd>Enter</kbd>) to display the Healing dialog. To apply damage/healing to targeted tokens instead of selected tokens, add the <kbd>Alt</kbd> key by default.
+1. Press the **toggle key** (default: <kbd>Enter</kbd>) to display the Damage dialog or the **alternate toggle key** (default: <kbd>Shift</kbd> + <kbd>Enter</kbd>) to display the Healing dialog. To apply damage/healing to **targeted tokens** instead of **selected tokens**, add the <kbd>Alt</kbd> key by default.
 1. Enter a value
 1. Validate by pressing <kbd>Enter</kbd> or by clicking the big button
 
