@@ -33,11 +33,42 @@ NOTE: Some settings are game system specific and may not work correctly (or at a
 - Press the **alternate toggle key** and enter a value to apply **healing** 
 - Press the **alternate toggle key** and enter a ***negative value*** to apply **damage** 
 
-![screenshot](screenshot.png)
+![screenshot](screenshot_0.png)
+
+- Multiple tokens may be selected. The name for each token selected will appear in the title bar of the dialog box.
+- Up to four selected token icons will also be shown inside the dialog box with decreasing opacity (the fourth is cut off)
+- This helps you ensure you've got the right tokens targeted before you apply damage or healing!
 
 ### Output to Chat
 
-- Token Health will create a chat message from each affected token indicating how much actual damage was done or healing received. This is particularly useful when applying damage to multiple tokens where damage mitigation is being employed and each token may be mitigating a different amount of damage.
+- Token Health will create chat messages from each affected token indicating the effect and how much actual damage was done or healing received. This is particularly useful when applying damage to multiple tokens where damage mitigation is being employed and each token may be mitigating a different amount of damage.
+- Tokens will output one message that's visible to everyone indicating the token's reaction to the effect
+- Tokens also output an additional GM-Only message indicating the total amount of damage or healing done
+- Tokens announce the following results in chat
+	- When they are damaged or healed, with optionally different messages if the amount is trivial
+	- If they're uneffected by damage/healing
+	- If they've fallen unconscious (based on user configurable health threashold for unconsciousness)
+	- If they die due to the damage applied (based on user configurable health threashold for death)
+	- If damage is being applied to them and they're already dead
+- Token chat messages default to language localizations, but each case may be overridden via module settings so they'll say what you want them to say
+
+### AGE System Specific Features
+
+- Damage Type may be selected from the pull down menu to the right of the Amount entry field
+- Damage Subtype may be selected from the radio buttons below the Amount entry field
+- Damage Buyoff may be selected from the Module Configuration Screen (implements Injured and Wounded conditions)
+- Additional Belter translation of Token Chat messages if the effected token has it's Origin set to Belter (Specific to The Expanse)
+
+![screenshot](screenshot_1.png)
+
+- Damage Type selections are Impact (default), Ballisitic, and Penetraiting
+- If Impact is selected, then either ordinary (impact) or specialized (ballisitic) armor will help to reduce the damage done
+- If Ballistic is selected as the Damage Type, then only ballistic armor will be used for the armor-based mitigation of damage
+- If Penetrating is selected, then all armor and/or tougness are bypassed and the full damage is applied
+- NOTE: Damage mitigation by Tougness is set in the Game Settings in conjunction with the Damage Mitigation Attributes. If included, then Tougness adds to armor for Impact or Ballistic damage mitigation.
+- Healing is never mitigate by armor or toughness
+
+![screenshot](screenshot_detail.png)
 
 ## Credits
 
