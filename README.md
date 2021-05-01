@@ -22,18 +22,19 @@ NOTE: Some settings are game system specific and may not work correctly (or at a
 ### Use Token Health
 
 1. Select/target one or multiple token(s)
-1. Press the toggle key (default: <kbd>Enter</kbd>) to display the Damage dialog or the alternate toggle key (default: <kbd>Shift</kbd> + <kbd>Enter</kbd>) to display the Healing dialog. To apply damage/healing to targeted tokens, add the <kbd>Alt</kbd> key by default.
+1. Press the **toggle key** (default: <kbd>Enter</kbd>) to display the Damage dialog or the **alternate toggle key** (default: <kbd>Shift</kbd> + <kbd>Enter</kbd>) to display the Healing dialog. To apply damage/healing to targeted tokens instead of selected tokens, add the <kbd>Alt</kbd> key by default.
 1. Enter a value
 1. Validate by pressing <kbd>Enter</kbd> or by clicking the big button
 
 ### What you can do
 
-- Press the **toggle key** and enter a value to apply **damage** 
-- Press the **toggle key** and enter a ***negative value*** to apply **healing**
-- Press the **alternate toggle key** and enter a value to apply **healing** 
-- Press the **alternate toggle key** and enter a ***negative value*** to apply **damage** 
-
-![screenshot](screenshot_0.png)
+- Press the **toggle key** and enter a value to apply **damage** to the selected token(s)
+- Press the **toggle key** and enter a ***negative value*** to apply **healing** to the selected token(s)
+- ![screenshot](screenshot_0.png)
+- Press the **alternate toggle key** and enter a value to apply **healing** to the selected token(s)
+- Press the **alternate toggle key** and enter a ***negative value*** to apply **damage** to the selected token(s)
+- Combine above with the <kbd>Alt</kbd> key to apply to targeted token(s) instead of slected token(s)
+- ![screenshot](screenshot_2.png)
 
 - Multiple tokens may be selected. The name for each token selected will appear in the title bar of the dialog box.
 - Up to four selected token icons will also be shown inside the dialog box with decreasing opacity (the fourth is cut off)
@@ -47,9 +48,9 @@ NOTE: Some settings are game system specific and may not work correctly (or at a
 - Tokens announce the following results in chat
 	- When they are damaged or healed, with optionally different messages if the amount is trivial
 	- If they're uneffected by damage/healing
-	- If they've fallen unconscious (based on user configurable health threashold for unconsciousness)
-	- If they die due to the damage applied (based on user configurable health threashold for death)
-	- If damage is being applied to them and they're already dead
+	- If they've fallen unconscious (based on user configurable health threshold for unconsciousness)
+	- If they die due to the damage applied (based on user configurable health threshold for death)
+	- If damage is being applied to them but they were already dead
 - Token chat messages default to language localizations, but each case may be overridden via module settings so they'll say what you want them to say
 
 ### AGE System Specific Features
@@ -66,7 +67,7 @@ NOTE: Some settings are game system specific and may not work correctly (or at a
 - If Ballistic is selected as the Damage Type, then only ballistic armor will be used for the armor-based mitigation of damage
 - If Penetrating is selected, then all armor and/or tougness are bypassed and the full damage is applied
 - NOTE: Damage mitigation by Tougness is set in the Game Settings in conjunction with the Damage Mitigation Attributes. If included, then Tougness adds to armor for Impact or Ballistic damage mitigation.
-- Healing is never mitigate by armor or toughness
+- Healing is **never** mitigated by armor or toughness
 
 ![screenshot](screenshot_detail.png)
 
