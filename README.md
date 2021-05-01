@@ -28,6 +28,9 @@ NOTE: Some settings are game system specific and may not work correctly (or at a
 
 ### What you can do
 
+- Multiple tokens may be selected. The name for each token selected will appear in the title bar of the dialog box.
+- Up to four selected token icons will also be shown inside the dialog box with decreasing opacity (the fourth is cut off)
+- This helps you ensure you've got the right tokens targeted before you apply damage or healing!
 - Press the **toggle key** and enter a value to apply **damage** to the selected token(s)
 - Press the **toggle key** and enter a ***negative value*** to apply **healing** to the selected token(s)
 
@@ -38,11 +41,7 @@ NOTE: Some settings are game system specific and may not work correctly (or at a
 
 ![screenshot](screenshot_2.png)
 
-- Combine above with the <kbd>Alt</kbd> key to apply to targeted token(s) instead of slected token(s)
-
-- Multiple tokens may be selected. The name for each token selected will appear in the title bar of the dialog box.
-- Up to four selected token icons will also be shown inside the dialog box with decreasing opacity (the fourth is cut off)
-- This helps you ensure you've got the right tokens targeted before you apply damage or healing!
+- Combine above with the <kbd>Alt</kbd> key to apply to **targeted token(s)** instead of **selected token(s)**
 
 ### Output to Chat
 
