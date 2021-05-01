@@ -17,6 +17,7 @@ Make sure to enable the module once your world is launched, in the Manage Module
 ## Usage
 
 You can always change the default settings in the Module Settings.
+NOTE: Some settings are game system specific and may not work correctly (or at all) with game systems that don't support those features.
 
 ### Use Token Health
 
@@ -33,3 +34,17 @@ You can always change the default settings in the Module Settings.
 - Press the **alternate toggle key** and enter a ***negative value*** to apply **damage** 
 
 ![screenshot](screenshot.png)
+
+### Output to Chat
+
+- Token Health will create a chat message from each affected token indicating how much actual damage was done or healing received. This is particularly useful when applying damage to multiple tokens where damage mitigation is being employed and each token may be mitigating a different amount of damage.
+
+## Credits
+
+### Original Version:
+- by Discord user *thorni#4664*
+
+### Localization
+- **Français**: by ? and Google Translate
+- **Español**: by Discord user *ForjaSalvaje#2419*.
+- **Deutsch**: by Discord user *dabri0n#1632*
