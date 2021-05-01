@@ -24,17 +24,17 @@
     - No damage/healing done
     - Token takes Injured condition (AGE System specific)
     - Token takes Wounded condition (AGE System specific)
-    - Token takes Unconscious condition as detemined by health <= to user configurable KO threashold
-    - Token takes Dead condition as detemined by health <= to user configurable death threashold
+    - Token takes Unconscious condition as determined by health <= to user configurable KO threshold
+    - Token takes Dead condition as determined by health <= to user configurable death threshold
     - Damage applied to already dead token
 
 - Health State Thresholds:
-  - User configurable health threashold for Unconscious (default: health = 0)
-  - User configurable threashold for Death (default: health = 0, may be set lower for some games)
-  - Token states for unconcious, dying, dead tracked thorough token flags
+  - User configurable health threshold for Unconscious (default: health = 0)
+  - User configurable threshold for Death (default: health = 0, may be set lower for some games)
+  - Token states for unconscious, dying, dead tracked thorough token flags
 
 - Damage Mitigation Feature:
-  - Allow for up to three token attributes to be specificed for damage mitigation by Damage Type
+  - Allow for up to three token attributes to be specified for damage mitigation by Damage Type
   - This allows for armor/toughness/etc. to automatically reduce the amount of damage done - no reduction of healing
 
 - Damage Type Feature: (only present if Damage Mitigation is turned on
@@ -44,15 +44,15 @@
 - AGE System Specific Features:
   - AGE-System dependent module features only executed for AGE-System games to prevents conflicts with other systems
   - Added correct automatic configuration for AGE System (game.system.id === 'age-system')
-  - Implemented Damage Subtypes: Wound (default) & Stun (will not take token beyond unconcious)
-  - Added User Configurable setting to permit Damage Byoff
+  - Implemented Damage Subtypes: Wound (default) & Stun (will not take token beyond unconscious)
+  - Added User Configurable setting to permit Damage Buyoff
   - Implemented a Damage Buyoff system to automate damage mitigation by token taking Injured or Wounded conditions
   - Added Belter translations so Token Chat sounds more like what a Belter might really say (only if token is a Belter)
 
 - Language Translation Updates:
   - Extended English and French localizations for token chat an other new features (lang/en.json, lang/fs.json)
   - Updated Espanol (Spanish) language translation (lang/es.json) - Thanks ForjaSalvaje#2419!
-  - Added Deutche (German) language translation (lang/de.json) - Thanks, dabri0n#1632!
+  - Added Deutsche (German) language translation (lang/de.json) - Thanks, dabri0n#1632!
 
 
 ## 0.2.2 (2020-10-11)
