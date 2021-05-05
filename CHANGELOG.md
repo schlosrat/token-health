@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.3.1 (2021-05-04)
+- Added user configurable control to enable/disable token chat - efault to Enable (true)
+
 ## 0.3.0 (2021-05-01)
 
 - Transferred repository from tonifisler to schlosrat to fold in fixes and updates listed below

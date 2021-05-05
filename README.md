@@ -45,7 +45,8 @@ NOTE: Some settings are game system specific and may not work correctly (or at a
 
 ### Output to Chat
 
-- Token Health will create chat messages from each affected token indicating the effect and how much actual damage was done or healing received. This is particularly useful when applying damage to multiple tokens where damage mitigation is being employed and each token may be mitigating a different amount of damage.
+- Token Health will optionally create chat messages from each affected token indicating the effect and how much actual damage was done or healing received. This is particularly useful when applying damage to multiple tokens where damage mitigation is being employed and each token may be mitigating a different amount of damage.
+- Token chat may be enabled/disabled through the module configuration settings (default: enabled)
 - Tokens will output one message that's visible to everyone indicating the token's reaction to the effect
 - Tokens also output an additional GM-Only message indicating the total amount of damage or healing done
 - Tokens announce the following results in chat
