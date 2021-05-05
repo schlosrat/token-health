@@ -19,6 +19,7 @@ const DEFAULT = {
   ALLOW_NEGATIVE: false,
   ALLOW_TEMP: false,
   ALLOW_DAMAGE_BUYOFF: false,
+  ENABLE_TOKEN_CHAT: true,
 };
 
 /**
@@ -195,17 +196,6 @@ export default () => {
       CONFIG.MITIGATION_ATTRIBUTE_3 = key;
     },
   });
-  CONFIG.ALLOW_NEGATIVE = initSetting('allowNegative', {
-    name: i18n('TOKEN_HEALTH.allowNegative'),
-    hint: i18n('TOKEN_HEALTH.allowNegativeHint'),
-    type: Boolean,
-    default: DEFAULT.ALLOW_NEGATIVE,
-    scope: 'world',
-    config: true,
-    onChange: key => {
-      CONFIG.ALLOW_NEGATIVE = key;
-    },
-  });
   CONFIG.KO_THRESHOLD = initSetting('koThreshold', {
     name: i18n('TOKEN_HEALTH.koThreshold'),
     hint: i18n('TOKEN_HEALTH.koThresholdHint'),
@@ -226,6 +216,41 @@ export default () => {
     config: true,
     onChange: key => {
       CONFIG.DEATH_THRESHOLD = key;
+    },
+  });
+  CONFIG.ALLOW_NEGATIVE = initSetting('allowNegative', {
+    name: i18n('TOKEN_HEALTH.allowNegative'),
+    hint: i18n('TOKEN_HEALTH.allowNegativeHint'),
+    type: Boolean,
+    default: DEFAULT.ALLOW_NEGATIVE,
+    scope: 'world',
+    config: true,
+    onChange: key => {
+      CONFIG.ALLOW_NEGATIVE = key;
+    },
+  });
+  // Permit Buyoff of Damage (AGE-System Specific)
+  CONFIG.ALLOW_DAMAGE_BUYOFF = initSetting('allowDamageBuyoff', {
+    name: i18n('TOKEN_HEALTH.allowDamageBuyoff'),
+    hint: i18n('TOKEN_HEALTH.allowDamageBuyoffHint'),
+    type: Boolean,
+    default: DEFAULT.ALLOW_DAMAGE_BUYOFF,
+    scope: 'world',
+    config: true,
+    onChange: key => {
+      CONFIG.ALLOW_DAMAGE_BUYOFF = key;
+    },
+  });
+  // Enable/Disable token chat messages
+  CONFIG.ENABLE_TOKEN_CHAT = initSetting('enableChat', {
+    name: i18n('TOKEN_HEALTH.enableTokenChat'),
+    hint: i18n('TOKEN_HEALTH.enableTokenChatHint'),
+    type: Boolean,
+    default: DEFAULT.ENABLE_TOKEN_CHAT,
+    scope: 'world',
+    config: true,
+    onChange: key => {
+      CONFIG.ENABLE_TOKEN_CHAT = key;
     },
   });
   // token chat if takeing damage (Players & GM)
@@ -346,18 +371,6 @@ export default () => {
     config: true,
     onChange: key => {
       CONFIG.MEH = key;
-    },
-  });
-  // Permit Buyoff of Damage (AGE-System Specific)
-  CONFIG.ALLOW_DAMAGE_BUYOFF = initSetting('allowDamageBuyoff', {
-    name: i18n('TOKEN_HEALTH.allowDamageBuyoff'),
-    hint: i18n('TOKEN_HEALTH.allowDamageBuyoffHint'),
-    type: Boolean,
-    default: DEFAULT.ALLOW_DAMAGE_BUYOFF,
-    scope: 'world',
-    config: true,
-    onChange: key => {
-      CONFIG.ALLOW_DAMAGE_BUYOFF = key;
     },
   });
   // token chat if taking the injured condition (AGE-System Specific)

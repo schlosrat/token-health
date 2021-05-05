@@ -35,6 +35,8 @@
   "TOKEN_HEALTH.deathThresholdHint": "HP value at which player/npc is dying or dead - may only be negative if Allow Negative Hit Points is set",
   "TOKEN_HEALTH.allowDamageBuyoff": "Erlaube das Abkaufen von überschüßigem Schaden - AGE Games",
   "TOKEN_HEALTH.allowDamageBuyoffHint": "Einige AGE Spielsysteme erlauben das Abkaufen von überschüßigem Schaden (z.B. Modern AGE, The Expanse, etc.)",
+  "TOKEN_HEALTH.enableTokenChat": "Token-Chat aktivieren",
+  "TOKEN_HEALTH.enableTokenChatHint": "Wenn Sie dies aktivieren, werden Chat-Nachrichten von betroffenen Token generiert",
   "TOKEN_HEALTH.tokenChatHint": "Angezeigter Text der Spielfigur",
   "TOKEN_HEALTH.tokenChatHintGM": "Angezeigter Text der Spielfigur (wird nur an den SL gesendet)",
   "TOKEN_HEALTH.harmName": "Wenn Schaden zugefügt",

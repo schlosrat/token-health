@@ -63,7 +63,10 @@ const applyDamage = async (html, isDamage, isTargeted) => {
     }
   }
   //if (useConditions === undefined) useConditions = false;
-  
+
+  // Get the control paramater for enabling/disabling token chat
+  let enableChat = CONFIG.ENABLE_TOKEN_CHAT;
+
   // Get the thresholds for Unconscious and Death/Dying
   let koThreshold    = CONFIG.KO_THREASHOLD;
   let deathThreshold = CONFIG.DEATH_THREASHOLD;
@@ -192,10 +195,11 @@ const applyDamage = async (html, isDamage, isTargeted) => {
       }
     }
 
-    ChatMessage.create({content: anouncePlayer, speaker: ChatMessage.getSpeaker({actor: actor})});
-    ChatMessage.create({content: anounceGM, speaker: ChatMessage.getSpeaker({actor: actor}),
-      whisper: ChatMessage.getWhisperRecipients("GM")});
-
+    if (enableChat) {
+      ChatMessage.create({content: anouncePlayer, speaker: ChatMessage.getSpeaker({actor: actor})});
+      ChatMessage.create({content: anounceGM, speaker: ChatMessage.getSpeaker({actor: actor}),
+        whisper: ChatMessage.getWhisperRecipients("GM")});
+    }
     const [newHP, newTempHP] = getNewHP(hp, max, temp, dapplied, {
       allowNegative: CONFIG.ALLOW_NEGATIVE,
     });
@@ -216,7 +220,7 @@ const applyDamage = async (html, isDamage, isTargeted) => {
         actor.setFlag("world", "unconscious", isUnconscious);
         // Announce KO State
         anouncePlayer = CONFIG.UNCONSCIOUS;
-        ChatMessage.create({content: anouncePlayer, speaker: ChatMessage.getSpeaker({actor: actor})});
+        if (enableChat) ChatMessage.create({content: anouncePlayer, speaker: ChatMessage.getSpeaker({actor: actor})});
       }
     }
 
@@ -313,6 +317,9 @@ const ageDamageBuyoff = async(thisActor, dRemaining) => {
   // let speedTotal    = 0;
   let useConditions = false;
 
+  // Get the control paramater for enabling/disabling token chat
+  let enableChat = CONFIG.ENABLE_TOKEN_CHAT;
+
   // Make sure we've got a flag for injured, get it if we do
   if (thisActor.getFlag("world", "injured") === undefined) {
     thisActor.setFlag("world", "injured", isInjured);
@@ -383,7 +390,7 @@ const ageDamageBuyoff = async(thisActor, dRemaining) => {
   // If the dying condition is currently set
   if (isDying) { // The case in which more damage is pointless
     // More damage to a dead guy is senseless 
-    ChatMessage.create({speaker: this_speaker, content: flavor4}); // Hey! Don't beat a dead horse!
+    if (enableChat) ChatMessage.create({speaker: this_speaker, content: flavor4}); // Hey! Don't beat a dead horse!
   } else if (isWounded) { // Damage being applied to a wounded character
     // Set the dying state flag
     isDying = true;
@@ -417,7 +424,7 @@ const ageDamageBuyoff = async(thisActor, dRemaining) => {
         });
       }
     }
-    ChatMessage.create({speaker: this_speaker, content: flavor3}); // Good by cruel world!
+    if (enableChat) ChatMessage.create({speaker: this_speaker, content: flavor3}); // Good by cruel world!
   } else if (isInjured) { // Damage being applied to a injured character
     // Set the wounded state flag
     isWounded = true;
@@ -497,7 +504,7 @@ const ageDamageBuyoff = async(thisActor, dRemaining) => {
           });
         }
       }
-      ChatMessage.create({speaker: this_speaker, content: flavor3}); // Good by cruel world!
+      if (enableChat) ChatMessage.create({speaker: this_speaker, content: flavor3}); // Good by cruel world!
     }
   } else {  // Damage being applied to an uninjured character
     // Set the injured state flag
@@ -624,7 +631,7 @@ const ageDamageBuyoff = async(thisActor, dRemaining) => {
             });
           }
         }
-        ChatMessage.create({speaker: this_speaker, content: flavor3}); // Good by cruel world!
+        if (enableChat) ChatMessage.create({speaker: this_speaker, content: flavor3}); // Good by cruel world!
       }
     }
   }
@@ -657,6 +664,9 @@ const ageDamageBuyoff = async(thisActor, dRemaining) => {
   // let speedMod      = 0;
   // let speedTotal    = 0;
   let useConditions = false;
+
+  // Get the control paramater for enabling/disabling token chat
+  let enableChat = CONFIG.ENABLE_TOKEN_CHAT;
 
   // Make sure we've got a flag for unconscious, get it if we do
   if (thisActor.getFlag("world", "unconscious") === undefined) {
@@ -712,7 +722,7 @@ const ageDamageBuyoff = async(thisActor, dRemaining) => {
   // If the dying condition is currently set
   if (isDying) {
     // More damage to a dead guy is senseless 
-    ChatMessage.create({speaker: this_speaker, content: flavor4}); // Hey! Don't beat a dead horse!
+    if (enableChat) ChatMessage.create({speaker: this_speaker, content: flavor4}); // Hey! Don't beat a dead horse!
   } else {
     // If not freefalling, then character will also be prone
     if (!isFreefalling) isProne = true;
@@ -746,7 +756,7 @@ const ageDamageBuyoff = async(thisActor, dRemaining) => {
         });
       }
     }
-    ChatMessage.create({speaker: this_speaker, content: flavor3}); // Good by cruel world!
+    if (enableChat) ChatMessage.create({speaker: this_speaker, content: flavor3}); // Good by cruel world!
   }
 }
 
