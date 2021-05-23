@@ -847,7 +847,8 @@ const onEscape = () => {
 /**
  * Open the dialog on ToggleKey
  */
-const toggle = (event, key, isDamage = true, isTarget = false) => {
+// SDR (Old Way): const toggle = (event, key, isDamage = true, isTarget = false) => {
+const toggle = (event, isDamage = true, isTarget = false) => {
   event.preventDefault();
 
   // Make sure to call only once.
@@ -974,8 +975,8 @@ Hooks.once('init', function() {
 		default: () => { return { key: hotkeys.keys.Enter, alt: false, ctrl: false, shift: false }; },
 		onKeyDown: self => {
       // Replace this with the code DF Hotkey should execute when the hot key is pressed
-      console.log('Token Health: Base key pressed!')
-
+      console.log('Token Health: Base key pressed!');
+      toggle(event);
       // SDR: This is all wrong - but an example of what custom Hotbar does
       // if (game.settings.get("custom-hotbar","chbDisabled") !== true) {
       //   CHBDebug('Custom Hotbar | Fire custom hotbar macro slot 1!');
@@ -1014,8 +1015,8 @@ Hooks.once('init', function() {
 		default: () => { return { key: hotkeys.keys.Enter, alt: false, ctrl: false, shift: true }; },
 		onKeyDown: self => {
       // Replace this with the code DF Hotkey should execute when the hot key is pressed
-      console.log('Token Health: Alt key pressed!')
-
+      console.log('Token Health: Alt key pressed!');
+      toggle(event, false);
       // SDR: This is all wrong - but an example of what custom Hotbar does
       // if (game.settings.get("custom-hotbar","chbDisabled") !== true) {
       //   CHBDebug('Custom Hotbar | Fire custom hotbar macro slot 1!');
@@ -1054,8 +1055,8 @@ Hooks.once('init', function() {
 		default: () => { return { key: hotkeys.keys.Enter, alt: true, ctrl: false, shift: false }; },
 		onKeyDown: self => {
       // Replace this with the code DF Hotkey should execute when the hot key is pressed
-      console.log('Token Health: Target key pressed!')
-
+      console.log('Token Health: Target key pressed!');
+      toggle(event, true, true);
       // SDR: This is all wrong - but an example of what custom Hotbar does
       // if (game.settings.get("custom-hotbar","chbDisabled") !== true) {
       //   CHBDebug('Custom Hotbar | Fire custom hotbar macro slot 1!');
@@ -1094,8 +1095,8 @@ Hooks.once('init', function() {
 		default: () => { return { key: hotkeys.keys.Enter, alt: true, ctrl: false, shift: true }; },
 		onKeyDown: self => {
       // Replace this with the code DF Hotkey should execute when the hot key is pressed
-      console.log('Token Health: Target Alt key pressed!')
-
+      console.log('Token Health: Target Alt key pressed!');
+      toggle(event, false, true);
       // SDR: This is all wrong - but an example of what custom Hotbar does
       // if (game.settings.get("custom-hotbar","chbDisabled") !== true) {
       //   CHBDebug('Custom Hotbar | Fire custom hotbar macro slot 1!');
