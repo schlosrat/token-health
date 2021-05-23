@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.4.0 (2021-05.23)
+- Updated to be compatible with FVTT 0.8.5
+- Switched keybinding to DF Hotkeys (added dependency to lib-df-hotkeys)
+
 ## 0.3.1 (2021-05-04)
 - Added user configurable control to enable/disable token chat - efault to Enable (true)
 

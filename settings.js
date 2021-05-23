@@ -1,13 +1,36 @@
-import {i18n} from './ui.js';
+import { i18n } from './ui.js';
+import { hotkeys } from '../lib-df-hotkeys/lib-df-hotkeys.shim.js';
 
 const MODULE_NAME = 'token-health';
 
 export const CONFIG = {};
 const DEFAULT = {
-  TOGGLE_KEY_BASE: 'Enter',
-  TOGGLE_KEY_ALT: 'Shift + Enter',
-  TOGGLE_KEY_TARGET: 'Alt + Enter',
-  TOGGLE_KEY_TARGET_ALT: 'Alt + Shift + Enter',
+  /*
+  TOGGLE_KEY_BASE: {
+    key: hotkeys.keys.Enter,
+    alt: false,
+    ctrl: false,
+    shift: false
+    },
+  TOGGLE_KEY_ALT: {
+    key: hotkeys.keys.Enter,
+    alt: false,
+    ctrl: false,
+    shift: true
+    },
+  TOGGLE_KEY_TARGET: {
+    key: hotkeys.keys.Enter,
+    alt: true,
+    ctrl: false,
+    shift: false
+    },
+  TOGGLE_KEY_TARGET_ALT: {
+    key: hotkeys.keys.Enter,
+    alt: true,
+    ctrl: false,
+    shift: true
+    },
+  */
   HITPOINTS_ATTRIBUTE: '',
   MAX_HITPOINTS_ATTRIBUTE: '',
   TEMP_HITPOINTS_ATTRIBUTE: '',
@@ -80,21 +103,74 @@ const initSetting = (key, setting) => {
   return config;
 };
 
-const KeyBinding = window.Azzu.SettingsTypes.KeyBinding;
+// SDR: Must get away from window.Azzu.SettingsTypes.KeyBinding (borken in 0.8.x)
+// Switching to DF Hotkeys
+// const KeyBinding = window.Azzu.SettingsTypes.KeyBinding;
+
+//KEYBIND SETTINGS
+/*
+game.settings.register("token-health", "toggleKey", {
+  scope: 'user',
+  config: false,
+  default: {
+      key: hotkeys.keys.Enter,
+      alt: false,
+      ctrl: false,
+      shift: false
+  }
+});
+game.settings.register("token-health", "toggleKeyAlt", {
+  scope: 'user',
+  config: false,
+  default: {
+      key: hotkeys.keys.Enter,
+      alt: false,
+      ctrl: false,
+      shift: true
+  }
+});
+game.settings.register("token-health", "toggleKeyTarget", {
+  scope: 'user',
+  config: false,
+  default: {
+      key: hotkeys.keys.Enter,
+      alt: true,
+      ctrl: false,
+      shift: false
+  }
+});
+game.settings.register("token-health", "toggleKeyTargetAlt", {
+  scope: 'user',
+  config: false,
+  default: {
+      key: hotkeys.keys.Enter,
+      alt: true,
+      ctrl: false,
+      shift: true
+  }
+});
+*/
 
 /**
  * Register settings
  */
+
 export default () => {
   setDefaults();
 
   CONFIG.TOGGLE_KEY_BASE = initSetting('toggleKey', {
     name: i18n('TOKEN_HEALTH.toggleKeyName'),
     hint: i18n('TOKEN_HEALTH.toggleKeyHint'),
-    type: KeyBinding,
-    default: DEFAULT.TOGGLE_KEY_BASE,
+    // type: KeyBinding,
+    // default: DEFAULT.TOGGLE_KEY_BASE,
+    default: {
+      key: hotkeys.keys.Enter,
+      alt: false,
+      ctrl: false,
+      shift: false
+    },
     scope: 'user',
-    config: true,
+    config: false,
     onChange: key => {
       CONFIG.TOGGLE_KEY_BASE = key;
     },
@@ -102,10 +178,16 @@ export default () => {
   CONFIG.TOGGLE_KEY_ALT = initSetting('toggleKeyAlt', {
     name: i18n('TOKEN_HEALTH.toggleKeyAltName'),
     hint: i18n('TOKEN_HEALTH.toggleKeyAltHint'),
-    type: KeyBinding,
-    default: DEFAULT.TOGGLE_KEY_ALT,
+    // type: KeyBinding,
+    // default: DEFAULT.TOGGLE_KEY_ALT,
+    default: {
+      key: hotkeys.keys.Enter,
+      alt: false,
+      ctrl: false,
+      shift: true
+    },
     scope: 'user',
-    config: true,
+    config: false,
     onChange: key => {
       CONFIG.TOGGLE_KEY_ALT = key;
     },
@@ -113,10 +195,16 @@ export default () => {
   CONFIG.TOGGLE_KEY_TARGET = initSetting('toggleKeyTarget', {
     name: i18n('TOKEN_HEALTH.toggleKeyTargetName'),
     hint: i18n('TOKEN_HEALTH.toggleKeyTargetHint'),
-    type: KeyBinding,
-    default: DEFAULT.TOGGLE_KEY_TARGET,
+    // type: KeyBinding,
+    // default: DEFAULT.TOGGLE_KEY_TARGET,
+    default: {
+      key: hotkeys.keys.Enter,
+      alt: true,
+      ctrl: false,
+      shift: false
+    },
     scope: 'user',
-    config: true,
+    config: false,
     onChange: key => {
       CONFIG.TOGGLE_KEY_TARGET = key;
     },
@@ -124,14 +212,21 @@ export default () => {
   CONFIG.TOGGLE_KEY_TARGET_ALT = initSetting('toggleKeyTargetAlt', {
     name: i18n('TOKEN_HEALTH.toggleKeyTargetAltName'),
     hint: i18n('TOKEN_HEALTH.toggleKeyTargetAltHint'),
-    type: KeyBinding,
-    default: DEFAULT.TOGGLE_KEY_TARGET_ALT,
+    // type: KeyBinding,
+    // default: DEFAULT.TOGGLE_KEY_TARGET_ALT,
+    default: {
+      key: hotkeys.keys.Enter,
+      alt: true,
+      ctrl: false,
+      shift: true
+    },
     scope: 'user',
-    config: true,
+    config: false,
     onChange: key => {
       CONFIG.TOGGLE_KEY_TARGET_ALT = key;
     },
   });
+
   CONFIG.HITPOINTS_ATTRIBUTE = initSetting('hpSource', {
     name: i18n('TOKEN_HEALTH.hp'),
     type: String,

@@ -1,5 +1,6 @@
 // @ts-check
 
+import { hotkeys } from '../lib-df-hotkeys/lib-df-hotkeys.shim.js';
 import settings, {CONFIG} from './settings.js';
 import {i18n} from './ui.js';
 import getNewHP from './getNewHP.js';
@@ -850,7 +851,7 @@ const toggle = (event, key, isDamage = true, isTarget = false) => {
   event.preventDefault();
 
   // Make sure to call only once.
-  keyboard._handled.add(key);
+  // SDR: BROKE BROKE BROKE keyboard._handled.add(key);
 
   // Don't display if no tokens are controlled. Don't display as well if we were trying
   // to apply damage to targets
@@ -874,6 +875,7 @@ const toggle = (event, key, isDamage = true, isTarget = false) => {
  * @param {string} key The pressed key
  * @param {Boolean} up Is the button up
  */
+/* SDR: OBSOLETE! Fold functionality into use of DF HotKeys
 const handleKeys = function (event, key, up) {
   if (up || this.hasFocus) return;
 
@@ -896,11 +898,26 @@ const handleKeys = function (event, key, up) {
   if (KeyBinding.eventIsForBinding(event, toggleKeyTargetAlt))
     toggle(event, key, false, true);
 };
+*/
 
 /**
  * Initialize our stuff
  */
+// Make sure lib-df-hotkeys is installed and active
 Hooks.once('ready', () => {
+	if (!game.modules.get('lib-df-hotkeys')?.active) {
+		console.error('Missing lib-df-hotkeys module dependency');
+		if (game.user.isGM)
+			ui.notifications.error("'Token Health' requires the 'Library: DF Hotkeys' module. Please install and activate this dependency.");
+		// Perform alternative code to handle missing library
+		return;
+	}
+	// Perform your Hotkey registrations
+
+  // Initialize settings
+  settings();
+
+  /* SDR: Obsolete with change to DF Hotkeys
   // Extend _handleKeys method with our own function
   const cached_handleKeys = keyboard._handleKeys;
   keyboard._handleKeys = function () {
@@ -914,10 +931,179 @@ Hooks.once('ready', () => {
     onEscape.call(this, ...arguments);
     cached_onEscape.call(this, ...arguments);
   };
-
-  // Initialize settings
-  settings();
+  */
 
   // Use Azzurite settings-extender
-  KeyBinding = window.Azzu.SettingsTypes.KeyBinding;
+  // KeyBinding = window.Azzu.SettingsTypes.KeyBinding;
+});
+
+Hooks.once('init', function() {
+  /* Hotkeys.registerGroup(group: HotkeyGroup, throwOnError?: boolean): boolean */
+  hotkeys.registerGroup({
+    name: 'token-health.token-health',
+    label: 'Token Health', // Translate this? i18n('TOKEN_HEALTH.toggleKeyName')
+    description: 'Allows you to configure and override the keybindings for Token Health' // <-- Optional
+  }, false);
+
+  // TOGGLE_KEY_BASE: 'Enter'
+  /* Hotkeys.registerShortcut(config: HotkeySetting, throwOnError?: boolean) */
+  try {
+    game.settings.get('token-health', 'toggleKey');
+  } catch (e) {
+    if (e.message === 'This is not a registered game setting') {
+      game.settings.register("token-health", "toggleKey", {
+        scope: 'user',
+        config: false,
+        default: {
+            key: hotkeys.keys.Enter,
+            alt: false,
+            ctrl: false,
+            shift: false
+        }
+      });
+    } else {
+      throw e;
+    }
+  }
+  hotkeys.registerShortcut({
+		name: 'token-health.toggleKey',
+		label: i18n('TOKEN_HEALTH.toggleKeyName'),
+		group: 'token-health.token-health', 
+		get: () => game.settings.get('token-health', 'toggleKey'),
+		set: async value => await game.settings.set('token-health', 'toggleKey', value),
+		default: () => { return { key: hotkeys.keys.Enter, alt: false, ctrl: false, shift: false }; },
+		onKeyDown: self => {
+      // Replace this with the code DF Hotkey should execute when the hot key is pressed
+      console.log('Token Health: Base key pressed!')
+
+      // SDR: This is all wrong - but an example of what custom Hotbar does
+      // if (game.settings.get("custom-hotbar","chbDisabled") !== true) {
+      //   CHBDebug('Custom Hotbar | Fire custom hotbar macro slot 1!');
+      //   const num = 1;
+      //   const slot = ui.customHotbar.macros.find(m => m.key === num);
+      //   if ( ui.customHotbar.macros[num] ) slot.macro.execute();
+      // }
+    }
+	});
+
+  // TOGGLE_KEY_ALT: 'Shift + Enter'
+  try {
+    game.settings.get('token-health', 'toggleKeyAlt');
+  } catch (e) {
+    if (e.message === 'This is not a registered game setting') {
+      game.settings.register("token-health", "toggleKeyAlt", {
+        scope: 'user',
+        config: false,
+        default: {
+            key: hotkeys.keys.Enter,
+            alt: false,
+            ctrl: false,
+            shift: true
+        }
+      });
+    } else {
+      throw e;
+    }
+  }
+  hotkeys.registerShortcut({
+		name: 'token-health.toggleKeyAlt',
+		label: i18n('TOKEN_HEALTH.toggleKeyAltName'),
+		group: 'token-health.token-health', 
+		get: () => game.settings.get('token-health', 'toggleKeyAlt'),
+		set: async value => await game.settings.set('token-health', 'toggleKeyAlt', value),
+		default: () => { return { key: hotkeys.keys.Enter, alt: false, ctrl: false, shift: true }; },
+		onKeyDown: self => {
+      // Replace this with the code DF Hotkey should execute when the hot key is pressed
+      console.log('Token Health: Alt key pressed!')
+
+      // SDR: This is all wrong - but an example of what custom Hotbar does
+      // if (game.settings.get("custom-hotbar","chbDisabled") !== true) {
+      //   CHBDebug('Custom Hotbar | Fire custom hotbar macro slot 1!');
+      //   const num = 1;
+      //   const slot = ui.customHotbar.macros.find(m => m.key === num);
+      //   if ( ui.customHotbar.macros[num] ) slot.macro.execute();
+      // }
+    }
+	});
+
+  // TOGGLE_KEY_TARGET: 'Alt + Enter'
+  try {
+    game.settings.get('token-health', 'toggleKeyTarget');
+  } catch (e) {
+    if (e.message === 'This is not a registered game setting') {
+      game.settings.register("token-health", "toggleKeyTarget", {
+        scope: 'user',
+        config: false,
+        default: {
+            key: hotkeys.keys.Enter,
+            alt: true,
+            ctrl: false,
+            shift: false
+        }
+      });
+    } else {
+      throw e;
+    }
+  }
+  hotkeys.registerShortcut({
+		name: 'token-health.toggleKeyTarget',
+		label: i18n('TOKEN_HEALTH.toggleKeyTargetName'),
+		group: 'token-health.token-health', 
+		get: () => game.settings.get('token-health', 'toggleKeyTarget'),
+		set: async value => await game.settings.set('token-health', 'toggleKeyTarget', value),
+		default: () => { return { key: hotkeys.keys.Enter, alt: true, ctrl: false, shift: false }; },
+		onKeyDown: self => {
+      // Replace this with the code DF Hotkey should execute when the hot key is pressed
+      console.log('Token Health: Target key pressed!')
+
+      // SDR: This is all wrong - but an example of what custom Hotbar does
+      // if (game.settings.get("custom-hotbar","chbDisabled") !== true) {
+      //   CHBDebug('Custom Hotbar | Fire custom hotbar macro slot 1!');
+      //   const num = 1;
+      //   const slot = ui.customHotbar.macros.find(m => m.key === num);
+      //   if ( ui.customHotbar.macros[num] ) slot.macro.execute();
+      // }
+    }
+	});
+
+  // TOGGLE_KEY_TARGET_ALT: 'Alt + Shift + Enter'
+  try {
+    game.settings.get('token-health', 'toggleKeyTargetAlt');
+  } catch (e) {
+    if (e.message === 'This is not a registered game setting') {
+      game.settings.register("token-health", "toggleKeyTargetAlt", {
+        scope: 'user',
+        config: false,
+        default: {
+            key: hotkeys.keys.Enter,
+            alt: true,
+            ctrl: false,
+            shift: true
+        }
+      });
+    } else {
+      throw e;
+    }
+  }
+  hotkeys.registerShortcut({
+		name: 'token-health.toggleKeyTargetAlt',
+		label: i18n('TOKEN_HEALTH.toggleKeyTargetAltName'),
+		group: 'token-health.token-health', 
+		get: () => game.settings.get('token-health', 'toggleKeyTargetAlt'),
+		set: async value => await game.settings.set('token-health', 'toggleKeyTargetAlt', value),
+		default: () => { return { key: hotkeys.keys.Enter, alt: true, ctrl: false, shift: true }; },
+		onKeyDown: self => {
+      // Replace this with the code DF Hotkey should execute when the hot key is pressed
+      console.log('Token Health: Target Alt key pressed!')
+
+      // SDR: This is all wrong - but an example of what custom Hotbar does
+      // if (game.settings.get("custom-hotbar","chbDisabled") !== true) {
+      //   CHBDebug('Custom Hotbar | Fire custom hotbar macro slot 1!');
+      //   const num = 1;
+      //   const slot = ui.customHotbar.macros.find(m => m.key === num);
+      //   if ( ui.customHotbar.macros[num] ) slot.macro.execute();
+      // }
+    }
+	});
+
 });
