@@ -57,6 +57,12 @@ const setDefaults = () => {
     DEFAULT.ALLOW_DAMAGE_BUYOFF = false;
     DEFAULT.KO_THRESHOLD = 0;
     DEFAULT.DEATH_THRESHOLD = 0;
+  } else if (game.system.id === 'swade'){
+    DEFAULT.HITPOINTS_ATTRIBUTE = 'attributes.wounds.value';
+    DEFAULT.MAX_HITPOINTS_ATTRIBUTE = 'attributes.wounds.max';
+    DEFAULT.ALLOW_DAMAGE_BUYOFF = false;
+    DEFAULT.KO_THRESHOLD = 3;
+    DEFAULT.DEATH_THRESHOLD = 3;
   } else if (game.system.id === 'age-system') {
     DEFAULT.HITPOINTS_ATTRIBUTE = 'health.value';
     DEFAULT.MAX_HITPOINTS_ATTRIBUTE = 'health.max';
