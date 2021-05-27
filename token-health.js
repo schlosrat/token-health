@@ -50,8 +50,9 @@ const applyDamage = async (html, isDamage, isTargeted) => {
   //   Wound (may actually kill the character)
   //   Stun (may at most render the character unconscious)
   let subtype = "wound";
+   
   if (game.system.id === 'age-system') {
-    useConditions = game.settings.get("age-system", "useConditions");
+    useConditions = isNewerVersion(game.system.data.version, "0.6.5") ? true : game.settings.get("age-system", "useConditions");
     damageType = html.find('[name="damage-type"]')[0].value;
     let wound = html.find('[name="subtype"]')[0].checked;
     let stun = html.find('[name="subtype"]')[1].checked;
