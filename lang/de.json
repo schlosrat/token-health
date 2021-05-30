@@ -37,7 +37,7 @@
   "TOKEN_HEALTH.allowDamageBuyoffHint": "Einige AGE Spielsysteme erlauben das Abkaufen von überschüßigem Schaden (z.B. Modern AGE, The Expanse, etc.)",
   "TOKEN_HEALTH.enableTokenImages": "Enable Token Images in Dialog",
   "TOKEN_HEALTH.enableTokenImagesHint": "Enabling this will allow up to four token thumbnail images (fourth is cut off) to be displayed in the dialog box",
-  "TOKEN_HEALTH.enableConditions": "Enable Setting Token Conditions - AGE Games",
+  "TOKEN_HEALTH.enableConditions": "Set Token Conditions - AGE Games",
   "TOKEN_HEALTH.enableConditionsHint": "Enabling this will allow Token Health to set token conditions based on damage applied - AGE System Specific",
   "TOKEN_HEALTH.damageAdds": "Additive Damage",
   "TOKEN_HEALTH.damageAddsHint": "Enable this for systems like SWADE, L5R, and TORG Eternity where damage adds from a base of 0 rather than subtracting from a pool of available health",
