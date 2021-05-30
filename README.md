@@ -6,7 +6,8 @@ Apply damage/healing with a few keystrokes to all selected tokens at once.
 
 ## Description
 
-This is a module for [FoundryVTT](https://foundryvtt.com/) intended for GMs that want to apply damage or healing more easily. Without this mod, you have to click several times to adjust the hit points of a token. With Token Health installed, you can press a hotkey (defaults to Enter), type the amount of damage or healing, and then press Enter to apply it.
+This is a module for [FoundryVTT](https://foundryvtt.com/) intended for GMs that want to apply damage or healing more easily. Without this mod, you have to click several times to adjust the hit points of a token. With Token Health installed, you can press a hotkey (default: Enter), type the amount of damage or healing, and then press Enter to apply it.
+
 Token Health also supports a detailed system of (optional) automatic token chat messages to alert players and GM to what's going on. All chat messages are user configurable, and only the GM will see messages that state how much damage or healing has been applied.
 
 ## Install
@@ -25,6 +26,7 @@ Before using Token Health it is recommended that you first check and configure t
 - Pathfinder 2nd Edition 
 - Savage Worlds Adventure Edition
 - TORG Eternity
+
 If your preferred game system is not on that list then generic defaults will be used and it's **very likely** you'll need to do at least a minimum amount of configuration to make sure damage and healing are being applied to the correct attribute! If you would like to see your preferred system supported with default settings, or if you find an issue with the default settings applied to one of the systems listed above, please open an GitHub issue for this with specific details about the system you'd like supported and the settings you need.
 
 ### Use Token Health
@@ -37,8 +39,8 @@ If your preferred game system is not on that list then generic defaults will be 
 ### What you can do
 
 - Multiple tokens may be selected. The name for each token selected will appear in the title bar of the dialog box.
-- Up to four selected token icons will also be shown inside the dialog box with decreasing opacity (the fourth will be cut off)
-- This helps you ensure you've got the right tokens targeted before you apply damage or healing!
+- Optionally, up to four selected token icons will also be shown inside the dialog box with decreasing opacity (the fourth will be cut off)
+	- This helps you ensure you've got the right tokens targeted before you apply damage or healing!
 - Press the **toggle key** and enter a value to apply **damage** to the selected token(s)
 - Press the **toggle key** and enter a ***negative value*** to apply **healing** to the selected token(s)
 
