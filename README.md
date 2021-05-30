@@ -32,7 +32,7 @@ If your preferred game system is not on that list then generic defaults will be 
 ### Use Token Health
 
 1. Select/target one or multiple token(s)
-1. Press the **toggle key** (default: <kbd>Enter</kbd>) to display the Damage dialog or the **alternate toggle key** (default: <kbd>Shift</kbd> + <kbd>Enter</kbd>) to display the Healing dialog. To apply damage/healing to **targeted tokens** instead of **selected tokens**, add the <kbd>Alt</kbd> key by default.
+1. Press the **hot key** (default: <kbd>Enter</kbd>) to display the Damage dialog or the **alternate hot key** (default: <kbd>Shift</kbd> + <kbd>Enter</kbd>) to display the Healing dialog. To apply damage/healing to **targeted tokens** instead of **selected tokens**, add the <kbd>Alt</kbd> key by default.
 1. Enter a value
 1. Validate by pressing <kbd>Enter</kbd> or by clicking the big button
 
@@ -41,13 +41,13 @@ If your preferred game system is not on that list then generic defaults will be 
 - Multiple tokens may be selected. The name for each token selected will appear in the title bar of the dialog box.
 - Optionally, up to four selected token icons will also be shown inside the dialog box with decreasing opacity (the fourth will be cut off)
 	- This helps you ensure you've got the right tokens targeted before you apply damage or healing!
-- Press the **toggle key** and enter a value to apply **damage** to the selected token(s)
-- Press the **toggle key** and enter a ***negative value*** to apply **healing** to the selected token(s)
+- Press the **hot key** and enter a value to apply **damage** to the selected token(s)
+- Press the **key key** and enter a ***negative value*** to apply **healing** to the selected token(s)
 
 ![screenshot](screenshot_0.png)
 
-- Press the **alternate toggle key** and enter a value to apply **healing** to the selected token(s)
-- Press the **alternate toggle key** and enter a ***negative value*** to apply **damage** to the selected token(s)
+- Press the **alternate hot key** and enter a value to apply **healing** to the selected token(s)
+- Press the **alternate hot key** and enter a ***negative value*** to apply **damage** to the selected token(s)
 
 ![screenshot](screenshot_2.png)
 
@@ -55,7 +55,7 @@ If your preferred game system is not on that list then generic defaults will be 
 
 ### Output to Chat
 
-- Token Health will optionally create chat messages from each affected token indicating the effect and how much actual damage was done or healing received. This is particularly useful when applying damage to multiple tokens where damage mitigation is being employed and each token may be mitigating a different amount of damage.
+Token Health will optionally create chat messages from each affected token indicating the effect and how much actual damage was done or healing received. This is particularly useful when applying damage to multiple tokens where damage mitigation is being employed and each token may be mitigating a different amount of damage.
 - Token chat may be enabled/disabled through the module configuration settings (default: enabled)
 - Tokens will output one message that's visible to everyone indicating the token's reaction to the effect
 - Tokens also output an additional GM-Only message indicating the total amount of damage or healing done
@@ -68,7 +68,7 @@ If your preferred game system is not on that list then generic defaults will be 
 - Token chat messages default to language localizations, but each case may be overridden via module settings so they'll say what you want them to say
 
 ### Support for Additive Damage System
-- By default Token Health assumes that damage is to be subtracted from a current health value and that healing is added to health with a cap at a max health value. This works great for any system like D&D with a health or hp pool; however such behavior would be incompatible with systems where damage is additive - i.e. increasing from a base of 0 until some maximum threshold is reached or exceeded resulting in unconcousness or death. Additive damage systems like SWADE and L5R5E are now supported by checking the setting for Damage is Addative. In such systems healing will decrease the pool whereas apply damage will increase it. 
+By default Token Health assumes that damage is to be subtracted from a current health value and that healing is added to health with a cap at a max health value. This works great for any system like D&D with a health or hp pool; however such behavior would be incompatible with systems where damage is additive - i.e. increasing from a base of 0 until some maximum threshold is reached or exceeded resulting in unconcousness or death. Additive damage systems like SWADE and L5R5E are now supported by checking the setting for Damage is Addative. In such systems healing will decrease the pool whereas apply damage will increase it. 
 
 ### AGE System Specific Features
 
@@ -81,7 +81,7 @@ If your preferred game system is not on that list then generic defaults will be 
 
 ![screenshot](screenshot_1.png)
 
-- Damage Type selections are Impact (default), Ballisitic, and Penetraiting
+Damage Type selections are Impact (default), Ballisitic, and Penetraiting
 - If Impact is selected, then either ordinary (impact) or specialized (ballisitic) armor will help to reduce the damage done
 - If Ballistic is selected as the Damage Type, then only ballistic armor will be used for the armor-based mitigation of damage
 - If Penetrating is selected, then all armor and/or tougness are bypassed and the full damage is applied
