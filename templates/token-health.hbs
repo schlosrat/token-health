@@ -1,12 +1,5 @@
 <form class="form-token-health" id="token-health" autocomplete="off" onsubmit="event.preventDefault();">
-    <div class="form-group" style="flex-direction: column; height: 250px">
-        {{#if thumbnails}}
-            <div style="flex-direction: row; white-space: nowrap; width: 380px; text-align: center;">
-                {{#each thumbnails as |t idx|}}
-                    <img src="{{t.image}}" style="border: none; margin: 5px; max-width: 100px; opacity: {{t.opacity}}"/>
-                {{/each}}
-            </div>
-        {{/if}}
+    <div class="form-group" style="flex-direction: column; height: 150px">
         <div class="flexrow">
             <b><large><label style="margin: 5px" for="token-health-input">{{localize "TOKEN_HEALTH.Amount"}}</label></large></b>
             <input id="token-health-input" type="number" data-dtype="Number" name="amount" min="0" max="999"/>
