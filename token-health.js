@@ -34,8 +34,13 @@ class TokenHealthDialog extends Dialog {
  * @returns {Promise<Entity|Entity[]>}
  */
 const applyDamage = async (html, isDamage, isTargeted) => {
+  // Get the control parameter for treating damage as additive (escalating from a base of 0, vs. reducing from the pool of health available)
+  const dAdd = CONFIG.DAMAGE_ADDS;
+
   const value = html.find('input[type=number]').val();
   const damage = isDamage ? Number(value) : Number(value) * -1;
+  let df = 1;
+  if (dAdd) df = -1;
 
   // Set AGE-system specific things
   // useConditions controls if we use conditions for everything (if true) or only
@@ -56,8 +61,6 @@ const applyDamage = async (html, isDamage, isTargeted) => {
     damageType = html.find('[name="damage-type"]')[0].value;
     let wound = html.find('[name="subtype"]')[0].checked;
     let stun = html.find('[name="subtype"]')[1].checked;
-    console.log(wound);
-    console.log(stun);
     if (wound) {
       subtype = "wound";
     } else {
@@ -68,6 +71,9 @@ const applyDamage = async (html, isDamage, isTargeted) => {
 
   // Get the control paramater for enabling/disabling token chat
   let enableChat = CONFIG.ENABLE_TOKEN_CHAT;
+
+  // Get the control parameter for enablibng/disabling the application of token condtions
+  let enableConditions = CONFIG.ENABLE_CONDITIONS;
 
   // Get the thresholds for Unconscious and Death/Dying
   let koThreshold    = CONFIG.KO_THREASHOLD;
@@ -103,6 +109,11 @@ const applyDamage = async (html, isDamage, isTargeted) => {
     const max = getProperty(data, CONFIG.MAX_HITPOINTS_ATTRIBUTE);
     const temp = getProperty(data, CONFIG.TEMP_HITPOINTS_ATTRIBUTE);
 
+    if (dAdd) {
+      koThreshold = max;
+      deathThreshold = max;
+    }
+
     let isInjured     = false;
     let isWounded     = false;
     let isUnconscious = false;
@@ -137,7 +148,7 @@ const applyDamage = async (html, isDamage, isTargeted) => {
     }
 
     // Default to full damage applied
-    let dapplied = damage;
+    let dapplied = df*damage;
 
     // Handle damage mitigation if allowed
     let mit1 = 0;
@@ -160,22 +171,17 @@ const applyDamage = async (html, isDamage, isTargeted) => {
         if ((mit3 != undefined) && (damageType === "ballistic")) {
           mit = mit + mit3;
         }
-        dapplied = Math.max(damage - mit, 0);
+        dapplied = df*Math.max(damage - mit, 0);
       }
     }
 
-  // DEBUG TEST CODE - REMOVE! //
-  // console.log(damage)
-  // console.log(mit)
-  // console.log(dapplied)
-
     let anounceGM = '';
     let anouncePlayer = '';
-    if (dapplied > 1) {
+    if (df*dapplied > 1) {
       anouncePlayer = CONFIG.OUCH;
-      anounceGM = dapplied + " " + CONFIG.DAMAGE_POINTS;
+      anounceGM = df*dapplied + " " + CONFIG.DAMAGE_POINTS;
     }
-    if (dapplied === 1) {
+    if (df*dapplied === 1) {
       anouncePlayer = CONFIG.OUCH;
       anounceGM = CONFIG.DAMAGE_POINT;
     }
@@ -183,13 +189,13 @@ const applyDamage = async (html, isDamage, isTargeted) => {
       anouncePlayer = CONFIG.MEH;
       anounceGM = anouncePlayer;
     }
-    if (dapplied < 0) {
+    if (df*dapplied < 0) {
       anouncePlayer = CONFIG.TY;
       if (hp < max) {
-        if ((dapplied === -1) || ((max - hp) === 1)) {
+        if ((df*dapplied === -1) || ((max - hp) === 1)) {
           anounceGM = CONFIG.HEALING_POINT;
         } else {
-          anounceGM = Math.min(-dapplied, max - hp) + " " + CONFIG.HEALING_POINTS;
+          anounceGM = Math.min(-df*dapplied, df*(max - hp)) + " " + CONFIG.HEALING_POINTS;
         }
       } else {
         anouncePlayer = CONFIG.MEH;
@@ -198,6 +204,8 @@ const applyDamage = async (html, isDamage, isTargeted) => {
     }
 
     if (enableChat) {
+      console.log(actor)
+      console.log(ChatMessage.getSpeaker({actor: actor}))
       ChatMessage.create({content: anouncePlayer, speaker: ChatMessage.getSpeaker({actor: actor})});
       ChatMessage.create({content: anounceGM, speaker: ChatMessage.getSpeaker({actor: actor}),
         whisper: ChatMessage.getWhisperRecipients("GM")});
@@ -207,16 +215,16 @@ const applyDamage = async (html, isDamage, isTargeted) => {
     });
 
     // Deal with all cases that could result in Injured/Wounded/Dying conditions
-    if ((hp - dapplied) < deathThreshold) {
+    if (df*(hp - dapplied) < df*deathThreshold) {
       if (allowDamageBuyoff) {
         // call ageDamageBuyoff to handle any excess damage
-        ageDamageBuyoff(actor, dapplied - hp);
+        ageDamageBuyoff(actor, df*(dapplied - hp));
       } else {
         // They're going down!
-        ageNoDamageBuyoff(actor, dapplied - hp);
+        ageNoDamageBuyoff(actor, df*(dapplied - hp));
       }
     } else if (koThreshold != undefined) {
-      if ((hp - dapplied) < koThreshold) {
+      if (df*(hp - dapplied) < df*koThreshold) {
         // Set KO State
         isUnconscious = true;
         actor.setFlag("world", "unconscious", isUnconscious);
@@ -227,11 +235,11 @@ const applyDamage = async (html, isDamage, isTargeted) => {
     }
 
     // If healing was applied
-    if (dapplied < 0) {
+    if (df*dapplied < 0) {
       // If charcater was unconcious and this raises HP above koThreshold
-      if (newHP > koThreshold && isUnconscious) isUnconscious = false;
+      if (df*newHP > df*koThreshold && isUnconscious) isUnconscious = false;
       // If charcater was dying and this raises HP above deathThreshold
-      if (newHP > deathThreshold && isDying) isDying = false;
+      if (df*newHP > df*deathThreshold && isDying) isDying = false;
       if (!CONFIG.ALLOW_DAMAGE_BUYOFF && !isDying && !isUnconscious) {
         isInjured = false;
         isWounded = false;
@@ -241,27 +249,29 @@ const applyDamage = async (html, isDamage, isTargeted) => {
       actor.setFlag("world", "unconscious", isUnconscious);
       actor.setFlag("world", "dying", isDying);
       if (game.system.id === 'age-system') {
-        if (useConditions) { // if useing conditions only cure dying/helpless/unconscious
-          actor.update({
-            "data": {
-              "conditions.dying": false,
-              "conditions.helpless": false,
-              "conditions.unconscious": false,
-            }
-          });
-        } else { // If not useing conditions then all conditions should be false
-          actor.update({
-            "data": {
-              "conditions.dying": false,
-              "conditions.helpless": false,
-              "conditions.unconscious": false,
-              "conditions.injured": false,
-              "conditions.wounded": false,
-              "conditions.fatigued": false,
-              "conditions.exhausted": false,
-              "conditions.prone": false,
-            }
-          });
+        if (enableConditions) { // Control automatic vs. manual setting of conditions
+          if (useConditions) { // if using conditions only cure dying/helpless/unconscious
+            actor.update({
+              "data": {
+                "conditions.dying": false,
+                "conditions.helpless": false,
+                "conditions.unconscious": false,
+              }
+            });
+          } else { // If not using conditions then all conditions should be false
+            actor.update({
+              "data": {
+                "conditions.dying": false,
+                "conditions.helpless": false,
+                "conditions.unconscious": false,
+                "conditions.injured": false,
+                "conditions.wounded": false,
+                "conditions.fatigued": false,
+                "conditions.exhausted": false,
+                "conditions.prone": false,
+              }
+            });
+          }
         }
       }
     }
@@ -321,6 +331,9 @@ const ageDamageBuyoff = async(thisActor, dRemaining) => {
 
   // Get the control paramater for enabling/disabling token chat
   let enableChat = CONFIG.ENABLE_TOKEN_CHAT;
+
+  // Get the control parameter for enablibng/disabling the application of token condtions
+  let enableConditions = CONFIG.ENABLE_CONDITIONS;
 
   // Make sure we've got a flag for injured, get it if we do
   if (thisActor.getFlag("world", "injured") === undefined) {
@@ -403,27 +416,29 @@ const ageDamageBuyoff = async(thisActor, dRemaining) => {
 
     // If this is an AGE System game
     if (game.system.id === 'age-system') {
-      // Set the dying condition
-      if (useConditions) {
-        // Dying characters are also unconscious, and helpless
-        // Helpless characters can't move.
-        // Set the actor's speed.mod = -speed.total and speed.total = 0
-        thisActor.update({
-          "data": {
-            "conditions.dying": true,
-            "conditions.unconscious": true,
-            "conditions.helpless": true,
-            "conditions.prone": isProne,
-            // "speed.mod": -speed.total,
-            // "speed.total": 0,
-          }
-        });
-      } else {
-        thisActor.update({
-          "data": {
-            "conditions.dying": true,
-          }
-        });
+      if (enableConditions) { // Control automatic vs. manual setting of conditions
+        // Set the dying condition
+        if (useConditions) {
+          // Dying characters are also unconscious, and helpless
+          // Helpless characters can't move.
+          // Set the actor's speed.mod = -speed.total and speed.total = 0
+          thisActor.update({
+            "data": {
+              "conditions.dying": true,
+              "conditions.unconscious": true,
+              "conditions.helpless": true,
+              "conditions.prone": isProne,
+              // "speed.mod": -speed.total,
+              // "speed.total": 0,
+            }
+          });
+        } else {
+          thisActor.update({
+            "data": {
+              "conditions.dying": true,
+            }
+          });
+        }
       }
     }
     if (enableChat) ChatMessage.create({speaker: this_speaker, content: flavor3}); // Good by cruel world!
@@ -452,23 +467,25 @@ const ageDamageBuyoff = async(thisActor, dRemaining) => {
         // speedTotal = speed.total + speedMod;
       }
 
-      // Set the wounded condition
-      if (useConditions) {
-        thisActor.update({
-          "data": {
-            "conditions.wounded": true,
-            "conditions.exhausted": isExhausted,
-            "conditions.helpless": isHelpless,
-            // "speed.mod": speedMod,
-            // "speed.total": speedTotal,
-          }
-        });
-      } else {
-        thisActor.update({
-          "data": {
-            "conditions.wounded": true,
-          }
-        });
+      if (enableConditions) { // Control automatic vs. manual setting of conditions
+        // Set the wounded condition
+        if (useConditions) {
+          thisActor.update({
+            "data": {
+              "conditions.wounded": true,
+              "conditions.exhausted": isExhausted,
+              "conditions.helpless": isHelpless,
+              // "speed.mod": speedMod,
+              // "speed.total": speedTotal,
+            }
+          });
+        } else {
+          thisActor.update({
+            "data": {
+              "conditions.wounded": true,
+            }
+          });
+        }
       }
     }
 
@@ -483,27 +500,29 @@ const ageDamageBuyoff = async(thisActor, dRemaining) => {
 
       // If this is an AGE System game
       if (game.system.id === 'age-system') {
-        // Set the dying condition
-        if (useConditions) {
-          // Dying characters are also unconscious, and helpless
-          // Helpless characters can't move.
-          // Set the actor's speed.mod = -speed.total and speed.total = 0
-          thisActor.update({
-            "data": {
-              "conditions.dying": true,
-              "conditions.unconscious": true,
-              "conditions.helpless": true,
-              "conditions.prone": isProne,
-              // "speed.mod": -speed.total,
-              // "speed.total": 0,
-            }
-          });
-        } else {
-          thisActor.update({
-            "data": {
-              "conditions.dying": true,
-            }
-          });
+        if (enableConditions) { // Control automatic vs. manual setting of conditions
+          // Set the dying condition
+          if (useConditions) {
+            // Dying characters are also unconscious, and helpless
+            // Helpless characters can't move.
+            // Set the actor's speed.mod = -speed.total and speed.total = 0
+            thisActor.update({
+              "data": {
+                "conditions.dying": true,
+                "conditions.unconscious": true,
+                "conditions.helpless": true,
+                "conditions.prone": isProne,
+                // "speed.mod": -speed.total,
+                // "speed.total": 0,
+              }
+            });
+          } else {
+            thisActor.update({
+              "data": {
+                "conditions.dying": true,
+              }
+            });
+          }
         }
       }
       if (enableChat) ChatMessage.create({speaker: this_speaker, content: flavor3}); // Good by cruel world!
@@ -534,24 +553,26 @@ const ageDamageBuyoff = async(thisActor, dRemaining) => {
         // speedTotal = speed.total + speedMod;
       } else isFatigued = true;
 
-      // Set the conditions
-      if (useConditions) {
-        thisActor.update({
-          "data": {
-            "conditions.injured": true,
-            "conditions.fatigued": isFatigued,
-            "conditions.exhausted": isExhausted,
-            "conditions.helpless": isHelpless,
-            // "speed.mod": speedMod,
-            // "speed.total": speedTotal,
-          }
-        });
-      } else {
-        thisActor.update({
-          "data": {
-            "conditions.injured": true,
-          }
-        });
+      if (enableConditions) { // Control automatic vs. manual setting of conditions
+        // Set the conditions
+        if (useConditions) {
+          thisActor.update({
+            "data": {
+              "conditions.injured": true,
+              "conditions.fatigued": isFatigued,
+              "conditions.exhausted": isExhausted,
+              "conditions.helpless": isHelpless,
+              // "speed.mod": speedMod,
+              // "speed.total": speedTotal,
+            }
+          });
+        } else {
+          thisActor.update({
+            "data": {
+              "conditions.injured": true,
+            }
+          });
+        }
       }
     }
 
@@ -580,23 +601,25 @@ const ageDamageBuyoff = async(thisActor, dRemaining) => {
           // speedTotal = speed.total + speedMod;
         }
 
-        // Set the conditions
-        if (useConditions) {
-          thisActor.update({
-            "data": {
-              "conditions.wounded": true,
-              "conditions.exhausted": isExhausted,
-              "conditions.helpless": isHelpless,
-              // "speed.mod": speedMod,
-              // "speed.total": speedTotal,
-            }
-          });
-        } else {
-          thisActor.update({
-            "data": {
-              "conditions.wounded": true,
-            }
-          });
+        if (enableConditions) { // Control automatic vs. manual setting of conditions
+          // Set the conditions
+          if (useConditions) {
+            thisActor.update({
+              "data": {
+                "conditions.wounded": true,
+                "conditions.exhausted": isExhausted,
+                "conditions.helpless": isHelpless,
+                // "speed.mod": speedMod,
+                // "speed.total": speedTotal,
+              }
+            });
+          } else {
+            thisActor.update({
+              "data": {
+                "conditions.wounded": true,
+              }
+            });
+          }
         }
       }
       if ((roll1._total + roll2._total) < dRemaining) {
@@ -610,27 +633,29 @@ const ageDamageBuyoff = async(thisActor, dRemaining) => {
 
         // If this is an AGE System game
         if (game.system.id === 'age-system') {
-          // Set the dying condition
-          if (useConditions) {
-            // Dying characters are also unconscious, and helpless
-            // Helpless characters can't move.
-            // Set the actor's speed.mod = -speed.total and speed.total = 0
-            thisActor.update({
-              "data": {
-                "conditions.dying": true,
-                "conditions.unconscious": true,
-                "conditions.helpless": true,
-                "conditions.prone": isProne,
-                // "speed.mod": -speed.total,
-                // "speed.total": 0,
-              }
-            });
-          } else {
-            thisActor.update({
-              "data": {
-                "conditions.dying": true,
-              }
-            });
+          if (enableConditions) { // Control automatic vs. manual setting of conditions
+            // Set the dying condition
+            if (useConditions) {
+              // Dying characters are also unconscious, and helpless
+              // Helpless characters can't move.
+              // Set the actor's speed.mod = -speed.total and speed.total = 0
+              thisActor.update({
+                "data": {
+                  "conditions.dying": true,
+                  "conditions.unconscious": true,
+                  "conditions.helpless": true,
+                  "conditions.prone": isProne,
+                  // "speed.mod": -speed.total,
+                  // "speed.total": 0,
+                }
+              });
+            } else {
+              thisActor.update({
+                "data": {
+                  "conditions.dying": true,
+                }
+              });
+            }
           }
         }
         if (enableChat) ChatMessage.create({speaker: this_speaker, content: flavor3}); // Good by cruel world!
@@ -669,6 +694,9 @@ const ageDamageBuyoff = async(thisActor, dRemaining) => {
 
   // Get the control paramater for enabling/disabling token chat
   let enableChat = CONFIG.ENABLE_TOKEN_CHAT;
+
+  // Get the control paramater for enabling/disabling token chat
+  let enableConditions = CONFIG.ENABLE_CONDITIONS;
 
   // Make sure we've got a flag for unconscious, get it if we do
   if (thisActor.getFlag("world", "unconscious") === undefined) {
@@ -735,27 +763,29 @@ const ageDamageBuyoff = async(thisActor, dRemaining) => {
 
     // If this is an AGE System game
     if (game.system.id === 'age-system') {
-      // Set the dying condition
-      if (useConditions) {
-        // Dying characters are also unconscious, and helpless
-        // Helpless characters can't move.
-        // Set the actor's speed.mod = -speed.total and speed.total = 0
-        thisActor.update({
-          "data": {
-            "conditions.dying": true,
-            "conditions.unconscious": true,
-            "conditions.helpless": true,
-            "conditions.prone": isProne,
-            // "speed.mod": -speed.total,
-            // "speed.total": 0,
-          }
-        });
-      } else {
-        thisActor.update({
-          "data": {
-            "conditions.dying": true,
-          }
-        });
+      if (enableConditions) { // Control automatic vs. manual setting of conditions
+        // Set the dying condition
+        if (useConditions) {
+          // Dying characters are also unconscious, and helpless
+          // Helpless characters can't move.
+          // Set the actor's speed.mod = -speed.total and speed.total = 0
+          thisActor.update({
+            "data": {
+              "conditions.dying": true,
+              "conditions.unconscious": true,
+              "conditions.helpless": true,
+              "conditions.prone": isProne,
+              // "speed.mod": -speed.total,
+              // "speed.total": 0,
+            }
+          });
+        } else {
+          thisActor.update({
+            "data": {
+              "conditions.dying": true,
+            }
+          });
+        }
       }
     }
     if (enableChat) ChatMessage.create({speaker: this_speaker, content: flavor3}); // Good by cruel world!
@@ -791,10 +821,12 @@ const displayOverlay = async (isDamage, isTargeted = false) => {
 
   const tokens = isTargeted ? Array.from(game.user.targets) : canvas.tokens.controlled
   const nameOfTokens = tokens.map(t => t.name).sort((a, b) => a.length - b.length).join(', ')
-  // we will show the first four thumbnails, with the 4th cut in half and gradually
-  // more and more translucent
-  let thumbnails = tokens.slice(0, 4).map((t, idx) => ({ image: t.data.img, opacity: (1 - 0.15 * idx) }))
-  
+
+  let thumbnails = {}
+  if (CONFIG.ENABLE_TOKEN_IMAGES){
+    // Show first four thumbnails (4th cut in half) with gradually decreasing opacity
+    thumbnails = tokens.slice(0, 4).map((t, idx) => ({ image: t.data.img, opacity: (1 - 0.15 * idx) }))
+  }
   let allowPenetratingDamage = false;
   let helpText = `${i18n('TOKEN_HEALTH.Dialog_Help')}`
   let defaultSubtype = "wound";
@@ -811,23 +843,41 @@ const displayOverlay = async (isDamage, isTargeted = false) => {
     allowMittigation = true;
   }*/
   
-  const content = await renderTemplate(
-    `modules/token-health/templates/token-health.hbs`,
-    { thumbnails, allowPenetratingDamage, helpText, defaultSubtype },
-  );
-
-  // Render the dialog
-  dialog = new TokenHealthDialog({
-    title: i18n(dialogTitle).replace('$1', nameOfTokens),
-    buttons,
-    content,
-    default: isDamage ? 'damage' : 'heal',
-    close: () => {
-      timer = setTimeout(() => {
-        tokenHealthDisplayed = false;
-      }, DELAY);
-    },
-  }).render(true);
+  if (CONFIG.ENABLE_TOKEN_IMAGES){
+    const content = await renderTemplate(
+      `modules/token-health/templates/token-health-images.hbs`,
+      { thumbnails, allowPenetratingDamage, helpText, defaultSubtype },
+    );
+    // Render the dialog
+    dialog = new TokenHealthDialog({
+      title: i18n(dialogTitle).replace('$1', nameOfTokens),
+      buttons,
+      content,
+      default: isDamage ? 'damage' : 'heal',
+      close: () => {
+        timer = setTimeout(() => {
+          tokenHealthDisplayed = false;
+        }, DELAY);
+      },
+    }).render(true);
+  } else {
+    const content = await renderTemplate(
+      `modules/token-health/templates/token-health.hbs`,
+      { allowPenetratingDamage, helpText, defaultSubtype },
+    );
+    // Render the dialog
+    dialog = new TokenHealthDialog({
+      title: i18n(dialogTitle).replace('$1', nameOfTokens),
+      buttons,
+      content,
+      default: isDamage ? 'damage' : 'heal',
+      close: () => {
+        timer = setTimeout(() => {
+          tokenHealthDisplayed = false;
+        }, DELAY);
+      },
+    }).render(true);
+  }
 };
 
 
@@ -976,7 +1026,7 @@ Hooks.once('init', function() {
 		default: () => { return { key: hotkeys.keys.Enter, alt: false, ctrl: false, shift: false }; },
 		onKeyDown: self => {
       // Replace this with the code DF Hotkey should execute when the hot key is pressed
-      console.log('Token Health: Base key pressed!');
+      // console.log('Token Health: Base key pressed!');
       toggle(event);
       // SDR: This is all wrong - but an example of what custom Hotbar does
       // if (game.settings.get("custom-hotbar","chbDisabled") !== true) {
@@ -1016,7 +1066,7 @@ Hooks.once('init', function() {
 		default: () => { return { key: hotkeys.keys.Enter, alt: false, ctrl: false, shift: true }; },
 		onKeyDown: self => {
       // Replace this with the code DF Hotkey should execute when the hot key is pressed
-      console.log('Token Health: Alt key pressed!');
+      // console.log('Token Health: Alt key pressed!');
       toggle(event, false);
       // SDR: This is all wrong - but an example of what custom Hotbar does
       // if (game.settings.get("custom-hotbar","chbDisabled") !== true) {
@@ -1056,7 +1106,7 @@ Hooks.once('init', function() {
 		default: () => { return { key: hotkeys.keys.Enter, alt: true, ctrl: false, shift: false }; },
 		onKeyDown: self => {
       // Replace this with the code DF Hotkey should execute when the hot key is pressed
-      console.log('Token Health: Target key pressed!');
+      // console.log('Token Health: Target key pressed!');
       toggle(event, true, true);
       // SDR: This is all wrong - but an example of what custom Hotbar does
       // if (game.settings.get("custom-hotbar","chbDisabled") !== true) {
@@ -1096,7 +1146,7 @@ Hooks.once('init', function() {
 		default: () => { return { key: hotkeys.keys.Enter, alt: true, ctrl: false, shift: true }; },
 		onKeyDown: self => {
       // Replace this with the code DF Hotkey should execute when the hot key is pressed
-      console.log('Token Health: Target Alt key pressed!');
+      // console.log('Token Health: Target Alt key pressed!');
       toggle(event, false, true);
       // SDR: This is all wrong - but an example of what custom Hotbar does
       // if (game.settings.get("custom-hotbar","chbDisabled") !== true) {

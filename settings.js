@@ -43,6 +43,9 @@ const DEFAULT = {
   ALLOW_TEMP: false,
   ALLOW_DAMAGE_BUYOFF: false,
   ENABLE_TOKEN_CHAT: true,
+  ENABLE_TOKEN_IMAGES: true,
+  ENABLE_CONDITIONS: true,
+  DAMAGE_ADDS: false,
 };
 
 /**
@@ -57,12 +60,24 @@ const setDefaults = () => {
     DEFAULT.ALLOW_DAMAGE_BUYOFF = false;
     DEFAULT.KO_THRESHOLD = 0;
     DEFAULT.DEATH_THRESHOLD = 0;
+    DEFAULT.DAMAGE_ADDS = false;
+    DEFAULT.ENABLE_CONDITIONS = false;
   } else if (game.system.id === 'swade'){
-    DEFAULT.HITPOINTS_ATTRIBUTE = 'attributes.wounds.value';
-    DEFAULT.MAX_HITPOINTS_ATTRIBUTE = 'attributes.wounds.max';
+    DEFAULT.HITPOINTS_ATTRIBUTE = 'wounds.value';
+    DEFAULT.MAX_HITPOINTS_ATTRIBUTE = 'wounds.max';
     DEFAULT.ALLOW_DAMAGE_BUYOFF = false;
-    DEFAULT.KO_THRESHOLD = 3;
-    DEFAULT.DEATH_THRESHOLD = 3;
+    DEFAULT.KO_THRESHOLD = 0;
+    DEFAULT.DEATH_THRESHOLD = 0;
+    DEFAULT.DAMAGE_ADDS = true;
+    DEFAULT.ENABLE_CONDITIONS = false;
+  } else if (game.system.id === 'l5r5e'){
+    DEFAULT.HITPOINTS_ATTRIBUTE = 'strife.value';
+    DEFAULT.MAX_HITPOINTS_ATTRIBUTE = 'strife.max';
+    DEFAULT.ALLOW_DAMAGE_BUYOFF = false;
+    DEFAULT.KO_THRESHOLD = 0;
+    DEFAULT.DEATH_THRESHOLD = 0;
+    DEFAULT.DAMAGE_ADDS = true;
+    DEFAULT.ENABLE_CONDITIONS = false;
   } else if (game.system.id === 'age-system') {
     DEFAULT.HITPOINTS_ATTRIBUTE = 'health.value';
     DEFAULT.MAX_HITPOINTS_ATTRIBUTE = 'health.max';
@@ -71,6 +86,8 @@ const setDefaults = () => {
     DEFAULT.MITIGATION_ATTRIBUTE_3 = 'armor.ballistic';
     DEFAULT.KO_THRESHOLD = 0;
     DEFAULT.DEATH_THRESHOLD = 0;
+    DEFAULT.DAMAGE_ADDS = false;
+    DEFAULT.ENABLE_CONDITIONS = true;
     if (game.settings.get("age-system", "useConditions")) {
       DEFAULT.ALLOW_DAMAGE_BUYOFF = true; // this may be questionable...
     } else {
@@ -82,6 +99,8 @@ const setDefaults = () => {
     DEFAULT.ALLOW_DAMAGE_BUYOFF = false;
     DEFAULT.KO_THRESHOLD = 0;
     DEFAULT.DEATH_THRESHOLD = 0;
+    DEFAULT.DAMAGE_ADDS = false;
+    DEFAULT.ENABLE_CONDITIONS = false;
   }
 };
 
@@ -233,6 +252,39 @@ export default () => {
     },
   });
 
+  CONFIG.ENABLE_TOKEN_IMAGES = initSetting('enableTokenImages', {
+    name: i18n('TOKEN_HEALTH.enableTokenImages'),
+    hint: i18n('TOKEN_HEALTH.enableTokenImagesHint'),
+    type: Boolean,
+    default: DEFAULT.ENABLE_TOKEN_IMAGES,
+    scope: 'world',
+    config: true,
+    onChange: key => {
+      CONFIG.ENABLE_TOKEN_IMAGES = key;
+    },
+  });
+  CONFIG.ENABLE_CONDITIONS = initSetting('enableConditions', {
+    name: i18n('TOKEN_HEALTH.enableConditions'),
+    hint: i18n('TOKEN_HEALTH.enableConditionsHint'),
+    type: Boolean,
+    default: DEFAULT.ENABLE_CONDITIONS,
+    scope: 'world',
+    config: true,
+    onChange: key => {
+      CONFIG.ENABLE_CONDITIONS = key;
+    },
+  });
+  CONFIG.DAMAGE_ADDS = initSetting('damageAdds', {
+    name: i18n('TOKEN_HEALTH.damageAdds'),
+    hint: i18n('TOKEN_HEALTH.damageAddsHint'),
+    type: Boolean,
+    default: DEFAULT.DAMAGE_ADDS,
+    scope: 'world',
+    config: true,
+    onChange: key => {
+      CONFIG.DAMAGE_ADDS = key;
+    },
+  });
   CONFIG.HITPOINTS_ATTRIBUTE = initSetting('hpSource', {
     name: i18n('TOKEN_HEALTH.hp'),
     type: String,
