@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.4.1 (2021-05.29)
+- Added setting control for enabling/diabling token images in Token Health dialog. Defaults to enabled. When disabled the dialog box is vertially shorter
+- Added setting control for enabling/disabling setting of toek conditions (specific to AGE system). Defaults to enabled. When disabled no token conditions will be set by Token Health, although the module will still track what the conditions would be so that otherwise the behavior is the same.
+- Added setting control for switching polarity on damage/healing. This enables support for game systems like SWADE where damage acumulates as a positive quantity from a base of zero (0) which is full health.
+
 ## 0.4.0 (2021-05.23)
 - Updated to be compatible with FVTT 0.8.5
 - Switched keybinding to DF Hotkeys (added dependency to lib-df-hotkeys)
