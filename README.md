@@ -6,18 +6,26 @@ Apply damage/healing with a few keystrokes to all selected tokens at once.
 
 ## Description
 
-This is a module for [FoundryVTT](https://foundryvtt.com/) intended for GMs that want to apply damage or healing more easily. Without this mod, you have to click several times to adjust the hit points of a token. With Token Health installed, you can hit Enter, enter the damage and hit Enter again. 
+This is a module for [FoundryVTT](https://foundryvtt.com/) intended for GMs that want to apply damage or healing more easily. Without this mod, you have to click several times to adjust the hit points of a token. With Token Health installed, you can press a hotkey (defaults to Enter), type the amount of damage or healing, and then press Enter to apply it.
+Token Health also supports a detailed system of (optional) automatic token chat messages to alert players and GM to what's going on. All chat messages are user configurable, and only the GM will see messages that state how much damage or healing has been applied.
 
 ## Install
 
 You can install this module directly from the "Add-on Modules" page on the FoudryVTT Setup screen. 
 
-Make sure to enable the module once your world is launched, in the Manage Modules setting page.
+Make sure to enable the module once your world is launched, in the Manage Modules setting page. This module requires and depends on the Library: DF Hotkeys module which must also be installed and enabled.
 
 ## Usage
 
-You can always change the default settings in the Module Settings.
-NOTE: Some settings are game system specific and may not work correctly (or at all) with game systems that don't support those features.
+Before using Token Health it is recommended that you first check and configure the settings in the Module Settings. Token Health will automatically recognize and attempt to configure reasonable defaults based on the game system in use for the world and your language setting, but these may not always be the right settings for you, and you may want to tweak things to suit yourself. See **Module Configuration** below. Currently the following game systems have pre-defined default settings that should get you up and running:
+- AGE System (unofficial)
+- DnD5e - Fifth Edition System
+- Legend of the Five Rings (5th Edition)
+- Pathfinder 1
+- Pathfinder 2nd Edition 
+- Savage Worlds Adventure Edition
+- TORG Eternity
+If your preferred game system is not on that list then generic defaults will be used and it's **very likely** you'll need to do at least a minimum amount of configuration to make sure damage and healing are being applied to the correct attribute! If you would like to see your preferred system supported with default settings, or if you find an issue with the default settings applied to one of the systems listed above, please open an GitHub issue for this with specific details about the system you'd like supported and the settings you need.
 
 ### Use Token Health
 
@@ -79,6 +87,19 @@ NOTE: Some settings are game system specific and may not work correctly (or at a
 - Healing is **never** mitigated by armor or toughness
 
 ![screenshot](screenshot_detail.png)
+
+## Module Configuration
+
+Configuratation of the Token Health module is accomplished in two parts: Hotkey settings which control how the module is launched and the Token Health module settings themselves which control the behavior and functionality of the module once launched. Both of these are shown below.
+NOTE: Some settings are game system specific and may not work correctly (or at all) with game systems that don't support those features. When this is the case it is noted in the configuration setting field and the configuration hint below that. 
+
+![screenshot](screeenshot_3.png)
+
+To configure the hotkeys used to launch Token Health open the Hotkey Settings dialog included in the Library: DF Hotkeys group. Within the Hotkeys settings dialog there is a Token Health group shown below. Here you can select exactly which combination of key and modifiers (Shift, Ctrl, Alt) are used to launch Token Health with the four behavior options possible.
+
+![screenshot](screeenshot_4.png)
+
+By default the key used is the main keyboard Enter key. If you click the Key Binding popup menu you'll be able to select from any of the possible key presses DF Hotkeys is able to recognize - such as the Numpad Enter key, etc.
 
 ## Credits
 
