@@ -78,6 +78,14 @@ const setDefaults = () => {
     DEFAULT.DEATH_THRESHOLD = 0;
     DEFAULT.DAMAGE_ADDS = true;
     DEFAULT.ENABLE_CONDITIONS = false;
+  } else if (game.system.id === 'torgeternity'){
+    DEFAULT.HITPOINTS_ATTRIBUTE = 'shock.value';
+    DEFAULT.MAX_HITPOINTS_ATTRIBUTE = 'shock.max';
+    DEFAULT.ALLOW_DAMAGE_BUYOFF = false;
+    DEFAULT.KO_THRESHOLD = 0;
+    DEFAULT.DEATH_THRESHOLD = 0;
+    DEFAULT.DAMAGE_ADDS = true;
+    DEFAULT.ENABLE_CONDITIONS = false;
   } else if (game.system.id === 'age-system') {
     DEFAULT.HITPOINTS_ATTRIBUTE = 'health.value';
     DEFAULT.MAX_HITPOINTS_ATTRIBUTE = 'health.max';
@@ -183,6 +191,7 @@ game.settings.register("token-health", "toggleKeyTargetAlt", {
 export default () => {
   setDefaults();
 
+  // Hotkey defalt for applying damage to selected token(s) 
   CONFIG.TOGGLE_KEY_BASE = initSetting('toggleKey', {
     name: i18n('TOKEN_HEALTH.toggleKeyName'),
     hint: i18n('TOKEN_HEALTH.toggleKeyHint'),
@@ -200,6 +209,7 @@ export default () => {
       CONFIG.TOGGLE_KEY_BASE = key;
     },
   });
+  // Hotkey defalt for applying healing to selected token(s) 
   CONFIG.TOGGLE_KEY_ALT = initSetting('toggleKeyAlt', {
     name: i18n('TOKEN_HEALTH.toggleKeyAltName'),
     hint: i18n('TOKEN_HEALTH.toggleKeyAltHint'),
@@ -217,6 +227,7 @@ export default () => {
       CONFIG.TOGGLE_KEY_ALT = key;
     },
   });
+  // Hotkey defalt for applying damage to targeted token(s) 
   CONFIG.TOGGLE_KEY_TARGET = initSetting('toggleKeyTarget', {
     name: i18n('TOKEN_HEALTH.toggleKeyTargetName'),
     hint: i18n('TOKEN_HEALTH.toggleKeyTargetHint'),
@@ -234,11 +245,10 @@ export default () => {
       CONFIG.TOGGLE_KEY_TARGET = key;
     },
   });
+  // Hotkey defalt for applying healing to targeted token(s) 
   CONFIG.TOGGLE_KEY_TARGET_ALT = initSetting('toggleKeyTargetAlt', {
     name: i18n('TOKEN_HEALTH.toggleKeyTargetAltName'),
     hint: i18n('TOKEN_HEALTH.toggleKeyTargetAltHint'),
-    // type: KeyBinding,
-    // default: DEFAULT.TOGGLE_KEY_TARGET_ALT,
     default: {
       key: hotkeys.keys.Enter,
       alt: true,
@@ -251,7 +261,7 @@ export default () => {
       CONFIG.TOGGLE_KEY_TARGET_ALT = key;
     },
   });
-
+  // Enable/disable display of token thumbnail images in dialog box
   CONFIG.ENABLE_TOKEN_IMAGES = initSetting('enableTokenImages', {
     name: i18n('TOKEN_HEALTH.enableTokenImages'),
     hint: i18n('TOKEN_HEALTH.enableTokenImagesHint'),
@@ -263,17 +273,7 @@ export default () => {
       CONFIG.ENABLE_TOKEN_IMAGES = key;
     },
   });
-  CONFIG.ENABLE_CONDITIONS = initSetting('enableConditions', {
-    name: i18n('TOKEN_HEALTH.enableConditions'),
-    hint: i18n('TOKEN_HEALTH.enableConditionsHint'),
-    type: Boolean,
-    default: DEFAULT.ENABLE_CONDITIONS,
-    scope: 'world',
-    config: true,
-    onChange: key => {
-      CONFIG.ENABLE_CONDITIONS = key;
-    },
-  });
+  // Enable/disable Additive Damage
   CONFIG.DAMAGE_ADDS = initSetting('damageAdds', {
     name: i18n('TOKEN_HEALTH.damageAdds'),
     hint: i18n('TOKEN_HEALTH.damageAddsHint'),
@@ -285,101 +285,16 @@ export default () => {
       CONFIG.DAMAGE_ADDS = key;
     },
   });
-  CONFIG.HITPOINTS_ATTRIBUTE = initSetting('hpSource', {
-    name: i18n('TOKEN_HEALTH.hp'),
-    type: String,
-    default: DEFAULT.HITPOINTS_ATTRIBUTE,
-    scope: 'world',
-    config: true,
-    onChange: key => {
-      CONFIG.HITPOINTS_ATTRIBUTE = key;
-    },
-  });
-  CONFIG.MAX_HITPOINTS_ATTRIBUTE = initSetting('hpSourceMax', {
-    name: i18n('TOKEN_HEALTH.hpMax'),
-    type: String,
-    default: DEFAULT.MAX_HITPOINTS_ATTRIBUTE,
-    scope: 'world',
-    config: true,
-    onChange: key => {
-      CONFIG.MAX_HITPOINTS_ATTRIBUTE = key;
-    },
-  });
-  CONFIG.TEMP_HITPOINTS_ATTRIBUTE = initSetting('tempHpSource', {
-    name: i18n('TOKEN_HEALTH.tempHp'),
-    hint: i18n('TOKEN_HEALTH.tempHpHint'),
-    type: String,
-    default: DEFAULT.TEMP_HITPOINTS_ATTRIBUTE,
-    scope: 'world',
-    config: true,
-    onChange: key => {
-      CONFIG.TEMP_HITPOINTS_ATTRIBUTE = key;
-    },
-  });
-  CONFIG.MITIGATION_ATTRIBUTE_1 = initSetting('mitigationSource1', {
-    name: i18n('TOKEN_HEALTH.mitigation1'),
-    hint: i18n('TOKEN_HEALTH.mitigation1Hint'),
-    type: String,
-    default: DEFAULT.MITIGATION_ATTRIBUTE_1,
-    scope: 'world',
-    config: true,
-    onChange: key => {
-      CONFIG.MITIGATION_ATTRIBUTE_1 = key;
-    },
-  });
-  CONFIG.MITIGATION_ATTRIBUTE_2 = initSetting('mitigationSource2', {
-    name: i18n('TOKEN_HEALTH.mitigation2'),
-    hint: i18n('TOKEN_HEALTH.mitigation2Hint'),
-    type: String,
-    default: DEFAULT.MITIGATION_ATTRIBUTE_2,
-    scope: 'world',
-    config: true,
-    onChange: key => {
-      CONFIG.MITIGATION_ATTRIBUTE_2 = key;
-    },
-  });
-  CONFIG.MITIGATION_ATTRIBUTE_3 = initSetting('mitigationSource3', {
-    name: i18n('TOKEN_HEALTH.mitigation3'),
-    hint: i18n('TOKEN_HEALTH.mitigation3Hint'),
-    type: String,
-    default: DEFAULT.MITIGATION_ATTRIBUTE_3,
-    scope: 'world',
-    config: true,
-    onChange: key => {
-      CONFIG.MITIGATION_ATTRIBUTE_3 = key;
-    },
-  });
-  CONFIG.KO_THRESHOLD = initSetting('koThreshold', {
-    name: i18n('TOKEN_HEALTH.koThreshold'),
-    hint: i18n('TOKEN_HEALTH.koThresholdHint'),
-    type: Number,
-    default: DEFAULT.KO_THRESHOLD,
-    scope: 'world',
-    config: true,
-    onChange: key => {
-      CONFIG.KO_THRESHOLD = key;
-    },
-  });
-  CONFIG.DEATH_THRESHOLD = initSetting('deathThreshold', {
-    name: i18n('TOKEN_HEALTH.deathThreshold'),
-    hint: i18n('TOKEN_HEALTH.deathThresholdHint'),
-    type: Number,
-    default: DEFAULT.DEATH_THRESHOLD,
-    scope: 'world',
-    config: true,
-    onChange: key => {
-      CONFIG.DEATH_THRESHOLD = key;
-    },
-  });
-  CONFIG.ALLOW_NEGATIVE = initSetting('allowNegative', {
-    name: i18n('TOKEN_HEALTH.allowNegative'),
-    hint: i18n('TOKEN_HEALTH.allowNegativeHint'),
+  // Enable/Disable Setting Condition s (AGE-Specific)
+  CONFIG.ENABLE_CONDITIONS = initSetting('enableConditions', {
+    name: i18n('TOKEN_HEALTH.enableConditions'),
+    hint: i18n('TOKEN_HEALTH.enableConditionsHint'),
     type: Boolean,
-    default: DEFAULT.ALLOW_NEGATIVE,
+    default: DEFAULT.ENABLE_CONDITIONS,
     scope: 'world',
     config: true,
     onChange: key => {
-      CONFIG.ALLOW_NEGATIVE = key;
+      CONFIG.ENABLE_CONDITIONS = key;
     },
   });
   // Permit Buyoff of Damage (AGE-System Specific)
@@ -392,6 +307,112 @@ export default () => {
     config: true,
     onChange: key => {
       CONFIG.ALLOW_DAMAGE_BUYOFF = key;
+    },
+  });
+  // Attribute recording current health
+  CONFIG.HITPOINTS_ATTRIBUTE = initSetting('hpSource', {
+    name: i18n('TOKEN_HEALTH.hp'),
+    type: String,
+    default: DEFAULT.HITPOINTS_ATTRIBUTE,
+    scope: 'world',
+    config: true,
+    onChange: key => {
+      CONFIG.HITPOINTS_ATTRIBUTE = key;
+    },
+  });
+  // Attribute recording max possible health
+  CONFIG.MAX_HITPOINTS_ATTRIBUTE = initSetting('hpSourceMax', {
+    name: i18n('TOKEN_HEALTH.hpMax'),
+    type: String,
+    default: DEFAULT.MAX_HITPOINTS_ATTRIBUTE,
+    scope: 'world',
+    config: true,
+    onChange: key => {
+      CONFIG.MAX_HITPOINTS_ATTRIBUTE = key;
+    },
+  });
+  // Attribute for recording/tracking temporary health
+  CONFIG.TEMP_HITPOINTS_ATTRIBUTE = initSetting('tempHpSource', {
+    name: i18n('TOKEN_HEALTH.tempHp'),
+    hint: i18n('TOKEN_HEALTH.tempHpHint'),
+    type: String,
+    default: DEFAULT.TEMP_HITPOINTS_ATTRIBUTE,
+    scope: 'world',
+    config: true,
+    onChange: key => {
+      CONFIG.TEMP_HITPOINTS_ATTRIBUTE = key;
+    },
+  });
+  // Primary damage mitigation attribute (optional)
+  CONFIG.MITIGATION_ATTRIBUTE_1 = initSetting('mitigationSource1', {
+    name: i18n('TOKEN_HEALTH.mitigation1'),
+    hint: i18n('TOKEN_HEALTH.mitigation1Hint'),
+    type: String,
+    default: DEFAULT.MITIGATION_ATTRIBUTE_1,
+    scope: 'world',
+    config: true,
+    onChange: key => {
+      CONFIG.MITIGATION_ATTRIBUTE_1 = key;
+    },
+  });
+  // Secondary damage mitigation attribute (optional)
+  CONFIG.MITIGATION_ATTRIBUTE_2 = initSetting('mitigationSource2', {
+    name: i18n('TOKEN_HEALTH.mitigation2'),
+    hint: i18n('TOKEN_HEALTH.mitigation2Hint'),
+    type: String,
+    default: DEFAULT.MITIGATION_ATTRIBUTE_2,
+    scope: 'world',
+    config: true,
+    onChange: key => {
+      CONFIG.MITIGATION_ATTRIBUTE_2 = key;
+    },
+  });
+  // Tertiary damage mitigation attribute (optional)
+  CONFIG.MITIGATION_ATTRIBUTE_3 = initSetting('mitigationSource3', {
+    name: i18n('TOKEN_HEALTH.mitigation3'),
+    hint: i18n('TOKEN_HEALTH.mitigation3Hint'),
+    type: String,
+    default: DEFAULT.MITIGATION_ATTRIBUTE_3,
+    scope: 'world',
+    config: true,
+    onChange: key => {
+      CONFIG.MITIGATION_ATTRIBUTE_3 = key;
+    },
+  });
+  // Enable/Disable allowing health to go negative
+  CONFIG.ALLOW_NEGATIVE = initSetting('allowNegative', {
+    name: i18n('TOKEN_HEALTH.allowNegative'),
+    hint: i18n('TOKEN_HEALTH.allowNegativeHint'),
+    type: Boolean,
+    default: DEFAULT.ALLOW_NEGATIVE,
+    scope: 'world',
+    config: true,
+    onChange: key => {
+      CONFIG.ALLOW_NEGATIVE = key;
+    },
+  });
+  // Health threshold for unconsciousness (not applicable for Additivie Damage systems)
+  CONFIG.KO_THRESHOLD = initSetting('koThreshold', {
+    name: i18n('TOKEN_HEALTH.koThreshold'),
+    hint: i18n('TOKEN_HEALTH.koThresholdHint'),
+    type: Number,
+    default: DEFAULT.KO_THRESHOLD,
+    scope: 'world',
+    config: true,
+    onChange: key => {
+      CONFIG.KO_THRESHOLD = key;
+    },
+  });
+  // Health threshold for dying (not applicable for Additivie Damage systems)
+  CONFIG.DEATH_THRESHOLD = initSetting('deathThreshold', {
+    name: i18n('TOKEN_HEALTH.deathThreshold'),
+    hint: i18n('TOKEN_HEALTH.deathThresholdHint'),
+    type: Number,
+    default: DEFAULT.DEATH_THRESHOLD,
+    scope: 'world',
+    config: true,
+    onChange: key => {
+      CONFIG.DEATH_THRESHOLD = key;
     },
   });
   // Enable/Disable token chat messages
