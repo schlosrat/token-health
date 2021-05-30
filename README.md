@@ -57,6 +57,9 @@ NOTE: Some settings are game system specific and may not work correctly (or at a
 	- If damage is being applied to them but they were already dead
 - Token chat messages default to language localizations, but each case may be overridden via module settings so they'll say what you want them to say
 
+### Support for Additive Damage System
+- By default Token Health assumes that damage is to be subtracted from a current health value and that healing is added to health with a cap at a max health value. This works great for any system like D&D with a health or hp pool; however such behavior would be incompatible with systems where damage is additive - i.e. increasing from a base of 0 until some maximum threshold is reached or exceeded resulting in unconcousness or death. Additive damage systems like SWADE and L5R5E are now supported by checking the setting for Damage is Addative. In such systems healing will decrease the pool whereas apply damage will increase it. 
+
 ### AGE System Specific Features
 
 - Damage Buyoff may be selected from the Module Configuration Screen (implements Injured and Wounded conditions)
