@@ -3,7 +3,7 @@
   "title": "Token Health",
   "description": "Apply damage/healing to multiple tokens with a few keystrokes",
   "author": "schlosrat",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "minimumCoreVersion": "0.5.5",
   "compatibleCoreVersion": "0.8.5",
   "styles": ["token-health.css"],
