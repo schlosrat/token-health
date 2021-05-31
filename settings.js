@@ -103,11 +103,7 @@ const setDefaults = () => {
     DEFAULT.MITIGATION_ATTRIBUTE_2 = 'armor.impact';
     DEFAULT.MITIGATION_ATTRIBUTE_3 = 'armor.ballistic';
     DEFAULT.ENABLE_CONDITIONS = true;
-    if (game.settings.get("age-system", "useConditions")) {
-      DEFAULT.ALLOW_DAMAGE_BUYOFF = true; // this may be questionable...
-    } else {
-      DEFAULT.ALLOW_DAMAGE_BUYOFF = false;
-    }
+    DEFAULT.ALLOW_DAMAGE_BUYOFF = false;
   } else {
     DEFAULT.HITPOINTS_ATTRIBUTE_1 = 'health.value';
     DEFAULT.MAX_HITPOINTS_ATTRIBUTE_1 = 'health.max';
