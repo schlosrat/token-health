@@ -6,7 +6,7 @@ Apply damage/healing with a few keystrokes to all selected tokens at once.
 
 ## Description
 
-This is a module for [FoundryVTT](https://foundryvtt.com/) intended for GMs that want to apply damage or healing more easily. Without this mod, you have to click several times to adjust the hit points of a token. With Token Health installed, you can press a hotkey (default: Enter), type the amount of damage or healing, and then press Enter to apply it.
+This is a module for [FoundryVTT](https://foundryvtt.com/) intended for GMs that want to apply damage or healing more easily. Without this mod, you have to click several times to adjust the hit points of a token. With Token Health installed, you can press a hotkey, enter the amount of damage or healing, and then press Enter to apply it.
 
 Token Health also supports a detailed system of (optional) automatic token chat messages to alert players and GM to what's going on. All chat messages are user configurable, and only the GM will see messages that state how much damage or healing has been applied.
 
@@ -14,11 +14,11 @@ Token Health also supports a detailed system of (optional) automatic token chat 
 
 You can install this module directly from the "Add-on Modules" page on the FoudryVTT Setup screen. 
 
-Make sure to enable the module once your world is launched, in the Manage Modules setting page. This module requires and depends on the Library: DF Hotkeys module which must also be installed and enabled.
+Make sure to enable the module once your world is launched, in the Manage Modules setting page. This module also requires and depends on the Library: DF Hotkeys module which must be installed and enabled.
 
 ## Usage
 
-Before using Token Health it is recommended that you first check and configure the settings in the Module Settings. Token Health will automatically recognize and attempt to configure reasonable defaults based on the game system in use for the world and your language setting, but these may not always be the right settings for you, and you may want to tweak things to suit yourself. See **Module Configuration** below. Currently the following game systems have pre-defined default settings that should get you up and running:
+Before using Token Health it is recommended that you first check and configure the settings in the Module Settings. Token Health will automatically recognize and attempt to configure reasonable defaults based on the game system in use for the world and your language setting; but these may not always be the right settings for you, and you may want to tweak things to suit yourself. See **Module Configuration** below. Currently the following game systems have pre-defined default settings that should get you up and running:
 - AGE System (unofficial)
 - DnD5e - Fifth Edition System
 - Legend of the Five Rings (5th Edition)
@@ -31,25 +31,28 @@ If your preferred game system is not on that list then generic defaults will be 
 
 ### Use Token Health
 
-1. Select/target one or multiple token(s)
+1. Select/target one or more token(s)
 1. Press the **hot key** (default: <kbd>Enter</kbd>) to display the Damage dialog or the **alternate hot key** (default: <kbd>Shift</kbd> + <kbd>Enter</kbd>) to display the Healing dialog. To apply damage/healing to **targeted tokens** instead of **selected tokens**, add the <kbd>Alt</kbd> key by default.
 1. Enter a value
-1. Optional: Select damage type (pulldown menu) - this option is only present if more than one type of damage is defined in the module settings (e.g. Impact, Ballistic, Penetrating)
-1. Optional: Select damage subtype (radio button) - this option is only present if more than one subtype of damage is defined in the module settings (e.g. Wounds vs. Stun, etc.)
+1. Optional: Select the damage type (pulldown menu) - this option is only present if more than one Damage Type is defined in the module settings (e.g. Impact, Ballistic, Penetrating)
+1. Optional: Select the damage subtype (radio button) - this option is only present if more than one Damage Subtype is defined in the module settings (e.g. Wounds vs. Stun, etc.)
 1. Validate by pressing <kbd>Enter</kbd> or by clicking the big button
 
 ### What you can do
 
-- Multiple tokens may be selected. The name for each token selected will appear in the title bar of the dialog box.
-- Optionally, up to four selected token icons will also be shown inside the dialog box with decreasing opacity (the fourth will be cut off)
-	- This helps you ensure you've got the right tokens targeted before you apply damage or healing!
-- Press the **hot key** and enter a value to apply **damage** to the selected token(s)
+- Multiple tokens may be selected.
+- Press the **hot key** and enter a value to apply **damage** to the selected token(s).
+	- To help ensure you've got the right tokens selected the name for each token will appear in the title bar of the dialog box.
+	- Optionally, up to four selected token thumbnail images will also be shown inside the dialog box with decreasing opacity (the fourth will be cut off)
 - Press the **key key** and enter a ***negative value*** to apply **healing** to the selected token(s)
 
 ![screenshot](screenshot_0.png)
 
+- Multiple tokens may be selected.
 - Press the **alternate hot key** and enter a value to apply **healing** to the selected token(s)
-- Press the **alternate hot key** and enter a ***negative value*** to apply **damage** to the selected token(s)
+	- To help ensure you've got the right tokens selected the name for each token will appear in the title bar of the dialog box.
+	- Optionally, up to four selected token thumbnail images will also be shown inside the dialog box with decreasing opacity (the fourth will be cut off)
+- Press the **alternate hot key** and enter a ***negative value*** to apply **damage** to the targeted token(s)
 
 ![screenshot](screenshot_2.png)
 
@@ -57,27 +60,27 @@ If your preferred game system is not on that list then generic defaults will be 
 
 ### Damage Types and Subtypes
 
-Token Health supports two different ways to control the application of damage to tokens. The first is through optional Damage Types and corresponding Mitigation Sources. If your game system supports multiple types of damage where those types may be mitigated by different means then up to three different damage types may be defined. For example in the AGE System there are three types of damage: Impact, Ballistic, and Penetrating, and three ways to mitigate damage: Toughness, Impact Armor, and Ballistic Armor. In that system the actor's Toughness attribute acts to reduce all mitigateable sources of damage. Impact Armor can further mitigate Impact Damage, but doesn't stop Ballistic Damage. Ballisitc Armor can mitigate either Impact or Ballistic Damage. And Penetrating Damage bypasses all forms of mitigation.
+Token Health supports two different ways to control the application of damage to tokens. The first is through optional **Damage Types** and corresponding **Mitigation Sources**. If your game system supports multiple types of damage where those types may be mitigated by different means then up to three different damage types may be defined. For example, in the AGE System there are three types of damage: Impact, Ballistic, and Penetrating, and three ways to mitigate damage: Toughness, Impact Armor, and Ballistic Armor. In that system the actor's Toughness attribute acts to reduce all mitigateable sources of damage. Impact Armor can further mitigate Impact Damage, but doesn't stop Ballistic Damage. Ballisitc Armor can mitigate either Impact or Ballistic Damage.
 
-Damage types are optional, and if ommited from the configuration settings then the pulldown menu to select Damage Type will also be omitted from the dialog box. If defined, the first (Primary) damage type will be the default selection in the event the pulldown menu is not accessed. The "Penetrating" Damage Type is a special case that will always bypass damage mitigation sources. See **Module Configuration** below for details.
+Damage types are optional, and if ommited from the configuration settings then the pulldown menu to select Damage Type will also be omitted from the dialog box. If defined, the first (Primary) damage type will be the default selection in the event the pulldown menu is not accessed. The **"Penetrating"** Damage Type is a special case that will always bypass damage mitigation sources. See **Module Configuration** below for details.
 
-The second way to control the application of damage is through Damage Subtypes, which can be used to control which resource pool the damage will be applied to or other game system specific rules for the application of damage. Foundry VTT allows up to two resource bars for a token, and some game systems employ multiple "health" resource attributes. For example DnD5e has a single resource pool: Hit Points, but Savage Worlds Adventure Edition (SWADE) employs two (Wounds and Fatigue). Similarly TORG Eternety uses Shock and Wounds, and Legend of the Five Rings (L5R) uses Strife and Fatigue.
+The second way to control the application of damage is through **Damage Subtypes**, which can be used to control which resource pool the damage will be applied to or other game system specific rules for the application of damage. Foundry VTT allows up to two resource bars for a token, and some game systems employ multiple "health" resource attributes. For example DnD5e has a single resource pool: Hit Points, but Savage Worlds Adventure Edition (SWADE), TORG Eternety and Legend of the Five Rings (L5R) each employ two.
 
-An expample of a single resource system is DnD5e. The configuration settings and damage dialog box for DnD5e are shown below. Note there are no radio buttons displayed for the selection of damage subtype since there is only one subtype defined. The tokens each have just one resource bar corresponding to their Hit Points - the attributes for which are configured in the module settings.
+**Example Single Resource System**: DnD5e. The configuration settings and damage dialog box for DnD5e are shown below. Note there are no radio buttons displayed for the selection of damage subtype since there is only one subtype defined. The tokens each have just one resource bar corresponding to their Hit Points - the attributes for which are configured in the module settings.
 
 ![screenshot](screenshot_5.png)
 
-An example of a two resource system is L5R. The configuration settings and damage dialog box for DnD5e are shown below. Note in this case there are two damage subtypes selectable via radio buttons below the Amount input box. Whenever there are two subtypes defined the first one defined will be the default.
+**Example Two Resource System**: L5R. The configuration settings and damage dialog box for L5R5e are shown below. Note in this case there are two damage subtypes selectable via radio buttons below the Amount input box. Whenever there are two subtypes defined the first one defined will be the default.
 
 ![screenshot](screenshot_6.png)
 
 The Primary Damage Subtype is an optional field when configuring Token Health, however the Primary Health Pool and corresponding Max are required. The Secondary Health Pool and its corresponding Max are only required if a Secondary Damage Type is defined. In some cases you may need more than one damage subtype when both types affect the same health pool. For example in the AGE System the two damage subtypes are Wound and Stun, where Stun damage can at most incapacitate an actor while Wound damage is able to kill. 
 
-An example of a single resouce system with two damage subtypes is AGE. The configuration settings and damage dialog are shown below. Note that as the AGE system also employed Damage Types and Mitigation Sources there is also a Damage Type pulldown menu in the Token Health dialog.
+**Example Single Rresouce System with Two Damage Subtypes**: AGE System. The configuration settings and damage dialog for AGE games are shown below. Note that as the AGE system also employed Damage Types and Mitigation Sources there is also a Damage Type pulldown menu in the Token Health dialog.
 
 ![screenshot](screenshot_7.png)
 
-The "Stun" damage subtype is a special case in that like the "Penetrating" damage type special rules are applied. In the case of "Stun" damage, no matter how much damage is applied it will never reduce the health pool past the point of unconciousness.
+The **"Stun"** damage subtype is a special case in that like the "Penetrating" damage type special rules are applied. In the case of "Stun" damage, no matter how much damage is applied it will never reduce the health pool past the point of unconciousness.
 
 ### Output to Chat
 
