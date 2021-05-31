@@ -286,30 +286,6 @@ export default () => {
       CONFIG.ADDITIVE_DAMAGE = key;
     },
   });
-  // Enable/Disable Setting Condition s (AGE System Specific)
-  CONFIG.ENABLE_CONDITIONS = initSetting('enableConditions', {
-    name: i18n('TOKEN_HEALTH.enableConditions'),
-    hint: i18n('TOKEN_HEALTH.enableConditionsHint'),
-    type: Boolean,
-    default: DEFAULT.ENABLE_CONDITIONS,
-    scope: 'world',
-    config: true,
-    onChange: key => {
-      CONFIG.ENABLE_CONDITIONS = key;
-    },
-  });
-  // Permit Buyoff of Damage (AGE System Specific)
-  CONFIG.ALLOW_DAMAGE_BUYOFF = initSetting('allowDamageBuyoff', {
-    name: i18n('TOKEN_HEALTH.allowDamageBuyoff'),
-    hint: i18n('TOKEN_HEALTH.allowDamageBuyoffHint'),
-    type: Boolean,
-    default: DEFAULT.ALLOW_DAMAGE_BUYOFF,
-    scope: 'world',
-    config: true,
-    onChange: key => {
-      CONFIG.ALLOW_DAMAGE_BUYOFF = key;
-    },
-  });
   // Primary damage type (optional)
   CONFIG.DAMAGE_TYPE_1 = initSetting('damageType1', {
     name: i18n('TOKEN_HEALTH.damageType1'),
@@ -346,98 +322,7 @@ export default () => {
       CONFIG.DAMAGE_TYPE_3 = key;
     },
   });
-  // Primary damage subtype (optional)
-  CONFIG.DAMAGE_SUBTYPE_1 = initSetting('damageSubtype1', {
-    name: i18n('TOKEN_HEALTH.damageSubtype1'),
-    hint: i18n('TOKEN_HEALTH.damageSubtype1Hint'),
-    type: String,
-    default: DEFAULT.DAMAGE_SUBTYPE_1,
-    scope: 'world',
-    config: true,
-    onChange: key => {
-      CONFIG.DAMAGE_SUBTYPE_1 = key;
-    },
-  });
-  // Attribute recording current health
-  CONFIG.HITPOINTS_ATTRIBUTE_1 = initSetting('hpSource1', {
-    name: i18n('TOKEN_HEALTH.hp1'),
-    type: String,
-    default: DEFAULT.HITPOINTS_ATTRIBUTE_1,
-    scope: 'world',
-    config: true,
-    onChange: key => {
-      CONFIG.HITPOINTS_ATTRIBUTE_1 = key;
-    },
-  });
-  // Attribute recording max possible health
-  CONFIG.MAX_HITPOINTS_ATTRIBUTE_1 = initSetting('hpSourceMax1', {
-    name: i18n('TOKEN_HEALTH.hpMax1'),
-    type: String,
-    default: DEFAULT.MAX_HITPOINTS_ATTRIBUTE_1,
-    scope: 'world',
-    config: true,
-    onChange: key => {
-      CONFIG.MAX_HITPOINTS_ATTRIBUTE_1 = key;
-    },
-  });
-  // Attribute for recording/tracking temporary health
-  CONFIG.TEMP_HITPOINTS_ATTRIBUTE_1 = initSetting('tempHpSource1', {
-    name: i18n('TOKEN_HEALTH.tempHp1'),
-    hint: i18n('TOKEN_HEALTH.tempHpHint'),
-    type: String,
-    default: DEFAULT.TEMP_HITPOINTS_ATTRIBUTE_1,
-    scope: 'world',
-    config: true,
-    onChange: key => {
-      CONFIG.TEMP_HITPOINTS_ATTRIBUTE_1 = key;
-    },
-  });
-  // Secondary damage type (optional)
-  CONFIG.DAMAGE_SUBTYPE_2 = initSetting('damageSubtype2', {
-    name: i18n('TOKEN_HEALTH.damageSubtype2'),
-    hint: i18n('TOKEN_HEALTH.damageSubtype2Hint'),
-    type: String,
-    default: DEFAULT.DAMAGE_SUBTYPE_2,
-    scope: 'world',
-    config: true,
-    onChange: key => {
-      CONFIG.DAMAGE_SUBTYPE_2 = key;
-    },
-  });
-  // Attribute recording current health
-  CONFIG.HITPOINTS_ATTRIBUTE_2 = initSetting('hpSource2', {
-    name: i18n('TOKEN_HEALTH.hp2'),
-    type: String,
-    default: DEFAULT.HITPOINTS_ATTRIBUTE_2,
-    scope: 'world',
-    config: true,
-    onChange: key => {
-      CONFIG.HITPOINTS_ATTRIBUTE_2 = key;
-    },
-  });
-  // Attribute recording max possible health
-  CONFIG.MAX_HITPOINTS_ATTRIBUTE_2 = initSetting('hpSourceMax2', {
-    name: i18n('TOKEN_HEALTH.hpMax2'),
-    type: String,
-    default: DEFAULT.MAX_HITPOINTS_ATTRIBUTE_2,
-    scope: 'world',
-    config: true,
-    onChange: key => {
-      CONFIG.MAX_HITPOINTS_ATTRIBUTE_2 = key;
-    },
-  });
-  // Attribute for recording/tracking temporary health
-  CONFIG.TEMP_HITPOINTS_ATTRIBUTE_2 = initSetting('tempHpSource2', {
-    name: i18n('TOKEN_HEALTH.tempHp2'),
-    hint: i18n('TOKEN_HEALTH.tempHpHint'),
-    type: String,
-    default: DEFAULT.TEMP_HITPOINTS_ATTRIBUTE_2,
-    scope: 'world',
-    config: true,
-    onChange: key => {
-      CONFIG.TEMP_HITPOINTS_ATTRIBUTE_2 = key;
-    },
-  });  // Primary damage mitigation attribute (optional)
+  // Primary damage mitigation attribute (optional)
   CONFIG.MITIGATION_ATTRIBUTE_1 = initSetting('mitigationSource1', {
     name: i18n('TOKEN_HEALTH.mitigation1'),
     hint: i18n('TOKEN_HEALTH.mitigation1Hint'),
@@ -471,6 +356,100 @@ export default () => {
     config: true,
     onChange: key => {
       CONFIG.MITIGATION_ATTRIBUTE_3 = key;
+    },
+  });
+  // Primary damage subtype (required)
+  CONFIG.DAMAGE_SUBTYPE_1 = initSetting('damageSubtype1', {
+    name: i18n('TOKEN_HEALTH.damageSubtype1'),
+    hint: i18n('TOKEN_HEALTH.damageSubtype1Hint'),
+    type: String,
+    default: DEFAULT.DAMAGE_SUBTYPE_1,
+    scope: 'world',
+    config: true,
+    onChange: key => {
+      CONFIG.DAMAGE_SUBTYPE_1 = key;
+    },
+  });
+  // Attribute recording current health (required)
+  CONFIG.HITPOINTS_ATTRIBUTE_1 = initSetting('hpSource1', {
+    name: i18n('TOKEN_HEALTH.hp1'),
+    type: String,
+    default: DEFAULT.HITPOINTS_ATTRIBUTE_1,
+    scope: 'world',
+    config: true,
+    onChange: key => {
+      CONFIG.HITPOINTS_ATTRIBUTE_1 = key;
+    },
+  });
+  // Attribute recording max possible health (required)
+  CONFIG.MAX_HITPOINTS_ATTRIBUTE_1 = initSetting('hpSourceMax1', {
+    name: i18n('TOKEN_HEALTH.hpMax1'),
+    type: String,
+    default: DEFAULT.MAX_HITPOINTS_ATTRIBUTE_1,
+    scope: 'world',
+    config: true,
+    onChange: key => {
+      CONFIG.MAX_HITPOINTS_ATTRIBUTE_1 = key;
+    },
+  });
+  // Attribute for recording/tracking temporary health (optional)
+  CONFIG.TEMP_HITPOINTS_ATTRIBUTE_1 = initSetting('tempHpSource1', {
+    name: i18n('TOKEN_HEALTH.tempHp1'),
+    hint: i18n('TOKEN_HEALTH.tempHpHint'),
+    type: String,
+    default: DEFAULT.TEMP_HITPOINTS_ATTRIBUTE_1,
+    scope: 'world',
+    config: true,
+    onChange: key => {
+      CONFIG.TEMP_HITPOINTS_ATTRIBUTE_1 = key;
+    },
+  });
+  // Secondary damage type (optional)
+  CONFIG.DAMAGE_SUBTYPE_2 = initSetting('damageSubtype2', {
+    name: i18n('TOKEN_HEALTH.damageSubtype2'),
+    hint: i18n('TOKEN_HEALTH.damageSubtype2Hint'),
+    type: String,
+    default: DEFAULT.DAMAGE_SUBTYPE_2,
+    scope: 'world',
+    config: true,
+    onChange: key => {
+      CONFIG.DAMAGE_SUBTYPE_2 = key;
+    },
+  });
+  // Attribute recording current health (optional)
+  CONFIG.HITPOINTS_ATTRIBUTE_2 = initSetting('hpSource2', {
+    name: i18n('TOKEN_HEALTH.hp2'),
+    hint: i18n('TOKEN_HEALTH.hpHint'),
+    type: String,
+    default: DEFAULT.HITPOINTS_ATTRIBUTE_2,
+    scope: 'world',
+    config: true,
+    onChange: key => {
+      CONFIG.HITPOINTS_ATTRIBUTE_2 = key;
+    },
+  });
+  // Attribute recording max possible health (optional)
+  CONFIG.MAX_HITPOINTS_ATTRIBUTE_2 = initSetting('hpSourceMax2', {
+    name: i18n('TOKEN_HEALTH.hpMax2'),
+    hint: i18n('TOKEN_HEALTH.hpHint'),
+    type: String,
+    default: DEFAULT.MAX_HITPOINTS_ATTRIBUTE_2,
+    scope: 'world',
+    config: true,
+    onChange: key => {
+      CONFIG.MAX_HITPOINTS_ATTRIBUTE_2 = key;
+    },
+  });
+  // Attribute for recording/tracking temporary health (optional)
+  CONFIG.TEMP_HITPOINTS_ATTRIBUTE_2 = initSetting('tempHpSource2', {
+    name: i18n('TOKEN_HEALTH.tempHp2'),
+    hint: i18n('TOKEN_HEALTH.tempHpHint'),
+    type: String,
+    default: DEFAULT.TEMP_HITPOINTS_ATTRIBUTE_2,
+    scope: 'world',
+    config: true,
+    onChange: key => {
+      CONFIG.TEMP_HITPOINTS_ATTRIBUTE_2 = key;
     },
   });
   // Enable/Disable allowing health to go negative
@@ -507,6 +486,30 @@ export default () => {
     config: true,
     onChange: key => {
       CONFIG.DEATH_THRESHOLD = key;
+    },
+  });
+  // Enable/Disable Setting Condition s (AGE System Specific)
+  CONFIG.ENABLE_CONDITIONS = initSetting('enableConditions', {
+    name: i18n('TOKEN_HEALTH.enableConditions'),
+    hint: i18n('TOKEN_HEALTH.enableConditionsHint'),
+    type: Boolean,
+    default: DEFAULT.ENABLE_CONDITIONS,
+    scope: 'world',
+    config: true,
+    onChange: key => {
+      CONFIG.ENABLE_CONDITIONS = key;
+    },
+  });
+  // Permit Buyoff of Damage (AGE System Specific)
+  CONFIG.ALLOW_DAMAGE_BUYOFF = initSetting('allowDamageBuyoff', {
+    name: i18n('TOKEN_HEALTH.allowDamageBuyoff'),
+    hint: i18n('TOKEN_HEALTH.allowDamageBuyoffHint'),
+    type: Boolean,
+    default: DEFAULT.ALLOW_DAMAGE_BUYOFF,
+    scope: 'world',
+    config: true,
+    onChange: key => {
+      CONFIG.ALLOW_DAMAGE_BUYOFF = key;
     },
   });
   // Enable/Disable token chat messages
