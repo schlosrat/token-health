@@ -3,17 +3,22 @@
   "title": "Token Health",
   "description": "Apply damage/healing to multiple tokens with a few keystrokes",
   "author": "schlosrat",
+  "authors": [],
+  "url": "https://github.com/schlosrat/token-health",
+  "readme": "https://github.com/schlosrat/token-health/blob/master/README.md",
+  "changelog": "https://github.com/schlosrat/token-health/blob/master/CHANGELOG.md",
+  "flags": {},
   "version": "0.4.2",
   "minimumCoreVersion": "0.5.5",
-  "compatibleCoreVersion": "0.8.5",
-  "styles": ["token-health.css"],
-  "esmodules": ["contrib/settings-extender.js", "token-health.js"],
-  "url": "https://github.com/schlosrat/token-health",
-  "manifest": "https://raw.githubusercontent.com/schlosrat/token-health/master/module.json",
-  "download": "https://github.com/schlosrat/token-health/archive/refs/tags/0.4.1.zip",
-  "changelog": "https://github.com/schlosrat/token-health/blob/master/CHANGELOG.md",
-  "readme": "https://github.com/schlosrat/token-health/blob/master/README.md",
-  "dependencies": [ { "name": "lib-df-hotkeys" } ],
+  "compatibleCoreVersion": "0.8.6",
+  "scripts": [],
+  "esmodules": [
+    "contrib/settings-extender.js",
+    "token-health.js"
+  ],
+  "styles": [
+    "token-health.css"
+  ],
   "languages": [
     {
       "lang": "en",
@@ -35,5 +40,18 @@
       "name": "Deutsch",
       "path": "lang/de.json"
     }
-  ]
+  ],
+  "packs": [],
+  "system": [],
+  "dependencies": [
+    {
+      "name": "lib-df-hotkeys",
+      "type": "module"
+    }
+  ],
+  "socket": false,
+  "manifest": "https://raw.githubusercontent.com/schlosrat/token-health/master/module.json",
+  "download": "https://github.com/schlosrat/token-health/archive/refs/tags/0.4.1.zip",
+  "protected": false,
+  "coreTranslation": false
 }
