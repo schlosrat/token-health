@@ -34,6 +34,8 @@ If your preferred game system is not on that list then generic defaults will be 
 1. Select/target one or multiple token(s)
 1. Press the **hot key** (default: <kbd>Enter</kbd>) to display the Damage dialog or the **alternate hot key** (default: <kbd>Shift</kbd> + <kbd>Enter</kbd>) to display the Healing dialog. To apply damage/healing to **targeted tokens** instead of **selected tokens**, add the <kbd>Alt</kbd> key by default.
 1. Enter a value
+1. Optional: Select damage type (pulldown menu) - this option is only present if more than one type of damage is defined in the module settings (e.g. Impact, Ballistic, Penetrating)
+1. Optional: Select damage subtype (radio button) - this option is only present if more than one subtype of damage is defined in the module settings (e.g. Wounds vs. Stun, etc.)
 1. Validate by pressing <kbd>Enter</kbd> or by clicking the big button
 
 ### What you can do
@@ -53,6 +55,30 @@ If your preferred game system is not on that list then generic defaults will be 
 
 - Combine above with the <kbd>Alt</kbd> key to apply to **targeted token(s)** instead of **selected token(s)**
 
+### Damage Types and Subtypes
+
+Token Health supports two different ways to control the application of damage to tokens. The first is through optional Damage Types and corresponding Mitigation Sources. If your game system supports multiple types of damage where those types may be mitigated by different means then up to three different damage types may be defined. For example in the AGE System there are three types of damage: Impact, Ballistic, and Penetrating, and three ways to mitigate damage: Toughness, Impact Armor, and Ballistic Armor. In that system the actor's Toughness attribute acts to reduce all mitigateable sources of damage. Impact Armor can further mitigate Impact Damage, but doesn't stop Ballistic Damage. Ballisitc Armor can mitigate either Impact or Ballistic Damage. And Penetrating Damage bypasses all forms of mitigation.
+
+Damage types are optional, and if ommited from the configuration settings then the pulldown menu to select Damage Type will also be omitted from the dialog box. If defined, the first (Primary) damage type will be the default selection in the event the pulldown menu is not accessed. The "Penetrating" Damage Type is a special case that will always bypass damage mitigation sources. See **Module Configuration** below for details.
+
+The second way to control the application of damage is through Damage Subtypes, which can be used to control which resource pool the damage will be applied to or other game system specific rules for the application of damage. Foundry VTT allows up to two resource bars for a token, and some game systems employ multiple "health" resource attributes. For example DnD5e has a single resource pool: Hit Points, but Savage Worlds Adventure Edition (SWADE) employs two (Wounds and Fatigue). Similarly TORG Eternety uses Shock and Wounds, and Legend of the Five Rings (L5R) uses Strife and Fatigue.
+
+An expample of a single resource system is DnD5e. The configuration settings and damage dialog box for DnD5e are shown below. Note there are no radio buttons displayed for the selection of damage subtype since there is only one subtype defined. The tokens each have just one resource bar corresponding to their Hit Points - the attributes for which are configured in the module settings.
+
+![screenshot](screenshot_5.png)
+
+An example of a two resource system is L5R. The configuration settings and damage dialog box for DnD5e are shown below. Note in this case there are two damage subtypes selectable via radio buttons below the Amount input box. Whenever there are two subtypes defined the first one defined will be the default.
+
+![screenshot](screenshot_6.png)
+
+The Primary Damage Subtype is an optional field when configuring Token Health, however the Primary Health Pool and corresponding Max are required. The Secondary Health Pool and its corresponding Max are only required if a Secondary Damage Type is defined. In some cases you may need more than one damage subtype when both types affect the same health pool. For example in the AGE System the two damage subtypes are Wound and Stun, where Stun damage can at most incapacitate an actor while Wound damage is able to kill. 
+
+An example of a single resouce system with two damage subtypes is AGE. The configuration settings and damage dialog are shown below. Note that as the AGE system also employed Damage Types and Mitigation Sources there is also a Damage Type pulldown menu in the Token Health dialog.
+
+![screenshot](screenshot_7.png)
+
+The "Stun" damage subtype is a special case in that like the "Penetrating" damage type special rules are applied. In the case of "Stun" damage, no matter how much damage is applied it will never reduce the health pool past the point of unconciousness.
+
 ### Output to Chat
 
 Token Health will optionally create chat messages from each affected token indicating the effect and how much actual damage was done or healing received. This is particularly useful when applying damage to multiple tokens where damage mitigation is being employed and each token may be mitigating a different amount of damage.
@@ -68,15 +94,15 @@ Token Health will optionally create chat messages from each affected token indic
 - Token chat messages default to language localizations, but each case may be overridden via module settings so they'll say what you want them to say
 
 ### Support for Additive Damage System
-By default Token Health assumes that damage is to be subtracted from a current health value and that healing is added to health with a cap at a max health value. This works great for any system like D&D with a health or hp pool; however such behavior is incompatible with systems where damage is additive - i.e. increasing from a base of 0 until some maximum threshold is reached or exceeded resulting in unconcousness or death.
+By default Token Health assumes that damage is to be subtracted from a current health value and that healing is added to health with a cap at a max health value. This works great for any system like D&D with a health or hp pool; however such behavior is incompatible with systems where damage is additive - i.e. increasing from a base of 0 until some maximum threshold is reached or exceeded resulting in unconcousness, death or some other incapacitation.
 
-Additive damage systems like SWADE and L5R5E are supported by checking the setting for Additive Damage in the Module Configuration. In such systems healing will decrease the value whereas appling damage will increase it.
+Additive damage systems like SWADE, L5R5E and TORG Eternity are supported by checking the setting for Additive Damage in the Module Configuration. In such systems healing will decrease the value whereas appling damage will increase it.
 
 ### AGE System Specific Features
 
 - Damage Buyoff may be selected from the Module Configuration Screen (implements Injured and Wounded conditions)
-- Damage Type may be selected from the pull down menu to the right of the Amount entry field
-- Damage Subtype may be selected from the radio buttons below the Amount entry field
+- Damage Types (Impact, Ballisitc & Penetrating) are predefined and may be selected from the pull down menu to the right of the Amount entry field
+- Damage Subtypes (Wound & Stun) are predefined and may be selected from the radio buttons below the Amount entry field
 	- Wound damage may result in death and can trigger Damage Buyoff if that feature is enabled via Module Settings
 	- Stun damage never results in death but can cause unconsciousness
 - Additional Belter translation of Token Chat messages if the effected token has it's Origin set to Belter (Specific to The Expanse)
@@ -87,7 +113,7 @@ Damage Type selections are Impact (default), Ballisitic, and Penetraiting
 - If Impact is selected, then either ordinary (impact) or specialized (ballisitic) armor will help to reduce the damage done
 - If Ballistic is selected as the Damage Type, then only ballistic armor will be used for the armor-based mitigation of damage
 - If Penetrating is selected, then all armor and/or tougness are bypassed and the full damage is applied
-- NOTE: Damage mitigation by Tougness is set in the Game Settings in conjunction with the Damage Mitigation Attributes. If included, then Tougness adds to armor for Impact or Ballistic damage mitigation.
+- NOTE: Damage mitigation by Tougness is set in the **Game Settings** in conjunction with the Damage Mitigation Attributes. If included, then Tougness adds to armor for Impact or Ballistic damage mitigation.
 - Healing is **never** mitigated by armor or toughness
 
 ![screenshot](screenshot_detail.png)
