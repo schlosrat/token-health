@@ -897,8 +897,21 @@ const displayOverlay = async (isDamage, isTargeted = false) => {
   }
   // let allowPenetratingDamage = false;
   let helpText = `${i18n('TOKEN_HEALTH.Dialog_Help')}`
-  let damageTypes = [CONFIG.DAMAGE_TYPE_1, CONFIG.DAMAGE_TYPE_2, CONFIG.DAMAGE_TYPE_3];
-  let damageSubtypes = [CONFIG.DAMAGE_SUBTYPE_1, CONFIG.DAMAGE_SUBTYPE_2]
+  let damageType1 = CONFIG.DAMAGE_TYPE_1;
+  let damageType2 = CONFIG.DAMAGE_TYPE_2;
+  let damageType3 = CONFIG.DAMAGE_TYPE_3;
+  let damageTypes = [];
+  if (damageType1.length > 0) damageTypes.push(damageType1);
+  if (damageType2.length > 0) damageTypes.push(damageType2);
+  if (damageType3.length > 0) damageTypes.push(damageType3);
+  console.log(damageType1, damageType2, damageType3, damageTypes)
+  // let damageTypes = [CONFIG.DAMAGE_TYPE_1, CONFIG.DAMAGE_TYPE_2, CONFIG.DAMAGE_TYPE_3];
+  let damageSubtype1 = CONFIG.DAMAGE_SUBTYPE_1;
+  let damageSubtype2 = CONFIG.DAMAGE_SUBTYPE_2;
+  let damageSubtypes = [];
+  if (damageSubtype1.length > 0) damageSubtypes.push(damageSubtype1);
+  if (damageSubtype2.length > 0) damageSubtypes.push(damageSubtype2);
+  console.log(damageSubtype1, damageSubtype2, damageSubtypes)
   // let defaultSubtype = CONFIG.DAMAGE_SUBTYPE_1; // "wound";
   // console.log(defaultSubtype)
   if (game.system.id === "age-system") {
