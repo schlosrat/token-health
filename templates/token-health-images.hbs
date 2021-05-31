@@ -10,19 +10,20 @@
         <div class="flexrow">
             <b><large><label style="margin: 5px" for="token-health-input">{{localize "TOKEN_HEALTH.Amount"}}</label></large></b>
             <input id="token-health-input" type="number" data-dtype="Number" name="amount" min="0" max="999"/>
-            {{#if allowPenetratingDamage}}
-                <label style="margin-left: 25px" for="token-health-checkbox">{{localize "TOKEN_HEALTH.DamageType"}}</label>
-                <select id="token-health-damage-type" name="damage-type">
-                    <option value="impact">Impact</option>
-                    <option value="ballistic">Ballistic</option>
-                    <option Value="penetrating">Penetrating</option>
+            {{#if damageTypes}}
+                <label style="margin-left: 25px" for="token-health-checkbox">{{localize "TOKEN_HEALTH.damageTypeLabel"}}</label>
+                <select id="token-health-damageType" name="damageType">
+                    {{#each damageTypes as |t idx|}}
+                        <option value="{{t}}">{{t}}</option>
+                    {{/each}}
                 </select>
             {{/if}}
         </div>
-        {{#if allowPenetratingDamage}}
+        {{#if damageSubtypes}}
             <div class="row">
-                <label style="margin: 15px"><input type="radio" name="subtype" value="wound" {{{isChecked defaultSubtype "wound"}}}>Wound</label>
-                <label style="margin: 15px"><input type="radio" name="subtype" value="stun" {{{isChecked defaultSubtype "stun"}}}>Stun</label>
+                {{#each damageSubtypes}}
+                    <label style="margin: 15px"><input type="radio" name="damageSubtype" value="{{this}}" {{isChecked @index "0"}}>{{this}}</label>
+                {{/each}}
             </div>
         {{/if}}
         <p><small>{{helpText}}</small></p>

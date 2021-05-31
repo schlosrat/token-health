@@ -31,9 +31,17 @@ const DEFAULT = {
     shift: true
     },
   */
-  HITPOINTS_ATTRIBUTE: '',
-  MAX_HITPOINTS_ATTRIBUTE: '',
-  TEMP_HITPOINTS_ATTRIBUTE: '',
+  DAMAGE_TYPE_1: '',
+  DAMAGE_TYPE_2: '',
+  DAMAGE_TYPE_3: '',
+  DAMAGE_SUBTYPE_1: '',
+  HITPOINTS_ATTRIBUTE_1: '',
+  MAX_HITPOINTS_ATTRIBUTE_1: '',
+  TEMP_HITPOINTS_ATTRIBUTE_1: '',
+  DAMAGE_SUBTYPE_2: '',
+  HITPOINTS_ATTRIBUTE_2: '',
+  MAX_HITPOINTS_ATTRIBUTE_2: '',
+  TEMP_HITPOINTS_ATTRIBUTE_2: '',
   MITIGATION_ATTRIBUTE_1: '',
   MITIGATION_ATTRIBUTE_2: '',
   MITIGATION_ATTRIBUTE_3: '',
@@ -44,8 +52,8 @@ const DEFAULT = {
   ALLOW_DAMAGE_BUYOFF: false,
   ENABLE_TOKEN_CHAT: true,
   ENABLE_TOKEN_IMAGES: true,
-  ENABLE_CONDITIONS: true,
-  DAMAGE_ADDS: false,
+  ENABLE_CONDITIONS: false,
+  ADDITIVE_DAMAGE: false,
 };
 
 /**
@@ -54,47 +62,46 @@ const DEFAULT = {
 const setDefaults = () => {
   // Default to system values
   if (game.system.id === 'dnd5e' || game.system.id === 'pf1' || game.system.id === 'pf2e') {
-    DEFAULT.HITPOINTS_ATTRIBUTE = 'attributes.hp.value';
-    DEFAULT.MAX_HITPOINTS_ATTRIBUTE = 'attributes.hp.max';
-    DEFAULT.TEMP_HITPOINTS_ATTRIBUTE = 'attributes.hp.temp';
-    DEFAULT.ALLOW_DAMAGE_BUYOFF = false;
-    DEFAULT.KO_THRESHOLD = 0;
-    DEFAULT.DEATH_THRESHOLD = 0;
-    DEFAULT.DAMAGE_ADDS = false;
-    DEFAULT.ENABLE_CONDITIONS = false;
+    DEFAULT.HITPOINTS_ATTRIBUTE_1 = 'attributes.hp.value';
+    DEFAULT.MAX_HITPOINTS_ATTRIBUTE_1 = 'attributes.hp.max';
+    DEFAULT.TEMP_HITPOINTS_ATTRIBUTE_1 = 'attributes.hp.temp';
   } else if (game.system.id === 'swade'){
-    DEFAULT.HITPOINTS_ATTRIBUTE = 'wounds.value';
-    DEFAULT.MAX_HITPOINTS_ATTRIBUTE = 'wounds.max';
-    DEFAULT.ALLOW_DAMAGE_BUYOFF = false;
-    DEFAULT.KO_THRESHOLD = 0;
-    DEFAULT.DEATH_THRESHOLD = 0;
-    DEFAULT.DAMAGE_ADDS = true;
-    DEFAULT.ENABLE_CONDITIONS = false;
+    DEFAULT.DAMAGE_SUBTYPE_1 = 'Wounds',
+    DEFAULT.HITPOINTS_ATTRIBUTE_1 = 'wounds.value';
+    DEFAULT.MAX_HITPOINTS_ATTRIBUTE_1 = 'wounds.max';
+    DEFAULT.DAMAGE_SUBTYPE_2 = 'Fatigue',
+    DEFAULT.HITPOINTS_ATTRIBUTE_2 = 'fatigue.value';
+    DEFAULT.MAX_HITPOINTS_ATTRIBUTE_2 = 'fatigue.max';
+    DEFAULT.ADDITIVE_DAMAGE = true;
   } else if (game.system.id === 'l5r5e'){
-    DEFAULT.HITPOINTS_ATTRIBUTE = 'strife.value';
-    DEFAULT.MAX_HITPOINTS_ATTRIBUTE = 'strife.max';
-    DEFAULT.ALLOW_DAMAGE_BUYOFF = false;
-    DEFAULT.KO_THRESHOLD = 0;
-    DEFAULT.DEATH_THRESHOLD = 0;
-    DEFAULT.DAMAGE_ADDS = true;
-    DEFAULT.ENABLE_CONDITIONS = false;
+    DEFAULT.DAMAGE_SUBTYPE_1 = 'Strife',
+    DEFAULT.HITPOINTS_ATTRIBUTE_1 = 'strife.value';
+    DEFAULT.MAX_HITPOINTS_ATTRIBUTE_1 = 'strife.max';
+    DEFAULT.DAMAGE_SUBTYPE_2 = 'Fatigue',
+    DEFAULT.HITPOINTS_ATTRIBUTE_2 = 'fatigue.value';
+    DEFAULT.MAX_HITPOINTS_ATTRIBUTE_2 = 'fatigue.max';
+    DEFAULT.ADDITIVE_DAMAGE = true;
   } else if (game.system.id === 'torgeternity'){
-    DEFAULT.HITPOINTS_ATTRIBUTE = 'shock.value';
-    DEFAULT.MAX_HITPOINTS_ATTRIBUTE = 'shock.max';
-    DEFAULT.ALLOW_DAMAGE_BUYOFF = false;
-    DEFAULT.KO_THRESHOLD = 0;
-    DEFAULT.DEATH_THRESHOLD = 0;
-    DEFAULT.DAMAGE_ADDS = true;
-    DEFAULT.ENABLE_CONDITIONS = false;
+    DEFAULT.DAMAGE_SUBTYPE_1 = 'Wounds',
+    DEFAULT.HITPOINTS_ATTRIBUTE_1 = 'wounds.value';
+    DEFAULT.MAX_HITPOINTS_ATTRIBUTE_1 = 'wounds.max';
+    DEFAULT.DAMAGE_SUBTYPE_2 = 'Shock',
+    DEFAULT.HITPOINTS_ATTRIBUTE_2 = 'shock.value';
+    DEFAULT.MAX_HITPOINTS_ATTRIBUTE_2 = 'shock.max';
+    DEFAULT.ADDITIVE_DAMAGE = true;
   } else if (game.system.id === 'age-system') {
-    DEFAULT.HITPOINTS_ATTRIBUTE = 'health.value';
-    DEFAULT.MAX_HITPOINTS_ATTRIBUTE = 'health.max';
+    DEFAULT.DAMAGE_TYPE_1 = 'Impact',
+    DEFAULT.DAMAGE_TYPE_2 = 'Ballistic',
+    DEFAULT.DAMAGE_TYPE_3 = 'Penetrating',
+    DEFAULT.DAMAGE_SUBTYPE_1 = 'Wound',
+    DEFAULT.HITPOINTS_ATTRIBUTE_1 = 'health.value';
+    DEFAULT.MAX_HITPOINTS_ATTRIBUTE_1 = 'health.max';
+    DEFAULT.DAMAGE_SUBTYPE_2 = 'Stun',
+    DEFAULT.HITPOINTS_ATTRIBUTE_2 = 'health.value';
+    DEFAULT.MAX_HITPOINTS_ATTRIBUTE_2 = 'health.max';
     DEFAULT.MITIGATION_ATTRIBUTE_1 = 'armor.toughness.total';
     DEFAULT.MITIGATION_ATTRIBUTE_2 = 'armor.impact';
     DEFAULT.MITIGATION_ATTRIBUTE_3 = 'armor.ballistic';
-    DEFAULT.KO_THRESHOLD = 0;
-    DEFAULT.DEATH_THRESHOLD = 0;
-    DEFAULT.DAMAGE_ADDS = false;
     DEFAULT.ENABLE_CONDITIONS = true;
     if (game.settings.get("age-system", "useConditions")) {
       DEFAULT.ALLOW_DAMAGE_BUYOFF = true; // this may be questionable...
@@ -102,13 +109,8 @@ const setDefaults = () => {
       DEFAULT.ALLOW_DAMAGE_BUYOFF = false;
     }
   } else {
-    DEFAULT.HITPOINTS_ATTRIBUTE = 'health.value';
-    DEFAULT.MAX_HITPOINTS_ATTRIBUTE = 'health.max';
-    DEFAULT.ALLOW_DAMAGE_BUYOFF = false;
-    DEFAULT.KO_THRESHOLD = 0;
-    DEFAULT.DEATH_THRESHOLD = 0;
-    DEFAULT.DAMAGE_ADDS = false;
-    DEFAULT.ENABLE_CONDITIONS = false;
+    DEFAULT.HITPOINTS_ATTRIBUTE_1 = 'health.value';
+    DEFAULT.MAX_HITPOINTS_ATTRIBUTE_1 = 'health.max';
   }
 };
 
@@ -135,10 +137,6 @@ const initSetting = (key, setting) => {
 
   return config;
 };
-
-// SDR: Must get away from window.Azzu.SettingsTypes.KeyBinding (borken in 0.8.x)
-// Switching to DF Hotkeys
-// const KeyBinding = window.Azzu.SettingsTypes.KeyBinding;
 
 //KEYBIND SETTINGS
 /*
@@ -191,6 +189,7 @@ game.settings.register("token-health", "toggleKeyTargetAlt", {
 export default () => {
   setDefaults();
 
+  /*************** TOKEN HEALTH HOTKEY SETTINGS ***************/
   // Hotkey defalt for applying damage to selected token(s) 
   CONFIG.TOGGLE_KEY_BASE = initSetting('toggleKey', {
     name: i18n('TOKEN_HEALTH.toggleKeyName'),
@@ -261,6 +260,8 @@ export default () => {
       CONFIG.TOGGLE_KEY_TARGET_ALT = key;
     },
   });
+
+  /*************** TOKEN HEALTH CONFIGURATION SETTINGS ***************/
   // Enable/disable display of token thumbnail images in dialog box
   CONFIG.ENABLE_TOKEN_IMAGES = initSetting('enableTokenImages', {
     name: i18n('TOKEN_HEALTH.enableTokenImages'),
@@ -273,19 +274,19 @@ export default () => {
       CONFIG.ENABLE_TOKEN_IMAGES = key;
     },
   });
-  // Enable/disable Additive Damage
-  CONFIG.DAMAGE_ADDS = initSetting('damageAdds', {
+  // Enable/disable Additive Damage (for systems like SWADE, L5R5E, and TORG)
+  CONFIG.ADDITIVE_DAMAGE = initSetting('damageAdds', {
     name: i18n('TOKEN_HEALTH.damageAdds'),
     hint: i18n('TOKEN_HEALTH.damageAddsHint'),
     type: Boolean,
-    default: DEFAULT.DAMAGE_ADDS,
+    default: DEFAULT.ADDITIVE_DAMAGE,
     scope: 'world',
     config: true,
     onChange: key => {
-      CONFIG.DAMAGE_ADDS = key;
+      CONFIG.ADDITIVE_DAMAGE = key;
     },
   });
-  // Enable/Disable Setting Condition s (AGE-Specific)
+  // Enable/Disable Setting Condition s (AGE System Specific)
   CONFIG.ENABLE_CONDITIONS = initSetting('enableConditions', {
     name: i18n('TOKEN_HEALTH.enableConditions'),
     hint: i18n('TOKEN_HEALTH.enableConditionsHint'),
@@ -297,7 +298,7 @@ export default () => {
       CONFIG.ENABLE_CONDITIONS = key;
     },
   });
-  // Permit Buyoff of Damage (AGE-System Specific)
+  // Permit Buyoff of Damage (AGE System Specific)
   CONFIG.ALLOW_DAMAGE_BUYOFF = initSetting('allowDamageBuyoff', {
     name: i18n('TOKEN_HEALTH.allowDamageBuyoff'),
     hint: i18n('TOKEN_HEALTH.allowDamageBuyoffHint'),
@@ -309,41 +310,134 @@ export default () => {
       CONFIG.ALLOW_DAMAGE_BUYOFF = key;
     },
   });
-  // Attribute recording current health
-  CONFIG.HITPOINTS_ATTRIBUTE = initSetting('hpSource', {
-    name: i18n('TOKEN_HEALTH.hp'),
+  // Primary damage type (optional)
+  CONFIG.DAMAGE_TYPE_1 = initSetting('damageType1', {
+    name: i18n('TOKEN_HEALTH.damageType1'),
+    hint: i18n('TOKEN_HEALTH.damageType1Hint'),
     type: String,
-    default: DEFAULT.HITPOINTS_ATTRIBUTE,
+    default: DEFAULT.DAMAGE_TYPE_1,
     scope: 'world',
     config: true,
     onChange: key => {
-      CONFIG.HITPOINTS_ATTRIBUTE = key;
+      CONFIG.DAMAGE_TYPE_1 = key;
+    },
+  });
+  // Secondary damage type (optional)
+  CONFIG.DAMAGE_TYPE_2 = initSetting('damageType2', {
+    name: i18n('TOKEN_HEALTH.damageType2'),
+    hint: i18n('TOKEN_HEALTH.damageType2Hint'),
+    type: String,
+    default: DEFAULT.DAMAGE_TYPE_2,
+    scope: 'world',
+    config: true,
+    onChange: key => {
+      CONFIG.DAMAGE_TYPE_2 = key;
+    },
+  });
+  // Tertiary damage type (optional)
+  CONFIG.DAMAGE_TYPE_3 = initSetting('damageType3', {
+    name: i18n('TOKEN_HEALTH.damageType3'),
+    hint: i18n('TOKEN_HEALTH.damageType3Hint'),
+    type: String,
+    default: DEFAULT.DAMAGE_TYPE_3,
+    scope: 'world',
+    config: true,
+    onChange: key => {
+      CONFIG.DAMAGE_TYPE_3 = key;
+    },
+  });
+  // Primary damage subtype (optional)
+  CONFIG.DAMAGE_SUBTYPE_1 = initSetting('damageSubtype1', {
+    name: i18n('TOKEN_HEALTH.damageSubtype1'),
+    hint: i18n('TOKEN_HEALTH.damageSubtype1Hint'),
+    type: String,
+    default: DEFAULT.DAMAGE_SUBTYPE_1,
+    scope: 'world',
+    config: true,
+    onChange: key => {
+      CONFIG.DAMAGE_SUBTYPE_1 = key;
+    },
+  });
+  // Attribute recording current health
+  CONFIG.HITPOINTS_ATTRIBUTE_1 = initSetting('hpSource1', {
+    name: i18n('TOKEN_HEALTH.hp1'),
+    type: String,
+    default: DEFAULT.HITPOINTS_ATTRIBUTE_1,
+    scope: 'world',
+    config: true,
+    onChange: key => {
+      CONFIG.HITPOINTS_ATTRIBUTE_1 = key;
     },
   });
   // Attribute recording max possible health
-  CONFIG.MAX_HITPOINTS_ATTRIBUTE = initSetting('hpSourceMax', {
-    name: i18n('TOKEN_HEALTH.hpMax'),
+  CONFIG.MAX_HITPOINTS_ATTRIBUTE_1 = initSetting('hpSourceMax1', {
+    name: i18n('TOKEN_HEALTH.hpMax1'),
     type: String,
-    default: DEFAULT.MAX_HITPOINTS_ATTRIBUTE,
+    default: DEFAULT.MAX_HITPOINTS_ATTRIBUTE_1,
     scope: 'world',
     config: true,
     onChange: key => {
-      CONFIG.MAX_HITPOINTS_ATTRIBUTE = key;
+      CONFIG.MAX_HITPOINTS_ATTRIBUTE_1 = key;
     },
   });
   // Attribute for recording/tracking temporary health
-  CONFIG.TEMP_HITPOINTS_ATTRIBUTE = initSetting('tempHpSource', {
-    name: i18n('TOKEN_HEALTH.tempHp'),
+  CONFIG.TEMP_HITPOINTS_ATTRIBUTE_1 = initSetting('tempHpSource1', {
+    name: i18n('TOKEN_HEALTH.tempHp1'),
     hint: i18n('TOKEN_HEALTH.tempHpHint'),
     type: String,
-    default: DEFAULT.TEMP_HITPOINTS_ATTRIBUTE,
+    default: DEFAULT.TEMP_HITPOINTS_ATTRIBUTE_1,
     scope: 'world',
     config: true,
     onChange: key => {
-      CONFIG.TEMP_HITPOINTS_ATTRIBUTE = key;
+      CONFIG.TEMP_HITPOINTS_ATTRIBUTE_1 = key;
     },
   });
-  // Primary damage mitigation attribute (optional)
+  // Secondary damage type (optional)
+  CONFIG.DAMAGE_SUBTYPE_2 = initSetting('damageSubtype2', {
+    name: i18n('TOKEN_HEALTH.damageSubtype2'),
+    hint: i18n('TOKEN_HEALTH.damageSubtype2Hint'),
+    type: String,
+    default: DEFAULT.DAMAGE_SUBTYPE_2,
+    scope: 'world',
+    config: true,
+    onChange: key => {
+      CONFIG.DAMAGE_SUBTYPE_2 = key;
+    },
+  });
+  // Attribute recording current health
+  CONFIG.HITPOINTS_ATTRIBUTE_2 = initSetting('hpSource2', {
+    name: i18n('TOKEN_HEALTH.hp2'),
+    type: String,
+    default: DEFAULT.HITPOINTS_ATTRIBUTE_2,
+    scope: 'world',
+    config: true,
+    onChange: key => {
+      CONFIG.HITPOINTS_ATTRIBUTE_2 = key;
+    },
+  });
+  // Attribute recording max possible health
+  CONFIG.MAX_HITPOINTS_ATTRIBUTE_2 = initSetting('hpSourceMax2', {
+    name: i18n('TOKEN_HEALTH.hpMax2'),
+    type: String,
+    default: DEFAULT.MAX_HITPOINTS_ATTRIBUTE_2,
+    scope: 'world',
+    config: true,
+    onChange: key => {
+      CONFIG.MAX_HITPOINTS_ATTRIBUTE_2 = key;
+    },
+  });
+  // Attribute for recording/tracking temporary health
+  CONFIG.TEMP_HITPOINTS_ATTRIBUTE_2 = initSetting('tempHpSource2', {
+    name: i18n('TOKEN_HEALTH.tempHp2'),
+    hint: i18n('TOKEN_HEALTH.tempHpHint'),
+    type: String,
+    default: DEFAULT.TEMP_HITPOINTS_ATTRIBUTE_2,
+    scope: 'world',
+    config: true,
+    onChange: key => {
+      CONFIG.TEMP_HITPOINTS_ATTRIBUTE_2 = key;
+    },
+  });  // Primary damage mitigation attribute (optional)
   CONFIG.MITIGATION_ATTRIBUTE_1 = initSetting('mitigationSource1', {
     name: i18n('TOKEN_HEALTH.mitigation1'),
     hint: i18n('TOKEN_HEALTH.mitigation1Hint'),

@@ -34,13 +34,8 @@ class TokenHealthDialog extends Dialog {
  * @returns {Promise<Entity|Entity[]>}
  */
 const applyDamage = async (html, isDamage, isTargeted) => {
-  // Get the control parameter for treating damage as additive (escalating from a base of 0, vs. reducing from the pool of health available)
-  const dAdd = CONFIG.DAMAGE_ADDS;
-
   const value = html.find('input[type=number]').val();
   const damage = isDamage ? Number(value) : Number(value) * -1;
-  let df = 1;
-  if (dAdd) df = -1;
 
   // Set AGE-system specific things
   // useConditions controls if we use conditions for everything (if true) or only
@@ -50,24 +45,29 @@ const applyDamage = async (html, isDamage, isTargeted) => {
   //   Impact (mitigated by any armor type and toughness)
   //   Ballisitic (only mitigated by ballistic armor and toughness)
   //   Penetraiting (bypasses all armor and toughness)
-  let damageType = "impact";
+  let damageType = "normal";
   // AGE-System games allow for two damage subtypes
   //   Wound (may actually kill the character)
   //   Stun (may at most render the character unconscious)
-  let subtype = "wound";
+  let damageSubtype = "wound";
    
   if (game.system.id === 'age-system') {
     useConditions = isNewerVersion(game.system.data.version, "0.6.5") ? true : game.settings.get("age-system", "useConditions");
-    damageType = html.find('[name="damage-type"]')[0].value;
-    let wound = html.find('[name="subtype"]')[0].checked;
-    let stun = html.find('[name="subtype"]')[1].checked;
-    if (wound) {
-      subtype = "wound";
+  }
+  if (CONFIG.DAMAGE_TYPE_1) {
+    damageType = html.find('[name="damageType"]')[0].value;
+  }
+  let type1;
+  let type2;
+  if (CONFIG.DAMAGE_SUBTYPE_1) {
+    type1 = html.find('[name="damageSubtype"]')[0].checked;
+    type2 = html.find('[name="damageSubtype"]')[1].checked;
+    if (type1) {
+      damageSubtype = CONFIG.DAMAGE_SUBTYPE_1.toLowerCase();
     } else {
-      subtype = "stun";
+      damageSubtype = CONFIG.DAMAGE_SUBTYPE_2.toLowerCase();
     }
   }
-  //if (useConditions === undefined) useConditions = false;
 
   // Get the control paramater for enabling/disabling token chat
   let enableChat = CONFIG.ENABLE_TOKEN_CHAT;
@@ -89,10 +89,6 @@ const applyDamage = async (html, isDamage, isTargeted) => {
     if (deathThreshold < 0) deathThreshold = 0;
   }
 
-  // DEBUG TEST CODE - REMOVE! //
-  // console.log(deathThreshold)
-  // console.log(koThreshold)
-
   // This controls if damage buyoff is allowed (injured/wounded/dying)
   // verses going straight to dying when health gets to 0.
   const allowDamageBuyoff = CONFIG.ALLOW_DAMAGE_BUYOFF;
@@ -102,16 +98,35 @@ const applyDamage = async (html, isDamage, isTargeted) => {
     : canvas.tokens.controlled;
 
 
+  // Get the control parameter for treating damage as additive (escalating from a base of 0, vs. reducing from the pool of health available)
+  const dAdd = CONFIG.ADDITIVE_DAMAGE;
+  let df = 1;
+  if (dAdd) df = -1;
+
   const promises = tokens.map(({actor}) => {
-    // Handle temp hp if any
+    // Get the actor data structure
     const data = actor.data.data;
-    const hp = getProperty(data, CONFIG.HITPOINTS_ATTRIBUTE);
-    const max = getProperty(data, CONFIG.MAX_HITPOINTS_ATTRIBUTE);
-    const temp = getProperty(data, CONFIG.TEMP_HITPOINTS_ATTRIBUTE);
+    // Assume damageSubtype == type 1 and populate health values based on this
+
+    let hpSource = CONFIG.HITPOINTS_ATTRIBUTE_1;
+    let maxSource = CONFIG.MAX_HITPOINTS_ATTRIBUTE_1;
+    let tempSource = CONFIG.TEMP_HITPOINTS_ATTRIBUTE_1; // Handle temp hp if any
+
+    // If damageSubtype is type 2, then overwrite with the health values for that damage type
+    if (type2) {
+      hpSource = CONFIG.HITPOINTS_ATTRIBUTE_2;
+      maxSource = CONFIG.MAX_HITPOINTS_ATTRIBUTE_2;
+      tempSource = CONFIG.TEMP_HITPOINTS_ATTRIBUTE_2; // Handle temp hp if any
+    }
+
+    // Get the health, max-health, and temp-health for this damage subtype
+    const hp = getProperty(data, hpSource);
+    const max = getProperty(data, maxSource);
+    const temp = getProperty(data, tempSource);
 
     if (dAdd) {
-      koThreshold = max;
-      deathThreshold = max;
+      koThreshold = max; // In an additive damage system koThreshold = max health for this damage type
+      deathThreshold = max; // In an additive damage system deathThreshold = max health for this damage type
     }
 
     let isInjured     = false;
@@ -148,55 +163,61 @@ const applyDamage = async (html, isDamage, isTargeted) => {
     }
 
     // Default to full damage applied
-    let dapplied = df*damage;
+    let dapplied = damage;
 
     // Handle damage mitigation if allowed
     let mit1 = 0;
     let mit2 = 0;
     let mit3 = 0;
     let mit  = 0;
-    if (damageType != "penetrating") {
+    if (damageType != "Penetrating") {
       // Get the mitigation attributed
       mit1 = getProperty(data, CONFIG.MITIGATION_ATTRIBUTE_1);
       mit2 = getProperty(data, CONFIG.MITIGATION_ATTRIBUTE_2);
       mit3 = getProperty(data, CONFIG.MITIGATION_ATTRIBUTE_3);
+
       // Mitigation is only applied to damange, and not healing
       if (damage > 0) {
         if (mit1 != undefined) {
           mit = mit + mit1;
         }
-        if ((mit2 != undefined) && (damageType === "impact")) {
+        if ((mit2 != undefined) && (damageType === "Impact")) { // AGE-System specific! Make general?
           mit = mit + mit2;
         }
-        if ((mit3 != undefined) && (damageType === "ballistic")) {
+        if ((mit3 != undefined) && (damageType === "Ballistic")) { // AGE-System specific! Make General?
           mit = mit + mit3;
         }
-        dapplied = df*Math.max(damage - mit, 0);
+        dapplied = Math.max(damage - mit, 0);
       }
     }
 
     let anounceGM = '';
     let anouncePlayer = '';
-    if (df*dapplied > 1) {
+    if (dapplied > 1) { // multiple points of damage applied
       anouncePlayer = CONFIG.OUCH;
-      anounceGM = df*dapplied + " " + CONFIG.DAMAGE_POINTS;
+      anounceGM = dapplied + " " + CONFIG.DAMAGE_POINTS + " (" + damageSubtype + ")";
     }
-    if (df*dapplied === 1) {
+    if (dapplied === 1) { // One point of damage applied
       anouncePlayer = CONFIG.OUCH;
-      anounceGM = CONFIG.DAMAGE_POINT;
+      anounceGM = CONFIG.DAMAGE_POINT + " (" + damageSubtype + ")";
     }
-    if (dapplied === 0) {
+    if (dapplied === 0) { // No effective damage applied
       anouncePlayer = CONFIG.MEH;
       anounceGM = anouncePlayer;
     }
-    if (df*dapplied < 0) {
+    if (dapplied < 0) { // Healing applied (negative damage is healing)
       anouncePlayer = CONFIG.TY;
-      if (hp < max) {
-        if ((df*dapplied === -1) || ((max - hp) === 1)) {
-          anounceGM = CONFIG.HEALING_POINT;
-        } else {
-          anounceGM = Math.min(-df*dapplied, df*(max - hp)) + " " + CONFIG.HEALING_POINTS;
-        }
+      // Compute healing capacity
+      let healingCapacity = 0;
+      if (dAdd) {
+        healingCapacity = hp; // hp is really the amount of damage taken
+      } else {
+        healingCapacity = max - hp; // damage is the difference between max and hp
+      }
+      if ((dapplied === -1) || (healingCapacity === 1)) {
+        anounceGM = CONFIG.HEALING_POINT + " (" + damageSubtype + ")";
+      } else if ((dapplied < -1) && (healingCapacity > 1)) {
+        anounceGM = Math.min(-dapplied, healingCapacity) + " " + CONFIG.HEALING_POINTS + " (" + damageSubtype + ")";
       } else {
         anouncePlayer = CONFIG.MEH;
         anounceGM = anouncePlayer;
@@ -204,27 +225,41 @@ const applyDamage = async (html, isDamage, isTargeted) => {
     }
 
     if (enableChat) {
-      console.log(actor)
-      console.log(ChatMessage.getSpeaker({actor: actor}))
       ChatMessage.create({content: anouncePlayer, speaker: ChatMessage.getSpeaker({actor: actor})});
       ChatMessage.create({content: anounceGM, speaker: ChatMessage.getSpeaker({actor: actor}),
         whisper: ChatMessage.getWhisperRecipients("GM")});
     }
-    const [newHP, newTempHP] = getNewHP(hp, max, temp, dapplied, {
+    const [newHP, newTempHP] = getNewHP(hp, max, temp, df*dapplied, {
       allowNegative: CONFIG.ALLOW_NEGATIVE,
     });
 
     // Deal with all cases that could result in Injured/Wounded/Dying conditions
-    if (df*(hp - dapplied) < df*deathThreshold) {
-      if (allowDamageBuyoff) {
-        // call ageDamageBuyoff to handle any excess damage
-        ageDamageBuyoff(actor, df*(dapplied - hp));
-      } else {
-        // They're going down!
-        ageNoDamageBuyoff(actor, df*(dapplied - hp));
+    let damageCapacity = 0;
+    if (dAdd) {
+      damageCapacity = deathThreshold - hp;
+    } else {
+      damageCapacity = hp - deathThreshold;
+    }
+
+    if (damageSubtype == "stun") {
+      if (dapplied >= damageCapacity) {
+        // Set KO State
+        isUnconscious = true;
+        actor.setFlag("world", "unconscious", isUnconscious);
+        // Announce KO State
+        anouncePlayer = CONFIG.UNCONSCIOUS;
+        if (enableChat) ChatMessage.create({content: anouncePlayer, speaker: ChatMessage.getSpeaker({actor: actor})});
       }
-    } else if (koThreshold != undefined) {
-      if (df*(hp - dapplied) < df*koThreshold) {
+    } else {
+      if (dapplied > damageCapacity) {
+        if (allowDamageBuyoff) {
+          // call ageDamageBuyoff to handle any excess damage
+          ageDamageBuyoff(actor, dapplied - damageCapacity);
+        } else {
+          // They're going down!
+          ageNoDamageBuyoff(actor, dapplied - damageCapacity);
+        }
+      } else if (dapplied >= damageCapacity) {
         // Set KO State
         isUnconscious = true;
         actor.setFlag("world", "unconscious", isUnconscious);
@@ -235,15 +270,24 @@ const applyDamage = async (html, isDamage, isTargeted) => {
     }
 
     // If healing was applied
-    if (df*dapplied < 0) {
-      // If charcater was unconcious and this raises HP above koThreshold
-      if (df*newHP > df*koThreshold && isUnconscious) isUnconscious = false;
-      // If charcater was dying and this raises HP above deathThreshold
-      if (df*newHP > df*deathThreshold && isDying) isDying = false;
+    if (dapplied < 0) {
+      if (dAdd) {
+        // If charcater was unconcious and this raises HP above koThreshold
+        if (newHP > koThreshold && isUnconscious) isUnconscious = false;
+        // If charcater was dying and this raises HP above deathThreshold
+        if (newHP > deathThreshold && isDying) isDying = false;
+      } else {
+        // If charcater was unconcious and this lowers HP below koThreshold
+        if (newHP < koThreshold && isUnconscious) isUnconscious = false;
+        // If charcater was dying and this lowers HP below deathThreshold
+        if (newHP < deathThreshold && isDying) isDying = false;
+      }
       if (!CONFIG.ALLOW_DAMAGE_BUYOFF && !isDying && !isUnconscious) {
         isInjured = false;
         isWounded = false;
       }
+
+      // Update flags and conditions]
       actor.setFlag("world", "injured", isInjured);
       actor.setFlag("world", "wounded", isWounded);
       actor.setFlag("world", "unconscious", isUnconscious);
@@ -274,6 +318,32 @@ const applyDamage = async (html, isDamage, isTargeted) => {
           }
         }
       }
+    } else {
+      if (game.system.id === 'age-system') {
+        if (enableConditions) { // Control automatic vs. manual setting of conditions
+          if (useConditions) { // if using conditions only cure dying/helpless/unconscious
+            actor.update({
+              "data": {
+                "conditions.helpless": isUnconscious,
+                "conditions.unconscious": isUnconscious,
+              }
+            });
+          } else { // If not using conditions then all conditions should be false
+            actor.update({
+              "data": {
+                "conditions.dying": false,
+                "conditions.helpless": false,
+                "conditions.unconscious": false,
+                "conditions.injured": false,
+                "conditions.wounded": false,
+                "conditions.fatigued": false,
+                "conditions.exhausted": false,
+                "conditions.prone": false,
+              }
+            });
+          }
+        }
+      }      
     }
 
     let updates = {}
@@ -281,16 +351,14 @@ const applyDamage = async (html, isDamage, isTargeted) => {
       updates = {
         _id: actor.id,
         isToken: actor.isToken,
-        [`data.${CONFIG.HITPOINTS_ATTRIBUTE || 'attributes.hp.value'}`]: newHP,
-        [`data.${
-          CONFIG.TEMP_HITPOINTS_ATTRIBUTE || 'attributes.hp.temp'
-        }`]: newTempHP,
+        [`data.${hpSource || 'attributes.hp.value'}`]: newHP,
+        [`data.${tempSource || 'attributes.hp.temp'}`]: newTempHP,
       };
     } else {
       updates = {
         _id: actor.id,
         isToken: actor.isToken,
-        [`data.${CONFIG.HITPOINTS_ATTRIBUTE || 'attributes.hp.value'}`]: newHP,
+        [`data.${hpSource || 'attributes.hp.value'}`]: newHP,
       };
     }
 
@@ -827,11 +895,14 @@ const displayOverlay = async (isDamage, isTargeted = false) => {
     // Show first four thumbnails (4th cut in half) with gradually decreasing opacity
     thumbnails = tokens.slice(0, 4).map((t, idx) => ({ image: t.data.img, opacity: (1 - 0.15 * idx) }))
   }
-  let allowPenetratingDamage = false;
+  // let allowPenetratingDamage = false;
   let helpText = `${i18n('TOKEN_HEALTH.Dialog_Help')}`
-  let defaultSubtype = "wound";
+  let damageTypes = [CONFIG.DAMAGE_TYPE_1, CONFIG.DAMAGE_TYPE_2, CONFIG.DAMAGE_TYPE_3];
+  let damageSubtypes = [CONFIG.DAMAGE_SUBTYPE_1, CONFIG.DAMAGE_SUBTYPE_2]
+  // let defaultSubtype = CONFIG.DAMAGE_SUBTYPE_1; // "wound";
+  // console.log(defaultSubtype)
   if (game.system.id === "age-system") {
-    allowPenetratingDamage = true;
+    // allowPenetratingDamage = true;
     helpText = [helpText, `${i18n('TOKEN_HEALTH.Dialog_Penetration_Help')}`].join('  ')
   }
   // Determine if damage mitigation is configured
@@ -846,7 +917,7 @@ const displayOverlay = async (isDamage, isTargeted = false) => {
   if (CONFIG.ENABLE_TOKEN_IMAGES){
     const content = await renderTemplate(
       `modules/token-health/templates/token-health-images.hbs`,
-      { thumbnails, allowPenetratingDamage, helpText, defaultSubtype },
+      {thumbnails, damageTypes, damageSubtypes, helpText},
     );
     // Render the dialog
     dialog = new TokenHealthDialog({
@@ -863,7 +934,7 @@ const displayOverlay = async (isDamage, isTargeted = false) => {
   } else {
     const content = await renderTemplate(
       `modules/token-health/templates/token-health.hbs`,
-      { allowPenetratingDamage, helpText, defaultSubtype },
+      {damageTypes, damageSubtypes, helpText},
     );
     // Render the dialog
     dialog = new TokenHealthDialog({
@@ -882,6 +953,8 @@ const displayOverlay = async (isDamage, isTargeted = false) => {
 
 
 Handlebars.registerHelper('isChecked', function(value, test) {
+  // console.log(value)
+  // console.log(test)
   if (value == undefined) return '';
   return value==test ? 'checked' : '';
 });
