@@ -432,7 +432,7 @@ const ageDamageBuyoff = async(thisActor, dRemaining) => {
   }
 
   if (game.system.id === 'age-system') {
-    useConditions = game.settings.get("age-system", "useConditions");
+    // useConditions = game.settings.get("age-system", "useConditions");
     conditions = thisActor .data.data.conditions;
     abilities = thisActor .data.data.abilities;
     // speed = thisActor .data.data.speed;
