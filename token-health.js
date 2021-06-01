@@ -38,9 +38,6 @@ const applyDamage = async (html, isDamage, isTargeted) => {
   const damage = isDamage ? Number(value) : Number(value) * -1;
 
   // Set AGE-system specific things
-  // useConditions controls if we use conditions for everything (if true) or only
-  // for tacking actor health status (if false)
-  let useConditions = false; // Default to false for non AGE-System games
   // AGE-System games and allow for different damage types of 
   //   Impact (mitigated by any armor type and toughness)
   //   Ballisitic (only mitigated by ballistic armor and toughness)
@@ -51,9 +48,6 @@ const applyDamage = async (html, isDamage, isTargeted) => {
   //   Stun (may at most render the character unconscious)
   let damageSubtype = "wound";
    
-  if (game.system.id === 'age-system') {
-    useConditions = isNewerVersion(game.system.data.version, "0.6.5") ? true : game.settings.get("age-system", "useConditions");
-  }
   if (CONFIG.DAMAGE_TYPE_1) {
     damageType = html.find('[name="damageType"]')[0].value;
   }
@@ -294,54 +288,24 @@ const applyDamage = async (html, isDamage, isTargeted) => {
       actor.setFlag("world", "dying", isDying);
       if (game.system.id === 'age-system') {
         if (enableConditions) { // Control automatic vs. manual setting of conditions
-          if (useConditions) { // if using conditions only cure dying/helpless/unconscious
-            actor.update({
-              "data": {
-                "conditions.dying": false,
-                "conditions.helpless": false,
-                "conditions.unconscious": false,
-              }
-            });
-          } else { // If not using conditions then all conditions should be false
-            actor.update({
-              "data": {
-                "conditions.dying": false,
-                "conditions.helpless": false,
-                "conditions.unconscious": false,
-                "conditions.injured": false,
-                "conditions.wounded": false,
-                "conditions.fatigued": false,
-                "conditions.exhausted": false,
-                "conditions.prone": false,
-              }
-            });
-          }
+          actor.update({
+            "data": {
+              "conditions.dying": false,
+              "conditions.helpless": false,
+              "conditions.unconscious": false,
+            }
+          });
         }
       }
     } else {
       if (game.system.id === 'age-system') {
         if (enableConditions) { // Control automatic vs. manual setting of conditions
-          if (useConditions) { // if using conditions only cure dying/helpless/unconscious
-            actor.update({
-              "data": {
-                "conditions.helpless": isUnconscious,
-                "conditions.unconscious": isUnconscious,
-              }
-            });
-          } else { // If not using conditions then all conditions should be false
-            actor.update({
-              "data": {
-                "conditions.dying": false,
-                "conditions.helpless": false,
-                "conditions.unconscious": false,
-                "conditions.injured": false,
-                "conditions.wounded": false,
-                "conditions.fatigued": false,
-                "conditions.exhausted": false,
-                "conditions.prone": false,
-              }
-            });
-          }
+          actor.update({
+            "data": {
+              "conditions.helpless": isUnconscious,
+              "conditions.unconscious": isUnconscious,
+            }
+          });
         }
       }      
     }
@@ -395,7 +359,6 @@ const ageDamageBuyoff = async(thisActor, dRemaining) => {
   let isHelpless    = false;
   // let speedMod      = 0;
   // let speedTotal    = 0;
-  let useConditions = false;
 
   // Get the control paramater for enabling/disabling token chat
   let enableChat = CONFIG.ENABLE_TOKEN_CHAT;
@@ -432,7 +395,6 @@ const ageDamageBuyoff = async(thisActor, dRemaining) => {
   }
 
   if (game.system.id === 'age-system') {
-    // useConditions = game.settings.get("age-system", "useConditions");
     conditions = thisActor .data.data.conditions;
     abilities = thisActor .data.data.abilities;
     // speed = thisActor .data.data.speed;
@@ -486,27 +448,19 @@ const ageDamageBuyoff = async(thisActor, dRemaining) => {
     if (game.system.id === 'age-system') {
       if (enableConditions) { // Control automatic vs. manual setting of conditions
         // Set the dying condition
-        if (useConditions) {
-          // Dying characters are also unconscious, and helpless
-          // Helpless characters can't move.
-          // Set the actor's speed.mod = -speed.total and speed.total = 0
-          thisActor.update({
-            "data": {
-              "conditions.dying": true,
-              "conditions.unconscious": true,
-              "conditions.helpless": true,
-              "conditions.prone": isProne,
-              // "speed.mod": -speed.total,
-              // "speed.total": 0,
-            }
-          });
-        } else {
-          thisActor.update({
-            "data": {
-              "conditions.dying": true,
-            }
-          });
-        }
+        // Dying characters are also unconscious, and helpless
+        // Helpless characters can't move.
+        // Set the actor's speed.mod = -speed.total and speed.total = 0
+        thisActor.update({
+          "data": {
+            "conditions.dying": true,
+            "conditions.unconscious": true,
+            "conditions.helpless": true,
+            "conditions.prone": isProne,
+            // "speed.mod": -speed.total,
+            // "speed.total": 0,
+          }
+        });
       }
     }
     if (enableChat) ChatMessage.create({speaker: this_speaker, content: flavor3}); // Good by cruel world!
@@ -517,6 +471,8 @@ const ageDamageBuyoff = async(thisActor, dRemaining) => {
 
     // Buy off 1d6 damage when taking the wounded condition
     let roll1 = new Roll("1d6").roll();
+    // Roll#evaluate is becoming asynchronous. In the short term you may pass async=true or async=false to
+    // evaluation options to nominate your preferred behavior.
 
     // Announce the roll
     roll1.toMessage({speaker:{alias:this_speaker.alias}, flavor: flavor2});
@@ -537,23 +493,15 @@ const ageDamageBuyoff = async(thisActor, dRemaining) => {
 
       if (enableConditions) { // Control automatic vs. manual setting of conditions
         // Set the wounded condition
-        if (useConditions) {
-          thisActor.update({
-            "data": {
-              "conditions.wounded": true,
-              "conditions.exhausted": isExhausted,
-              "conditions.helpless": isHelpless,
-              // "speed.mod": speedMod,
-              // "speed.total": speedTotal,
-            }
-          });
-        } else {
-          thisActor.update({
-            "data": {
-              "conditions.wounded": true,
-            }
-          });
-        }
+        thisActor.update({
+          "data": {
+            "conditions.wounded": true,
+            "conditions.exhausted": isExhausted,
+            "conditions.helpless": isHelpless,
+            // "speed.mod": speedMod,
+            // "speed.total": speedTotal,
+          }
+        });
       }
     }
 
@@ -570,27 +518,19 @@ const ageDamageBuyoff = async(thisActor, dRemaining) => {
       if (game.system.id === 'age-system') {
         if (enableConditions) { // Control automatic vs. manual setting of conditions
           // Set the dying condition
-          if (useConditions) {
-            // Dying characters are also unconscious, and helpless
-            // Helpless characters can't move.
-            // Set the actor's speed.mod = -speed.total and speed.total = 0
-            thisActor.update({
-              "data": {
-                "conditions.dying": true,
-                "conditions.unconscious": true,
-                "conditions.helpless": true,
-                "conditions.prone": isProne,
-                // "speed.mod": -speed.total,
-                // "speed.total": 0,
-              }
-            });
-          } else {
-            thisActor.update({
-              "data": {
-                "conditions.dying": true,
-              }
-            });
-          }
+          // Dying characters are also unconscious, and helpless
+          // Helpless characters can't move.
+          // Set the actor's speed.mod = -speed.total and speed.total = 0
+          thisActor.update({
+            "data": {
+              "conditions.dying": true,
+              "conditions.unconscious": true,
+              "conditions.helpless": true,
+              "conditions.prone": isProne,
+              // "speed.mod": -speed.total,
+              // "speed.total": 0,
+            }
+          });
         }
       }
       if (enableChat) ChatMessage.create({speaker: this_speaker, content: flavor3}); // Good by cruel world!
@@ -602,6 +542,8 @@ const ageDamageBuyoff = async(thisActor, dRemaining) => {
 
     // Buy off 1d6 damage when taking the injured condition
     let roll1 = new Roll("1d6").roll();
+    // Roll#evaluate is becoming asynchronous. In the short term you may pass async=true or async=false to
+    // evaluation options to nominate your preferred behavior.
     
     // Announce the roll
     roll1.toMessage({speaker: {alias:this_speaker.alias}, flavor: flavor1});
@@ -623,24 +565,16 @@ const ageDamageBuyoff = async(thisActor, dRemaining) => {
 
       if (enableConditions) { // Control automatic vs. manual setting of conditions
         // Set the conditions
-        if (useConditions) {
-          thisActor.update({
-            "data": {
-              "conditions.injured": true,
-              "conditions.fatigued": isFatigued,
-              "conditions.exhausted": isExhausted,
-              "conditions.helpless": isHelpless,
-              // "speed.mod": speedMod,
-              // "speed.total": speedTotal,
-            }
-          });
-        } else {
-          thisActor.update({
-            "data": {
-              "conditions.injured": true,
-            }
-          });
-        }
+        thisActor.update({
+          "data": {
+            "conditions.injured": true,
+            "conditions.fatigued": isFatigued,
+            "conditions.exhausted": isExhausted,
+            "conditions.helpless": isHelpless,
+            // "speed.mod": speedMod,
+            // "speed.total": speedTotal,
+          }
+        });
       }
     }
 
@@ -651,6 +585,8 @@ const ageDamageBuyoff = async(thisActor, dRemaining) => {
 
       // Buy off 1d6 damage when taking the wounded condition
       let roll2 = new Roll("1d6").roll();
+    // Roll#evaluate is becoming asynchronous. In the short term you may pass async=true or async=false to
+    // evaluation options to nominate your preferred behavior.
 
       // Announce the roll
       roll2.toMessage({speaker: {alias:this_speaker.alias}, flavor: flavor2});
@@ -671,23 +607,15 @@ const ageDamageBuyoff = async(thisActor, dRemaining) => {
 
         if (enableConditions) { // Control automatic vs. manual setting of conditions
           // Set the conditions
-          if (useConditions) {
-            thisActor.update({
-              "data": {
-                "conditions.wounded": true,
-                "conditions.exhausted": isExhausted,
-                "conditions.helpless": isHelpless,
-                // "speed.mod": speedMod,
-                // "speed.total": speedTotal,
-              }
-            });
-          } else {
-            thisActor.update({
-              "data": {
-                "conditions.wounded": true,
-              }
-            });
-          }
+          thisActor.update({
+            "data": {
+              "conditions.wounded": true,
+              "conditions.exhausted": isExhausted,
+              "conditions.helpless": isHelpless,
+              // "speed.mod": speedMod,
+              // "speed.total": speedTotal,
+            }
+          });
         }
       }
       if ((roll1._total + roll2._total) < dRemaining) {
@@ -703,27 +631,19 @@ const ageDamageBuyoff = async(thisActor, dRemaining) => {
         if (game.system.id === 'age-system') {
           if (enableConditions) { // Control automatic vs. manual setting of conditions
             // Set the dying condition
-            if (useConditions) {
-              // Dying characters are also unconscious, and helpless
-              // Helpless characters can't move.
-              // Set the actor's speed.mod = -speed.total and speed.total = 0
-              thisActor.update({
-                "data": {
-                  "conditions.dying": true,
-                  "conditions.unconscious": true,
-                  "conditions.helpless": true,
-                  "conditions.prone": isProne,
-                  // "speed.mod": -speed.total,
-                  // "speed.total": 0,
-                }
-              });
-            } else {
-              thisActor.update({
-                "data": {
-                  "conditions.dying": true,
-                }
-              });
-            }
+            // Dying characters are also unconscious, and helpless
+            // Helpless characters can't move.
+            // Set the actor's speed.mod = -speed.total and speed.total = 0
+            thisActor.update({
+              "data": {
+                "conditions.dying": true,
+                "conditions.unconscious": true,
+                "conditions.helpless": true,
+                "conditions.prone": isProne,
+                // "speed.mod": -speed.total,
+                // "speed.total": 0,
+              }
+            });
           }
         }
         if (enableChat) ChatMessage.create({speaker: this_speaker, content: flavor3}); // Good by cruel world!
@@ -758,7 +678,6 @@ const ageDamageBuyoff = async(thisActor, dRemaining) => {
   let isHelpless    = false;
   // let speedMod      = 0;
   // let speedTotal    = 0;
-  let useConditions = false;
 
   // Get the control paramater for enabling/disabling token chat
   let enableChat = CONFIG.ENABLE_TOKEN_CHAT;
@@ -781,7 +700,6 @@ const ageDamageBuyoff = async(thisActor, dRemaining) => {
   }
 
   if (game.system.id === 'age-system') {
-    useConditions = game.settings.get("age-system", "useConditions");
     conditions = thisActor .data.data.conditions;
     abilities = thisActor .data.data.abilities;
     // speed = thisActor .data.data.speed;
@@ -833,27 +751,19 @@ const ageDamageBuyoff = async(thisActor, dRemaining) => {
     if (game.system.id === 'age-system') {
       if (enableConditions) { // Control automatic vs. manual setting of conditions
         // Set the dying condition
-        if (useConditions) {
-          // Dying characters are also unconscious, and helpless
-          // Helpless characters can't move.
-          // Set the actor's speed.mod = -speed.total and speed.total = 0
-          thisActor.update({
-            "data": {
-              "conditions.dying": true,
-              "conditions.unconscious": true,
-              "conditions.helpless": true,
-              "conditions.prone": isProne,
-              // "speed.mod": -speed.total,
-              // "speed.total": 0,
-            }
-          });
-        } else {
-          thisActor.update({
-            "data": {
-              "conditions.dying": true,
-            }
-          });
-        }
+        // Dying characters are also unconscious, and helpless
+        // Helpless characters can't move.
+        // Set the actor's speed.mod = -speed.total and speed.total = 0
+        thisActor.update({
+          "data": {
+            "conditions.dying": true,
+            "conditions.unconscious": true,
+            "conditions.helpless": true,
+            "conditions.prone": isProne,
+            // "speed.mod": -speed.total,
+            // "speed.total": 0,
+          }
+        });
       }
     }
     if (enableChat) ChatMessage.create({speaker: this_speaker, content: flavor3}); // Good by cruel world!
