@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.4.3 (2021-06-04)
+- Added Japanese translation (Thanks BrotherSharper)
+- Updated French, German and Japanese translations for new fields (used Google Translate)
+- Disabled use of conditions for AGE games until that capability get's sorted out in 0.8.6
+- Updated minimum core version to 0.8.5
+
 ## 0.4.2 (2021-05.30)
 - Added user configurable damage types (up to three) - mainly useful for AGE System games or other games that need both damage mitigation and the ability to bypass that.
 - Added user configurable damage subtypes (up to two) - Useful for games with two different health resource pools (e.g. SWADE, L5R5E, TORG, etc.) or games with different rules for application of damage to a single pool (e.g. AGE - wound vs. stun)
