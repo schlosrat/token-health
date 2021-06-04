@@ -68,6 +68,8 @@ const applyDamage = async (html, isDamage, isTargeted) => {
 
   // Get the control parameter for enablibng/disabling the application of token condtions
   let enableConditions = CONFIG.ENABLE_CONDITIONS;
+  // Temporary setting to prevent issues in 0.8.6
+  enableConditions = false;
 
   // Get the thresholds for Unconscious and Death/Dying
   let koThreshold    = CONFIG.KO_THREASHOLD;
@@ -97,7 +99,8 @@ const applyDamage = async (html, isDamage, isTargeted) => {
   let df = 1;
   if (dAdd) df = -1;
 
-  const promises = tokens.map(({actor}) => {
+  // SDR: AIt would be nice to add an async to this arrow function...
+  const promises =  tokens.map(({actor}) => {
     // Get the actor data structure
     const data = actor.data.data;
     // Assume damageSubtype == type 1 and populate health values based on this
@@ -288,24 +291,29 @@ const applyDamage = async (html, isDamage, isTargeted) => {
       actor.setFlag("world", "dying", isDying);
       if (game.system.id === 'age-system') {
         if (enableConditions) { // Control automatic vs. manual setting of conditions
-          actor.update({
+            actor.update({
             "data": {
               "conditions.dying": false,
               "conditions.helpless": false,
               "conditions.unconscious": false,
             }
           });
+          actor.handleConditions("dying", false);
+          actor.handleConditions("helpless", false);
+          actor.handleConditions("unconscious", false);
         }
       }
     } else {
       if (game.system.id === 'age-system') {
         if (enableConditions) { // Control automatic vs. manual setting of conditions
-          actor.update({
+            actor.update({
             "data": {
               "conditions.helpless": isUnconscious,
               "conditions.unconscious": isUnconscious,
             }
           });
+          actor.handleConditions("helpless", isUnconscious);
+          actor.handleConditions("unconscious", isUnconscious);
         }
       }      
     }
@@ -365,6 +373,8 @@ const ageDamageBuyoff = async(thisActor, dRemaining) => {
 
   // Get the control parameter for enablibng/disabling the application of token condtions
   let enableConditions = CONFIG.ENABLE_CONDITIONS;
+  // Temporary setting to prevent issues in 0.8.6
+  enableConditions = false;
 
   // Make sure we've got a flag for injured, get it if we do
   if (thisActor.getFlag("world", "injured") === undefined) {
@@ -451,16 +461,18 @@ const ageDamageBuyoff = async(thisActor, dRemaining) => {
         // Dying characters are also unconscious, and helpless
         // Helpless characters can't move.
         // Set the actor's speed.mod = -speed.total and speed.total = 0
-        thisActor.update({
+        await thisActor.update({
           "data": {
             "conditions.dying": true,
             "conditions.unconscious": true,
             "conditions.helpless": true,
             "conditions.prone": isProne,
-            // "speed.mod": -speed.total,
-            // "speed.total": 0,
           }
         });
+        thisActor.handleConditions("dying", true);
+        thisActor.handleConditions("unconscious", true);
+        thisActor.handleConditions("helpless", true);
+        thisActor.handleConditions("prone", isProne);
       }
     }
     if (enableChat) ChatMessage.create({speaker: this_speaker, content: flavor3}); // Good by cruel world!
@@ -493,15 +505,16 @@ const ageDamageBuyoff = async(thisActor, dRemaining) => {
 
       if (enableConditions) { // Control automatic vs. manual setting of conditions
         // Set the wounded condition
-        thisActor.update({
+        await thisActor.update({
           "data": {
             "conditions.wounded": true,
             "conditions.exhausted": isExhausted,
             "conditions.helpless": isHelpless,
-            // "speed.mod": speedMod,
-            // "speed.total": speedTotal,
           }
         });
+        thisActor.handleConditions("wounded", true);
+        thisActor.handleConditions("exhausted", isExhausted);
+        thisActor.handleConditions("helpless", isHelpless);
       }
     }
 
@@ -521,16 +534,18 @@ const ageDamageBuyoff = async(thisActor, dRemaining) => {
           // Dying characters are also unconscious, and helpless
           // Helpless characters can't move.
           // Set the actor's speed.mod = -speed.total and speed.total = 0
-          thisActor.update({
+          await thisActor.update({
             "data": {
               "conditions.dying": true,
               "conditions.unconscious": true,
               "conditions.helpless": true,
               "conditions.prone": isProne,
-              // "speed.mod": -speed.total,
-              // "speed.total": 0,
             }
           });
+          thisActor.handleConditions("dying", true);
+          thisActor.handleConditions("unconscious", true);
+          thisActor.handleConditions("helpless", true);
+          thisActor.handleConditions("prone", isProne);
         }
       }
       if (enableChat) ChatMessage.create({speaker: this_speaker, content: flavor3}); // Good by cruel world!
@@ -565,16 +580,18 @@ const ageDamageBuyoff = async(thisActor, dRemaining) => {
 
       if (enableConditions) { // Control automatic vs. manual setting of conditions
         // Set the conditions
-        thisActor.update({
+        await thisActor.update({
           "data": {
             "conditions.injured": true,
             "conditions.fatigued": isFatigued,
             "conditions.exhausted": isExhausted,
             "conditions.helpless": isHelpless,
-            // "speed.mod": speedMod,
-            // "speed.total": speedTotal,
           }
         });
+        thisActor.handleConditions("injured", true);
+        thisActor.handleConditions("fatigued", isFatigued);
+        thisActor.handleConditions("exhausted", isExhausted);
+        thisActor.handleConditions("helpless", isHelpless);
       }
     }
 
@@ -607,15 +624,16 @@ const ageDamageBuyoff = async(thisActor, dRemaining) => {
 
         if (enableConditions) { // Control automatic vs. manual setting of conditions
           // Set the conditions
-          thisActor.update({
+          await thisActor.update({
             "data": {
               "conditions.wounded": true,
               "conditions.exhausted": isExhausted,
               "conditions.helpless": isHelpless,
-              // "speed.mod": speedMod,
-              // "speed.total": speedTotal,
             }
           });
+          thisActor.handleConditions("wounded", true);
+          thisActor.handleConditions("exhausted", isExhausted);
+          thisActor.handleConditions("helpless", isHelpless);
         }
       }
       if ((roll1._total + roll2._total) < dRemaining) {
@@ -634,16 +652,18 @@ const ageDamageBuyoff = async(thisActor, dRemaining) => {
             // Dying characters are also unconscious, and helpless
             // Helpless characters can't move.
             // Set the actor's speed.mod = -speed.total and speed.total = 0
-            thisActor.update({
+            await thisActor.update({
               "data": {
                 "conditions.dying": true,
                 "conditions.unconscious": true,
                 "conditions.helpless": true,
                 "conditions.prone": isProne,
-                // "speed.mod": -speed.total,
-                // "speed.total": 0,
               }
             });
+            thisActor.handleConditions("dying", true);
+            thisActor.handleConditions("unconscious", true);
+            thisActor.handleConditions("helpless", true);
+            thisActor.handleConditions("prone", isProne);
           }
         }
         if (enableChat) ChatMessage.create({speaker: this_speaker, content: flavor3}); // Good by cruel world!
@@ -684,6 +704,8 @@ const ageDamageBuyoff = async(thisActor, dRemaining) => {
 
   // Get the control paramater for enabling/disabling token chat
   let enableConditions = CONFIG.ENABLE_CONDITIONS;
+  // Temporary setting to prevent issues in 0.8.6
+  enableConditions = false;
 
   // Make sure we've got a flag for unconscious, get it if we do
   if (thisActor.getFlag("world", "unconscious") === undefined) {
@@ -754,7 +776,7 @@ const ageDamageBuyoff = async(thisActor, dRemaining) => {
         // Dying characters are also unconscious, and helpless
         // Helpless characters can't move.
         // Set the actor's speed.mod = -speed.total and speed.total = 0
-        thisActor.update({
+        await thisActor.update({
           "data": {
             "conditions.dying": true,
             "conditions.unconscious": true,
@@ -764,6 +786,10 @@ const ageDamageBuyoff = async(thisActor, dRemaining) => {
             // "speed.total": 0,
           }
         });
+        thisActor.handleConditions("dying", true);
+        thisActor.handleConditions("unconscious", true);
+        thisActor.handleConditions("helpless", true);
+        thisActor.handleConditions("prone", isProne);
       }
     }
     if (enableChat) ChatMessage.create({speaker: this_speaker, content: flavor3}); // Good by cruel world!

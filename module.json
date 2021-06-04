@@ -9,7 +9,7 @@
   "changelog": "https://github.com/schlosrat/token-health/blob/master/CHANGELOG.md",
   "flags": {},
   "version": "0.4.2",
-  "minimumCoreVersion": "0.8.5",
+  "minimumCoreVersion": "0.5.5",
   "compatibleCoreVersion": "0.8.6",
   "scripts": [],
   "esmodules": [
