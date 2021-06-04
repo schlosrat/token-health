@@ -142,5 +142,6 @@ By default the key used is the main keyboard Enter key. If you click the Key Bin
 
 ### Localization
 - **Français**: by ? and Google Translate
-- **Español**: by Discord user *ForjaSalvaje#2419*.
-- **Deutsch**: by Discord user *dabri0n#1632*
+- **Español**:  by Discord user *ForjaSalvaje#2419*.
+- **Deutsch**:  by Discord user *dabri0n#1632*
+- **Japanese**: by BrotherSharper
