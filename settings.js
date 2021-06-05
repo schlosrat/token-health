@@ -454,7 +454,7 @@ export default () => {
     },
   });
   // Attribute for recording/tracking temporary health (optional)
-  CONFIG.MAX_TEMP_HITPOINTS_ATTRIBUTE_2 = initSetting('tempHpSource2', {
+  CONFIG.TEMP_HITPOINTS_ATTRIBUTE_2 = initSetting('tempHpSource2', {
     name: i18n('TOKEN_HEALTH.tempHp2'),
     hint: i18n('TOKEN_HEALTH.tempHpHint'),
     type: String,
