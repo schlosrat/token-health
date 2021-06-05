@@ -99,8 +99,8 @@ const applyDamage = async (html, isDamage, isTargeted) => {
   let df = 1;
   if (dAdd) df = -1;
 
-  // SDR: AIt would be nice to add an async to this arrow function...
-  const promises =  tokens.map(({actor}) => {
+  // SDR: It would be nice to add an async to this arrow function...
+  const promises = tokens.map(async ({actor}) => {
     // Get the actor data structure
     const data = actor.data.data;
     // Assume damageSubtype == type 1 and populate health values based on this
@@ -291,7 +291,7 @@ const applyDamage = async (html, isDamage, isTargeted) => {
       actor.setFlag("world", "dying", isDying);
       if (game.system.id === 'age-system') {
         if (enableConditions) { // Control automatic vs. manual setting of conditions
-            actor.update({
+            await actor.update({
             "data": {
               "conditions.dying": false,
               "conditions.helpless": false,
@@ -306,7 +306,7 @@ const applyDamage = async (html, isDamage, isTargeted) => {
     } else {
       if (game.system.id === 'age-system') {
         if (enableConditions) { // Control automatic vs. manual setting of conditions
-            actor.update({
+            await actor.update({
             "data": {
               "conditions.helpless": isUnconscious,
               "conditions.unconscious": isUnconscious,
