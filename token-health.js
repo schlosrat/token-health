@@ -108,17 +108,19 @@ const applyDamage = async (html, isDamage, isTargeted) => {
     let hpSource = CONFIG.HITPOINTS_ATTRIBUTE_1;
     let maxSource = CONFIG.MAX_HITPOINTS_ATTRIBUTE_1;
     let tempSource = CONFIG.TEMP_HITPOINTS_ATTRIBUTE_1; // Handle temp hp if any
+	let maxTempSource = CONFIG.MAX_TEMP_HITPOINTS_ATTRIBUTE_1; // Handle max temp hp if any
 
     // If damageSubtype is type 2, then overwrite with the health values for that damage type
     if (type2) {
       hpSource = CONFIG.HITPOINTS_ATTRIBUTE_2;
       maxSource = CONFIG.MAX_HITPOINTS_ATTRIBUTE_2;
       tempSource = CONFIG.TEMP_HITPOINTS_ATTRIBUTE_2; // Handle temp hp if any
+	  maxTempSource = CONFIG.MAX_TEMP_HITPOINTS_ATTRIBUTE_2; // Handle max temp hp if any
     }
 
     // Get the health, max-health, and temp-health for this damage subtype
     const hp = getProperty(data, hpSource);
-    const max = getProperty(data, maxSource);
+    const max = getProperty(data, maxSource) + getProperty(data, maxTempSource);
     const temp = getProperty(data, tempSource);
 
     if (dAdd) {
