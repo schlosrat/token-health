@@ -61,11 +61,16 @@ const DEFAULT = {
  */
 const setDefaults = () => {
   // Default to system values
-  if (game.system.id === 'dnd5e' || game.system.id === 'pf1' || game.system.id === 'pf2e') {
+  if (game.system.id === 'dnd5e') {
     DEFAULT.HITPOINTS_ATTRIBUTE_1 = 'attributes.hp.value';
     DEFAULT.MAX_HITPOINTS_ATTRIBUTE_1 = 'attributes.hp.max';
     DEFAULT.TEMP_HITPOINTS_ATTRIBUTE_1 = 'attributes.hp.temp';
-  } else if (game.system.id === 'swade'){
+	DEFAULT.MAX_TEMP_HITPOINTS_ATTRIBUTE_1 = 'attributes.hp.tempmax';
+  } else if (game.system.id === 'pf1' || game.system.id === 'pf2e') {
+	DEFAULT.HITPOINTS_ATTRIBUTE_1 = 'attributes.hp.value';
+    DEFAULT.MAX_HITPOINTS_ATTRIBUTE_1 = 'attributes.hp.max';
+    DEFAULT.TEMP_HITPOINTS_ATTRIBUTE_1 = 'attributes.hp.temp';
+  }else if (game.system.id === 'swade'){
     DEFAULT.DAMAGE_SUBTYPE_1 = 'Wounds',
     DEFAULT.HITPOINTS_ATTRIBUTE_1 = 'wounds.value';
     DEFAULT.MAX_HITPOINTS_ATTRIBUTE_1 = 'wounds.max';
@@ -400,6 +405,18 @@ export default () => {
       CONFIG.TEMP_HITPOINTS_ATTRIBUTE_1 = key;
     },
   });
+  // Attribute for recording/tracking temporary max health (optional)
+  CONFIG.MAX_TEMP_HITPOINTS_ATTRIBUTE_1 = initSetting('maxTempHpSource', {
+    name: i18n('TOKEN_HEALTH.maxTempHp1'),
+    hint: i18n('TOKEN_HEALTH.maxTempHpHint'),
+    type: String,
+    default: DEFAULT.MAX_TEMP_HITPOINTS_ATTRIBUTE_1,
+    scope: 'world',
+    config: true,
+    onChange: key => {
+      CONFIG.MAX_TEMP_HITPOINTS_ATTRIBUTE_1 = key;
+    },
+  });
   // Secondary damage type (optional)
   CONFIG.DAMAGE_SUBTYPE_2 = initSetting('damageSubtype2', {
     name: i18n('TOKEN_HEALTH.damageSubtype2'),
@@ -437,7 +454,7 @@ export default () => {
     },
   });
   // Attribute for recording/tracking temporary health (optional)
-  CONFIG.TEMP_HITPOINTS_ATTRIBUTE_2 = initSetting('tempHpSource2', {
+  CONFIG.MAX_TEMP_HITPOINTS_ATTRIBUTE_2 = initSetting('tempHpSource2', {
     name: i18n('TOKEN_HEALTH.tempHp2'),
     hint: i18n('TOKEN_HEALTH.tempHpHint'),
     type: String,
