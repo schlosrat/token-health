@@ -35,6 +35,8 @@
   "TOKEN_HEALTH.hpMax1": "Max 1st Health Pool (required)",
   "TOKEN_HEALTH.tempHp1": "Temporary 1st Health Pool (optional)",
   "TOKEN_HEALTH.tempHpHint": "Leave this empty if there is no temp HP management in your system",
+  "TOKEN_HEALTH.maxTempHp1": "Temporary Maximum Health Pool (optional)",
+  "TOKEN_HEALTH.maxTempHpHint": "Leave this empty if there is no temporary Maximum HP management in your system",
   "TOKEN_HEALTH.damageSubtype2": "Secondary Damage Type (optional)",
   "TOKEN_HEALTH.damageSubtype2Hint": "Leave blank if all damage applies to the same resource pool with the same rules",
   "TOKEN_HEALTH.hp2": "Secondary Health Pool (*)",
