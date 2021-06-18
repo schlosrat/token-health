@@ -16,6 +16,14 @@
     "TOKEN_HEALTH.toggleKeyTargetHint": "ターゲットしたコマにダメージを適用するダイアログを表示します。",
     "TOKEN_HEALTH.toggleKeyTargetAltName": "ターゲットしたコマを回復",
     "TOKEN_HEALTH.toggleKeyTargetAltHint": "ターゲットしたコマに回復を適用するダイアログを表示します。",
+    "TOKEN_HEALTH.toggleNumpadKeyName": "Damage Selected Tokens (numpad)",
+    "TOKEN_HEALTH.toggleNumpadKeyHint": "Will display a dialog to enter damage for selected tokens (numpad)",
+    "TOKEN_HEALTH.toggleNumpadKeyAltName": "Heal Selected Tokens (numpad)",
+    "TOKEN_HEALTH.toggleNumpadKeyAltHint": "Will display a dialog to enter healing for selected tokens (numpad)",
+    "TOKEN_HEALTH.toggleNumpadKeyTargetName": "Damage Targeted Tokens (numpad)",
+    "TOKEN_HEALTH.toggleNumpadKeyTargetHint": "Will display a dialog to enter damage for targeted tokens (numpad)",
+    "TOKEN_HEALTH.toggleNumpadKeyTargetAltName": "Heal Targeted Tokens (numpad)",
+    "TOKEN_HEALTH.toggleNumpadKeyTargetAltHint": "Will display a dialog to enter healing for targeted tokens (numpad)",
     "TOKEN_HEALTH.damageTypeLabel": "種別",
     "TOKEN_HEALTH.damageType1": "プライマリーダメージタイプ（オプション）",
     "TOKEN_HEALTH.damageType1Hint": "デフォルトのダメージタイプ - 損傷が 1 種類のみの場合は空白のままにします",
@@ -33,6 +41,8 @@
     "TOKEN_HEALTH.damageSubtype1Hint": "すべてのダメージが同じルールで同じリソース プールに適用される場合は空白のままにします",
     "TOKEN_HEALTH.hp1": "現在HPのソース",
     "TOKEN_HEALTH.hpMax1": "最大HPのソース",
+    "TOKEN_HEALTH.altHpMax1": "Additional 1st Health Pool (optional)",
+    "TOKEN_HEALTH.altHpMax1Hint": "Leave blank if no additional Health pool",
     "TOKEN_HEALTH.tempHp1": "一時的HPのソース",
     "TOKEN_HEALTH.tempHpHint": "ゲームシステムに一時的HPがない場合は空欄にします。",
     "TOKEN_HEALTH.damageSubtype2": "二次被害タイプ (オプション)",
@@ -40,6 +50,8 @@
     "TOKEN_HEALTH.hp2": "現在HPのソース (*)",
     "TOKEN_HEALTH.hpHint": "(*) 二次被害が定義されている場合は必須、それ以外の場合はオプション - プライマリと同じかもしれません",
     "TOKEN_HEALTH.hpMax2": "最大HPのソース",
+    "TOKEN_HEALTH.altHpMax2": "Additional 2nd Health Pool (optional)",
+    "TOKEN_HEALTH.altHpMax2Hint": "Leave blank if no additional 2nd Health pool",
     "TOKEN_HEALTH.tempHp2": "一時的HPのソース",
     "TOKEN_HEALTH.allowNegative": "負のHPを許可する",
     "TOKEN_HEALTH.allowNegativeHint": "システムによっては、HPがマイナスの値をとることがあります (例：PF1など)",
@@ -85,4 +97,3 @@
     "TOKEN_HEALTH.whenDead": "すでに死んでいるとき",
     "TOKEN_HEALTH.dead": "おい、死体蹴りだぞ！"
   }
-  

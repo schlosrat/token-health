@@ -37,10 +37,12 @@ const DEFAULT = {
   DAMAGE_SUBTYPE_1: '',
   HITPOINTS_ATTRIBUTE_1: '',
   MAX_HITPOINTS_ATTRIBUTE_1: '',
+  ALT_MAX_HITPOINTS_ATTRIBUTE_1: '',
   TEMP_HITPOINTS_ATTRIBUTE_1: '',
   DAMAGE_SUBTYPE_2: '',
   HITPOINTS_ATTRIBUTE_2: '',
   MAX_HITPOINTS_ATTRIBUTE_2: '',
+  ALT_MAX_HITPOINTS_ATTRIBUTE_2: '',
   TEMP_HITPOINTS_ATTRIBUTE_2: '',
   MITIGATION_ATTRIBUTE_1: '',
   MITIGATION_ATTRIBUTE_2: '',
@@ -64,6 +66,7 @@ const setDefaults = () => {
   if (game.system.id === 'dnd5e' || game.system.id === 'pf1' || game.system.id === 'pf2e') {
     DEFAULT.HITPOINTS_ATTRIBUTE_1 = 'attributes.hp.value';
     DEFAULT.MAX_HITPOINTS_ATTRIBUTE_1 = 'attributes.hp.max';
+    DEFAULT.ALT_MAX_HITPOINTS_ATTRIBUTE_1 = 'attributes.hp.tempmax';
     DEFAULT.TEMP_HITPOINTS_ATTRIBUTE_1 = 'attributes.hp.temp';
   } else if (game.system.id === 'swade'){
     DEFAULT.DAMAGE_SUBTYPE_1 = 'Wounds',
@@ -186,7 +189,7 @@ export default () => {
   setDefaults();
 
   /*************** TOKEN HEALTH HOTKEY SETTINGS ***************/
-  // Hotkey defalt for applying damage to selected token(s) 
+  // Hotkey defalt for applying damage to selected token(s)
   TH_CONFIG.TOGGLE_KEY_BASE = initSetting('toggleKey', {
     name: i18n('TOKEN_HEALTH.toggleKeyName'),
     hint: i18n('TOKEN_HEALTH.toggleKeyHint'),
@@ -204,7 +207,7 @@ export default () => {
       TH_CONFIG.TOGGLE_KEY_BASE = key;
     },
   });
-  // Hotkey defalt for applying healing to selected token(s) 
+  // Hotkey defalt for applying healing to selected token(s)
   TH_CONFIG.TOGGLE_KEY_ALT = initSetting('toggleKeyAlt', {
     name: i18n('TOKEN_HEALTH.toggleKeyAltName'),
     hint: i18n('TOKEN_HEALTH.toggleKeyAltHint'),
@@ -222,7 +225,7 @@ export default () => {
       TH_CONFIG.TOGGLE_KEY_ALT = key;
     },
   });
-  // Hotkey defalt for applying damage to targeted token(s) 
+  // Hotkey defalt for applying damage to targeted token(s)
   TH_CONFIG.TOGGLE_KEY_TARGET = initSetting('toggleKeyTarget', {
     name: i18n('TOKEN_HEALTH.toggleKeyTargetName'),
     hint: i18n('TOKEN_HEALTH.toggleKeyTargetHint'),
@@ -240,7 +243,7 @@ export default () => {
       TH_CONFIG.TOGGLE_KEY_TARGET = key;
     },
   });
-  // Hotkey defalt for applying healing to targeted token(s) 
+  // Hotkey defalt for applying healing to targeted token(s)
   TH_CONFIG.TOGGLE_KEY_TARGET_ALT = initSetting('toggleKeyTargetAlt', {
     name: i18n('TOKEN_HEALTH.toggleKeyTargetAltName'),
     hint: i18n('TOKEN_HEALTH.toggleKeyTargetAltHint'),
@@ -388,6 +391,18 @@ export default () => {
       TH_CONFIG.MAX_HITPOINTS_ATTRIBUTE_1 = key;
     },
   });
+  // Attribute recording secondary max possible health pool (optional)
+  TH_CONFIG.ALT_MAX_HITPOINTS_ATTRIBUTE_1 = initSetting('altHpSourceMax1', {
+    name: i18n('TOKEN_HEALTH.altHpMax1'),
+    hint: i18n('TOKEN_HEALTH.altHpMax1Hint'),
+    type: String,
+    default: DEFAULT.ALT_MAX_HITPOINTS_ATTRIBUTE_1,
+    scope: 'world',
+    TH_CONFIG: true,
+    onChange: key => {
+      TH_CONFIG.ALT_MAX_HITPOINTS_ATTRIBUTE_1 = key;
+    },
+  });
   // Attribute for recording/tracking temporary health (optional)
   TH_CONFIG.TEMP_HITPOINTS_ATTRIBUTE_1 = initSetting('tempHpSource1', {
     name: i18n('TOKEN_HEALTH.tempHp1'),
@@ -434,6 +449,18 @@ export default () => {
     TH_CONFIG: true,
     onChange: key => {
       TH_CONFIG.MAX_HITPOINTS_ATTRIBUTE_2 = key;
+    },
+  });
+  // Attribute recording secondary max possible health pool (optional)
+  TH_CONFIG.ALT_MAX_HITPOINTS_ATTRIBUTE_2 = initSetting('altHpSourceMax2', {
+    name: i18n('TOKEN_HEALTH.altHpMax2'),
+    hint: i18n('TOKEN_HEALTH.altHpMax2Hint'),
+    type: String,
+    default: DEFAULT.ALT_MAX_HITPOINTS_ATTRIBUTE_2,
+    scope: 'world',
+    TH_CONFIG: true,
+    onChange: key => {
+      TH_CONFIG.ALT_MAX_HITPOINTS_ATTRIBUTE_2 = key;
     },
   });
   // Attribute for recording/tracking temporary health (optional)

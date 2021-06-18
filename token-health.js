@@ -27,7 +27,7 @@ class TokenHealthDialog extends Dialog {
 
 /**
  * Remove a condition (AGE System dependent)
- * 
+ *
  * @param {actor} thisActor
  * @param {string} condId
  */
@@ -46,7 +46,7 @@ class TokenHealthDialog extends Dialog {
 
 /**
  * Apply a condition (AGE System Dependent)
- * 
+ *
  * @param {actor} thisActor
  * @param {string} condId
  * @returns {actor} thisActor
@@ -77,7 +77,7 @@ const applyDamage = async (html, isDamage, isTargeted) => {
   const damage = isDamage ? Number(value) : Number(value) * -1;
 
   // Set AGE-system specific things
-  // AGE-System games and allow for different damage types of 
+  // AGE-System games and allow for different damage types of
   //   Impact (mitigated by any armor type and toughness)
   //   Ballisitic (only mitigated by ballistic armor and toughness)
   //   Penetraiting (bypasses all armor and toughness)
@@ -86,7 +86,7 @@ const applyDamage = async (html, isDamage, isTargeted) => {
   //   Wound (may actually kill the character)
   //   Stun (may at most render the character unconscious)
   let damageSubtype = "wound";
-   
+
   if (TH_CONFIG.DAMAGE_TYPE_1) {
     damageType = html.find('[name="damageType"]')[0].value;
   }
@@ -146,18 +146,24 @@ const applyDamage = async (html, isDamage, isTargeted) => {
 
     let hpSource = TH_CONFIG.HITPOINTS_ATTRIBUTE_1;
     let maxSource = TH_CONFIG.MAX_HITPOINTS_ATTRIBUTE_1;
+    let altMaxSource = TH_CONFIG.ALT_MAX_HITPOINTS_ATTRIBUTE_1;
     let tempSource = TH_CONFIG.TEMP_HITPOINTS_ATTRIBUTE_1; // Handle temp hp if any
 
     // If damageSubtype is type 2, then overwrite with the health values for that damage type
     if (type2) {
       hpSource = TH_CONFIG.HITPOINTS_ATTRIBUTE_2;
       maxSource = TH_CONFIG.MAX_HITPOINTS_ATTRIBUTE_2;
+      altMaxSource = TH_CONFIG.ALT_MAX_HITPOINTS_ATTRIBUTE_2;
       tempSource = TH_CONFIG.TEMP_HITPOINTS_ATTRIBUTE_2; // Handle temp hp if any
     }
 
     // Get the health, max-health, and temp-health for this damage subtype
     const hp = getProperty(data, hpSource);
-    const max = getProperty(data, maxSource);
+    let max = getProperty(data, maxSource);
+    const altMax = getProperty(data, altMaxSource)
+    if (altMax != undefined) {
+      max += altMax;
+    }
     const temp = getProperty(data, tempSource);
 
     if (dAdd) {
@@ -169,7 +175,7 @@ const applyDamage = async (html, isDamage, isTargeted) => {
     let isWounded     = false;
     let isUnconscious = false;
     let isDying       = false;
-  
+
     // Make sure we've got a flag for injured, get it if we do
     if (actor.getFlag("world", "injured") === undefined) {
       actor.setFlag("world", "injured", isInjured);
@@ -364,7 +370,7 @@ const applyDamage = async (html, isDamage, isTargeted) => {
             removeCondition(actor, "unconscious");
           }
         }
-      }      
+      }
     }
 
     let updates = {}
@@ -493,7 +499,7 @@ const ageDamageBuyoff = async(thisActor, dRemaining) => {
 
   // If the dying condition is currently set
   if (isDying) { // The case in which more damage is pointless
-    // More damage to a dead guy is senseless 
+    // More damage to a dead guy is senseless
     if (enableChat) ChatMessage.create({speaker: this_speaker, content: flavor4}); // Hey! Don't beat a dead horse!
   } else if (isWounded) { // Damage being applied to a wounded character
     // Set the dying state flag
@@ -623,7 +629,7 @@ const ageDamageBuyoff = async(thisActor, dRemaining) => {
     let roll1 = new Roll("1d6").roll();
     // Roll#evaluate is becoming asynchronous. In the short term you may pass async=true or async=false to
     // evaluation options to nominate your preferred behavior.
-    
+
     // Announce the roll
     roll1.toMessage({speaker: {alias:this_speaker.alias}, flavor: flavor1});
 
@@ -840,7 +846,7 @@ const ageDamageBuyoff = async(thisActor, dRemaining) => {
 
   // If the dying condition is currently set
   if (isDying) {
-    // More damage to a dead guy is senseless 
+    // More damage to a dead guy is senseless
     if (enableChat) ChatMessage.create({speaker: this_speaker, content: flavor4}); // Hey! Don't beat a dead horse!
   } else {
     // If not freefalling, then character will also be prone
@@ -948,7 +954,7 @@ const displayOverlay = async (isDamage, isTargeted = false) => {
   if ((mit1 != undefined) || (mit2 != undefined || (mit3 != undefined) {
     allowMittigation = true;
   }*/
-  
+
   if (TH_CONFIG.ENABLE_TOKEN_IMAGES){
     const content = await renderTemplate(
       `modules/token-health/templates/token-health-images.hbs`,
@@ -1128,7 +1134,7 @@ Hooks.once('init', function() {
   hotkeys.registerShortcut({
 		name: 'token-health.toggleKey',
 		label: i18n('TOKEN_HEALTH.toggleKeyName'),
-		group: 'token-health.token-health', 
+		group: 'token-health.token-health',
 		get: () => game.settings.get('token-health', 'toggleKey'),
 		set: async value => await game.settings.set('token-health', 'toggleKey', value),
 		default: () => { return { key: hotkeys.keys.Enter, alt: false, ctrl: false, shift: false }; },
@@ -1168,7 +1174,7 @@ Hooks.once('init', function() {
   hotkeys.registerShortcut({
 		name: 'token-health.toggleKeyAlt',
 		label: i18n('TOKEN_HEALTH.toggleKeyAltName'),
-		group: 'token-health.token-health', 
+		group: 'token-health.token-health',
 		get: () => game.settings.get('token-health', 'toggleKeyAlt'),
 		set: async value => await game.settings.set('token-health', 'toggleKeyAlt', value),
 		default: () => { return { key: hotkeys.keys.Enter, alt: false, ctrl: false, shift: true }; },
@@ -1208,7 +1214,7 @@ Hooks.once('init', function() {
   hotkeys.registerShortcut({
 		name: 'token-health.toggleKeyTarget',
 		label: i18n('TOKEN_HEALTH.toggleKeyTargetName'),
-		group: 'token-health.token-health', 
+		group: 'token-health.token-health',
 		get: () => game.settings.get('token-health', 'toggleKeyTarget'),
 		set: async value => await game.settings.set('token-health', 'toggleKeyTarget', value),
 		default: () => { return { key: hotkeys.keys.Enter, alt: true, ctrl: false, shift: false }; },
@@ -1248,7 +1254,7 @@ Hooks.once('init', function() {
   hotkeys.registerShortcut({
 		name: 'token-health.toggleKeyTargetAlt',
 		label: i18n('TOKEN_HEALTH.toggleKeyTargetAltName'),
-		group: 'token-health.token-health', 
+		group: 'token-health.token-health',
 		get: () => game.settings.get('token-health', 'toggleKeyTargetAlt'),
 		set: async value => await game.settings.set('token-health', 'toggleKeyTargetAlt', value),
 		default: () => { return { key: hotkeys.keys.Enter, alt: true, ctrl: false, shift: true }; },
@@ -1265,5 +1271,167 @@ Hooks.once('init', function() {
       // }
     }
 	});
+
+
+  // TOGGLE_KEY_BASE: 'Numpad Enter'
+  /* Hotkeys.registerShortcut(TH_CONFIG: HotkeySetting, throwOnError?: boolean) */
+  try {
+    game.settings.get('token-health', 'toggleNumpadKey');
+  } catch (e) {
+    if (e.message === 'This is not a registered game setting') {
+      game.settings.register("token-health", "toggleNumpadKey", {
+        scope: 'user',
+        TH_CONFIG: false,
+        default: {
+          key: hotkeys.keys.NumpadEnter,
+          alt: false,
+          ctrl: false,
+          shift: false
+        }
+      });
+    } else {
+      throw e;
+    }
+  }
+  hotkeys.registerShortcut({
+    name: 'token-health.toggleNumpadKey',
+    label: i18n('TOKEN_HEALTH.toggleNumpadKeyName'),
+    group: 'token-health.token-health',
+    get: () => game.settings.get('token-health', 'toggleNumpadKey'),
+    set: async value => await game.settings.set('token-health', 'toggleNumpadKey', value),
+    default: () => { return { key: hotkeys.keys.NumpadEnter, alt: false, ctrl: false, shift: false }; },
+    onKeyDown: self => {
+      // Replace this with the code DF Hotkey should execute when the hot key is pressed
+      // console.log('Token Health: Base key pressed!');
+      toggle(event);
+      // SDR: This is all wrong - but an example of what custom Hotbar does
+      // if (game.settings.get("custom-hotbar","chbDisabled") !== true) {
+      //   CHBDebug('Custom Hotbar | Fire custom hotbar macro slot 1!');
+      //   const num = 1;
+      //   const slot = ui.customHotbar.macros.find(m => m.key === num);
+      //   if ( ui.customHotbar.macros[num] ) slot.macro.execute();
+      // }
+    }
+  });
+
+  // TOGGLE_KEY_ALT: 'Shift + Enter'
+  try {
+    game.settings.get('token-health', 'toggleNumpadKeyAlt');
+  } catch (e) {
+    if (e.message === 'This is not a registered game setting') {
+      game.settings.register("token-health", "toggleNumpadKeyAlt", {
+        scope: 'user',
+        TH_CONFIG: false,
+        default: {
+          key: hotkeys.keys.NumpadEnter,
+          alt: false,
+          ctrl: false,
+          shift: true
+        }
+      });
+    } else {
+      throw e;
+    }
+  }
+  hotkeys.registerShortcut({
+    name: 'token-health.toggleNumpadKeyAlt',
+    label: i18n('TOKEN_HEALTH.toggleNumpadKeyAltName'),
+    group: 'token-health.token-health',
+    get: () => game.settings.get('token-health', 'toggleNumpadKeyAlt'),
+    set: async value => await game.settings.set('token-health', 'toggleNumpadKeyAlt', value),
+    default: () => { return { key: hotkeys.keys.NumpadEnter, alt: false, ctrl: false, shift: true }; },
+    onKeyDown: self => {
+      // Replace this with the code DF Hotkey should execute when the hot key is pressed
+      // console.log('Token Health: Alt key pressed!');
+      toggle(event, false);
+      // SDR: This is all wrong - but an example of what custom Hotbar does
+      // if (game.settings.get("custom-hotbar","chbDisabled") !== true) {
+      //   CHBDebug('Custom Hotbar | Fire custom hotbar macro slot 1!');
+      //   const num = 1;
+      //   const slot = ui.customHotbar.macros.find(m => m.key === num);
+      //   if ( ui.customHotbar.macros[num] ) slot.macro.execute();
+      // }
+    }
+  });
+
+  // TOGGLE_KEY_TARGET: 'Alt + Enter'
+  try {
+    game.settings.get('token-health', 'toggleNumpadKeyTarget');
+  } catch (e) {
+    if (e.message === 'This is not a registered game setting') {
+      game.settings.register("token-health", "toggleNumpadKeyTarget", {
+        scope: 'user',
+        TH_CONFIG: false,
+        default: {
+          key: hotkeys.keys.NumpadEnter,
+          alt: true,
+          ctrl: false,
+          shift: false
+        }
+      });
+    } else {
+      throw e;
+    }
+  }
+  hotkeys.registerShortcut({
+    name: 'token-health.toggleNumpadKeyTarget',
+    label: i18n('TOKEN_HEALTH.toggleNumpadKeyTargetName'),
+    group: 'token-health.token-health',
+    get: () => game.settings.get('token-health', 'toggleNumpadKeyTarget'),
+    set: async value => await game.settings.set('token-health', 'toggleNumpadKeyTarget', value),
+    default: () => { return { key: hotkeys.keys.NumpadEnter, alt: true, ctrl: false, shift: false }; },
+    onKeyDown: self => {
+      // Replace this with the code DF Hotkey should execute when the hot key is pressed
+      // console.log('Token Health: Target key pressed!');
+      toggle(event, true, true);
+      // SDR: This is all wrong - but an example of what custom Hotbar does
+      // if (game.settings.get("custom-hotbar","chbDisabled") !== true) {
+      //   CHBDebug('Custom Hotbar | Fire custom hotbar macro slot 1!');
+      //   const num = 1;
+      //   const slot = ui.customHotbar.macros.find(m => m.key === num);
+      //   if ( ui.customHotbar.macros[num] ) slot.macro.execute();
+      // }
+    }
+  });
+
+  // TOGGLE_KEY_TARGET_ALT: 'Alt + Shift + Enter'
+  try {
+    game.settings.get('token-health', 'toggleNumpadKeyTargetAlt');
+  } catch (e) {
+    if (e.message === 'This is not a registered game setting') {
+      game.settings.register("token-health", "toggleNumpadKeyTargetAlt", {
+        scope: 'user',
+        TH_CONFIG: false,
+        default: {
+          key: hotkeys.keys.NumpadEnter,
+          alt: true,
+          ctrl: false,
+          shift: true
+        }
+      });
+    } else {
+      throw e;
+    }
+  }
+  hotkeys.registerShortcut({
+    name: 'token-health.toggleNumpadKeyTargetAlt',
+    label: i18n('TOKEN_HEALTH.toggleNumpadKeyTargetAltName'),
+    group: 'token-health.token-health',
+    get: () => game.settings.get('token-health', 'toggleNumpadKeyTargetAlt'),
+    set: async value => await game.settings.set('token-health', 'toggleNumpadKeyTargetAlt', value),
+    default: () => { return { key: hotkeys.keys.NumpadEnter, alt: true, ctrl: false, shift: true }; },
+    onKeyDown: self => {
+      // Replace this with the code DF Hotkey should execute when the hot key is pressed
+      // console.log('Token Health: Target Alt key pressed!');
+      toggle(event, false, true);
+      // SDR: This is all wrong - but an example of what custom Hotbar does
+      // if (game.settings.get("custom-hotbar","chbDisabled") !== true) {
+      //   CHBDebug('Custom Hotbar | Fire custom hotbar macro slot 1!');
+      //   const num = 1;
+      //   const slot = ui.customHotbar.macros.find(m => m.key === num);
+      //   if ( ui.customHotbar.macros[num] ) slot.macro.execute();
+      // }
+    }
+  });
 
 });
