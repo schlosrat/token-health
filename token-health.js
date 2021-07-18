@@ -304,12 +304,16 @@ const applyDamage = async (html, isDamage, isTargeted) => {
           ageNoDamageBuyoff(actor, dapplied - damageCapacity);
         }
       } else if (dapplied >= damageCapacity) {
-        // Set KO State
-        isUnconscious = true;
-        actor.setFlag("world", "unconscious", isUnconscious);
-        // Announce KO State
-        anouncePlayer = TH_CONFIG.UNCONSCIOUS;
-        if (enableChat) ChatMessage.create({content: anouncePlayer, speaker: ChatMessage.getSpeaker({actor: actor})});
+        if (allowDamageBuyoff) {
+          // Nothing to do!
+        } else {
+          // Set KO State
+          isUnconscious = true;
+          actor.setFlag("world", "unconscious", isUnconscious);
+          // Announce KO State
+          anouncePlayer = TH_CONFIG.UNCONSCIOUS;
+          if (enableChat) ChatMessage.create({content: anouncePlayer, speaker: ChatMessage.getSpeaker({actor: actor})});
+        }
       }
     }
 
@@ -348,9 +352,9 @@ const applyDamage = async (html, isDamage, isTargeted) => {
           // actor.handleConditions("dying", false);
           // actor.handleConditions("helpless", false);
           // actor.handleConditions("unconscious", false);
-          removeCondition(actor, "dying");
-          removeCondition(actor, "helpless");
-          removeCondition(actor, "unconscious");
+          await removeCondition(actor, "dying");
+          await removeCondition(actor, "helpless");
+          await removeCondition(actor, "unconscious");
         }
       }
     } else {
@@ -365,11 +369,11 @@ const applyDamage = async (html, isDamage, isTargeted) => {
           // actor.handleConditions("helpless", isUnconscious);
           // actor.handleConditions("unconscious", isUnconscious);
           if (isUnconscious) {
-            applyCondition(actor, "helpless");
-            applyCondition(actor, "unconscious")
+            await applyCondition(actor, "helpless");
+            await applyCondition(actor, "unconscious")
           } else {
-            removeCondition(actor, "helpless");
-            removeCondition(actor, "unconscious");
+            await removeCondition(actor, "helpless");
+            await removeCondition(actor, "unconscious");
           }
         }
       }
@@ -530,11 +534,11 @@ const ageDamageBuyoff = async(thisActor, dRemaining) => {
         // thisActor.handleConditions("unconscious", true);
         // thisActor.handleConditions("helpless", true);
         // thisActor.handleConditions("prone", isProne);
-        applyCondition(thisActor, "dying");
-        applyCondition(thisActor, "unconscious");
-        applyCondition(thisActor, "helpless");
-        if (isProne) applyCondition(thisActor, "prone");
-        else removeCondition(thisActor, "prone");
+        await applyCondition(thisActor, "dying");
+        await applyCondition(thisActor, "unconscious");
+        await applyCondition(thisActor, "helpless");
+        if (isProne) await applyCondition(thisActor, "prone");
+        else await removeCondition(thisActor, "prone");
       }
     }
     if (enableChat) ChatMessage.create({speaker: this_speaker, content: flavor3}); // Good by cruel world!
@@ -577,11 +581,11 @@ const ageDamageBuyoff = async(thisActor, dRemaining) => {
         // thisActor.handleConditions("wounded", true);
         // thisActor.handleConditions("exhausted", isExhausted);
         // thisActor.handleConditions("helpless", isHelpless);
-        applyCondition(thisActor, "wounded");
-        if (isExhausted) applyCondition(thisActor, "exhausted");
-        else removeCondition(thisActor, "exhausted");
-        if (isHelpless) applyCondition(thisActor, "helpless");
-        else removeCondition(thisActor, "helpless");
+        await applyCondition(thisActor, "wounded");
+        if (isExhausted) await applyCondition(thisActor, "exhausted");
+        else await removeCondition(thisActor, "exhausted");
+        if (isHelpless) await applyCondition(thisActor, "helpless");
+        else await removeCondition(thisActor, "helpless");
       }
     }
 
@@ -613,11 +617,11 @@ const ageDamageBuyoff = async(thisActor, dRemaining) => {
           // thisActor.handleConditions("unconscious", true);
           // thisActor.handleConditions("helpless", true);
           // thisActor.handleConditions("prone", isProne);
-          applyCondition(thisActor, "dying");
-          applyCondition(thisActor, "unconscious");
-          applyCondition(thisActor, "helpless");
-          if (isProne) applyCondition(thisActor, "prone");
-          else removeCondition(thisActor, "prone");
+          await applyCondition(thisActor, "dying");
+          await applyCondition(thisActor, "unconscious");
+          await applyCondition(thisActor, "helpless");
+          if (isProne) await applyCondition(thisActor, "prone");
+          else await removeCondition(thisActor, "prone");
           }
       }
       if (enableChat) ChatMessage.create({speaker: this_speaker, content: flavor3}); // Good by cruel world!
@@ -664,13 +668,13 @@ const ageDamageBuyoff = async(thisActor, dRemaining) => {
         // thisActor.handleConditions("fatigued", isFatigued);
         // thisActor.handleConditions("exhausted", isExhausted);
         // thisActor.handleConditions("helpless", isHelpless);
-        applyCondition(thisActor, "injured");
-        if (isFatigued) applyCondition(thisActor, "fatigued");
-        else removeCondition(thisActor, "fatigued");
-        if (isExhausted) applyCondition(thisActor, "exhausted");
-        else removeCondition(thisActor, "exhausted");
-        if (isProne) applyCondition(thisActor, "helpless");
-        else removeCondition(thisActor, "helpless");
+        await applyCondition(thisActor, "injured");
+        if (isFatigued) await applyCondition(thisActor, "fatigued");
+        else await removeCondition(thisActor, "fatigued");
+        if (isExhausted) await applyCondition(thisActor, "exhausted");
+        else await removeCondition(thisActor, "exhausted");
+        if (isProne) await applyCondition(thisActor, "helpless");
+        else await removeCondition(thisActor, "helpless");
     }
     }
 
@@ -713,11 +717,11 @@ const ageDamageBuyoff = async(thisActor, dRemaining) => {
           // thisActor.handleConditions("wounded", true);
           // thisActor.handleConditions("exhausted", isExhausted);
           // thisActor.handleConditions("helpless", isHelpless);
-          applyCondition(thisActor, "wounded");
-          if (isExhausted) applyCondition(thisActor, "exhausted");
-          else removeCondition(thisActor, "exhausted");
-          if (isHelpless) applyCondition(thisActor, "helpless");
-          else removeCondition(thisActor, "helpless");
+          await applyCondition(thisActor, "wounded");
+          if (isExhausted) await applyCondition(thisActor, "exhausted");
+          else await removeCondition(thisActor, "exhausted");
+          if (isHelpless) await applyCondition(thisActor, "helpless");
+          else await removeCondition(thisActor, "helpless");
           }
       }
       if ((roll1._total + roll2._total) < dRemaining) {
@@ -748,11 +752,11 @@ const ageDamageBuyoff = async(thisActor, dRemaining) => {
             // thisActor.handleConditions("unconscious", true);
             // thisActor.handleConditions("helpless", true);
             // thisActor.handleConditions("prone", isProne);
-            applyCondition(thisActor, "dying");
-            applyCondition(thisActor, "unconscious");
-            applyCondition(thisActor, "helpless");
-            if (isProne) applyCondition(thisActor, "prone");
-            else removeCondition(thisActor, "prone");
+            await applyCondition(thisActor, "dying");
+            await applyCondition(thisActor, "unconscious");
+            await applyCondition(thisActor, "helpless");
+            if (isProne) await applyCondition(thisActor, "prone");
+            else await removeCondition(thisActor, "prone");
           }
         }
         if (enableChat) ChatMessage.create({speaker: this_speaker, content: flavor3}); // Good by cruel world!
@@ -879,11 +883,11 @@ const ageDamageBuyoff = async(thisActor, dRemaining) => {
         // thisActor.handleConditions("unconscious", true);
         // thisActor.handleConditions("helpless", true);
         // thisActor.handleConditions("prone", isProne);
-        applyCondition(thisActor, "dying");
-        applyCondition(thisActor, "unconscious");
-        applyCondition(thisActor, "helpless");
-        if (isProne) applyCondition(thisActor, "prone");
-        else removeCondition(thisActor, "prone");
+        await applyCondition(thisActor, "dying");
+        await applyCondition(thisActor, "unconscious");
+        await applyCondition(thisActor, "helpless");
+        if (isProne) await applyCondition(thisActor, "prone");
+        else await removeCondition(thisActor, "prone");
       }
     }
     if (enableChat) ChatMessage.create({speaker: this_speaker, content: flavor3}); // Good by cruel world!
