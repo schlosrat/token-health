@@ -2,7 +2,7 @@
 
 ## 0.4.4 (2021-07-18)
 - Overhauled how configurable settings are handled to correctly configure things without stomping on the configurations set by other mods and systems.
-- Added two new optional config settings (ALT_MAX_HITPOINTS_ATTRIBUTE_1 & ALT_MAX_HITPOINTS_ATTRIBUTE_2) which facilitate handling of tempoary health in DnD5e.
+- Added two new optional config settings (ALT_MAX_HITPOINTS_ATTRIBUTE_1 & ALT_MAX_HITPOINTS_ATTRIBUTE_2) which facilitate handling of temporary health in DnD5e.
 - New fields added to each language file to support new configurable settings.
 
 ## 0.4.3 (2021-06-04)
