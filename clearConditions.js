@@ -60,35 +60,41 @@ async function clearConditions () {
                 }
             }
             
-            // Record the actor's current CON value
-            let speed = ageSystemActor.data.data.speed.total;
-            
-            // Check for a baseConValue flag
-            let baseSpeed = ageSystemActor.getFlag("world", "baseSpeed");
-            
-            // If there is a baseConValue flag set...
-            if (baseSpeed != undefined) {
-                // And if the current CON is less than the baseConValue
-                if (speed < baseSpeed) {
-                    speed = baseSpeed;
-                }
-            }
-            
             await setConditions(ageSystemActor, false, conValue);
 
-            ageSystemActor.handleConditions("blinded", false);
-            ageSystemActor.handleConditions("deafened", false);
-            ageSystemActor.handleConditions("dying", false);
-            ageSystemActor.handleConditions("exhausted", false);
-            ageSystemActor.handleConditions("fatigued", false);
-            ageSystemActor.handleConditions("freefalling", false);
-            ageSystemActor.handleConditions("helpless", false);
-            ageSystemActor.handleConditions("hindered", false);
-            ageSystemActor.handleConditions("injured", false);
-            ageSystemActor.handleConditions("prone", false);
-            ageSystemActor.handleConditions("restrained", false);
-            ageSystemActor.handleConditions("unconscious", false);
-            ageSystemActor.handleConditions("wounded", false);
+            await ageSystemActor.handleConditions("blinded", false);
+            await ageSystemActor.handleConditions("deafened", false);
+            await ageSystemActor.handleConditions("dying", false);
+            await ageSystemActor.handleConditions("exhausted", false);
+            await ageSystemActor.handleConditions("fatigued", false);
+            await ageSystemActor.handleConditions("freefalling", false);
+            await ageSystemActor.handleConditions("helpless", false);
+            await ageSystemActor.handleConditions("hindered", false);
+            await ageSystemActor.handleConditions("injured", false);
+            await ageSystemActor.handleConditions("prone", false);
+            await ageSystemActor.handleConditions("restrained", false);
+            await ageSystemActor.handleConditions("unconscious", false);
+            await ageSystemActor.handleConditions("wounded", false);
+
+            // Check for a flag for injured, clear it if it's there
+            if (ageSystemActor.getFlag("world", "injured") != undefined) {
+                await ageSystemActor.setFlag("world", "injured", false);
+            }
+
+            // Check for a flag for wounded, clear it if it's there
+            if (ageSystemActor.getFlag("world", "wounded") != undefined) {
+                await ageSystemActor.setFlag("world", "wounded", false);
+            }
+
+            // Check for a flag for unconscious, clear it if it's there
+            if (ageSystemActor.getFlag("world", "unconscious") != undefined) {
+                await ageSystemActor.setFlag("world", "unconscious", false);
+            }
+
+            // Check for a flag for dying, clear it if it's there
+            if (ageSystemActor.getFlag("world", "dying") != undefined) {
+                await ageSystemActor.setFlag("world", "dying", false);
+            }
 
             // Get the speaker for this token
             let this_speaker = ChatMessage.getSpeaker({token: token});
