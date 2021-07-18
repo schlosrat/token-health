@@ -38,10 +38,12 @@ const DEFAULT = {
   DAMAGE_SUBTYPE_1: '',
   HITPOINTS_ATTRIBUTE_1: '',
   MAX_HITPOINTS_ATTRIBUTE_1: '',
+  ALT_MAX_HITPOINTS_ATTRIBUTE_1: '',
   TEMP_HITPOINTS_ATTRIBUTE_1: '',
   DAMAGE_SUBTYPE_2: '',
   HITPOINTS_ATTRIBUTE_2: '',
   MAX_HITPOINTS_ATTRIBUTE_2: '',
+  ALT_MAX_HITPOINTS_ATTRIBUTE_2: '',
   TEMP_HITPOINTS_ATTRIBUTE_2: '',
   MITIGATION_ATTRIBUTE_1: '',
   MITIGATION_ATTRIBUTE_2: '',
@@ -65,6 +67,7 @@ const setDefaults = () => {
   if (game.system.id === 'dnd5e' || game.system.id === 'pf1' || game.system.id === 'pf2e') {
     DEFAULT.HITPOINTS_ATTRIBUTE_1 = 'attributes.hp.value';
     DEFAULT.MAX_HITPOINTS_ATTRIBUTE_1 = 'attributes.hp.max';
+    DEFAULT.ALT_MAX_HITPOINTS_ATTRIBUTE_1 = 'attributes.hp.tempmax';
     DEFAULT.TEMP_HITPOINTS_ATTRIBUTE_1 = 'attributes.hp.temp';
   } else if (game.system.id === 'swade'){
     DEFAULT.DAMAGE_SUBTYPE_1 = 'Wounds',
@@ -191,7 +194,7 @@ export const registerSettings = function () {
   setDefaults();
 
   /*************** TOKEN HEALTH HOTKEY SETTINGS ***************/
-  // Hotkey defalt for applying damage to selected token(s)
+  // Hotkey default for applying damage to selected token(s)
   CONFIG.TokenHealth = {};
   TH_CONFIG.TOGGLE_KEY_BASE = initSetting('toggleKey', {
       name: i18n('TOKEN_HEALTH.toggleKeyName'),
@@ -211,7 +214,7 @@ export const registerSettings = function () {
       },
     });
     CONFIG.TokenHealth.TOGGLE_KEY_BASE = TH_CONFIG.TOGGLE_KEY_BASE; // = game.settings.get(MODULE_NAME, 'toggleKey');
-  // Hotkey defalt for applying healing to selected token(s) 
+  // Hotkey default for applying healing to selected token(s) 
   TH_CONFIG.TOGGLE_KEY_ALT = initSetting( 'toggleKeyAlt', {
     name: i18n('TOKEN_HEALTH.toggleKeyAltName'),
     hint: i18n('TOKEN_HEALTH.toggleKeyAltHint'),
@@ -230,7 +233,7 @@ export const registerSettings = function () {
     },
   });
   CONFIG.TokenHealth.TOGGLE_KEY_ALT = TH_CONFIG.TOGGLE_KEY_ALT; // = game.settings.get(MODULE_NAME, 'toggleKeyAlt');
-  // Hotkey defalt for applying damage to targeted token(s) 
+  // Hotkey default for applying damage to targeted token(s) 
   TH_CONFIG.TOGGLE_KEY_TARGET = initSetting( 'toggleKeyTarget', {
     name: i18n('TOKEN_HEALTH.toggleKeyTargetName'),
     hint: i18n('TOKEN_HEALTH.toggleKeyTargetHint'),
@@ -249,7 +252,7 @@ export const registerSettings = function () {
     },
   });
   CONFIG.TokenHealth.TOGGLE_KEY_TARGET = TH_CONFIG.TOGGLE_KEY_TARGET; // = game.settings.get(MODULE_NAME, 'toggleKeyTarget');
-  // Hotkey defalt for applying healing to targeted token(s) 
+  // Hotkey default for applying healing to targeted token(s) 
   TH_CONFIG.TOGGLE_KEY_TARGET_ALT = initSetting( 'toggleKeyTargetAlt', {
     name: i18n('TOKEN_HEALTH.toggleKeyTargetAltName'),
     hint: i18n('TOKEN_HEALTH.toggleKeyTargetAltHint'),
@@ -407,6 +410,19 @@ export const registerSettings = function () {
     },
   });
   CONFIG.TokenHealth.MAX_HITPOINTS_ATTRIBUTE_1 = TH_CONFIG.MAX_HITPOINTS_ATTRIBUTE_1; // = game.settings.get(MODULE_NAME, 'hpSourceMax1');
+  // Attribute recording secondary max possible health pool (optional) - *** NEW! ***
+  TH_CONFIG.ALT_MAX_HITPOINTS_ATTRIBUTE_1 = initSetting('altHpSourceMax1', {
+    name: i18n('TOKEN_HEALTH.altHpMax1'),
+    hint: i18n('TOKEN_HEALTH.altHpMax1Hint'),
+    type: String,
+    default: DEFAULT.ALT_MAX_HITPOINTS_ATTRIBUTE_1,
+    scope: 'world',
+    config: true,
+    onChange: key => {
+      CONFIG.TokenHealth.ALT_MAX_HITPOINTS_ATTRIBUTE_1 = key;
+    },
+  });
+  CONFIG.TokenHealth.ALT_MAX_HITPOINTS_ATTRIBUTE_1 = TH_CONFIG.ALT_MAX_HITPOINTS_ATTRIBUTE_1; // = game.settings.get(MODULE_NAME, 'altHpSourceMax1');
   // Attribute for recording/tracking temporary health (optional)
   TH_CONFIG.TEMP_HITPOINTS_ATTRIBUTE_1 = initSetting( 'tempHpSource1', {
     name: i18n('TOKEN_HEALTH.tempHp1'),
@@ -459,6 +475,19 @@ export const registerSettings = function () {
     },
   });
   CONFIG.TokenHealth.MAX_HITPOINTS_ATTRIBUTE_2 = TH_CONFIG.MAX_HITPOINTS_ATTRIBUTE_2; // = game.settings.get(MODULE_NAME, 'hpSourceMax2');
+  // Attribute recording secondary max possible health pool (optional) - *** NEW! ***
+  TH_CONFIG.ALT_MAX_HITPOINTS_ATTRIBUTE_2 = initSetting('altHpSourceMax2', {
+    name: i18n('TOKEN_HEALTH.altHpMax2'),
+    hint: i18n('TOKEN_HEALTH.altHpMax2Hint'),
+    type: String,
+    default: DEFAULT.ALT_MAX_HITPOINTS_ATTRIBUTE_2,
+    scope: 'world',
+    config: true,
+    onChange: key => {
+      CONFIG.TokenHealth.ALT_MAX_HITPOINTS_ATTRIBUTE_2 = key;
+    },
+  });
+  CONFIG.TokenHealth.ALT_MAX_HITPOINTS_ATTRIBUTE_2 = TH_CONFIG.ALT_MAX_HITPOINTS_ATTRIBUTE_2; // = game.settings.get(MODULE_NAME, 'altHpSourceMax2');
   // Attribute for recording/tracking temporary health (optional)
   TH_CONFIG.TEMP_HITPOINTS_ATTRIBUTE_2 = initSetting ('tempHpSource2', {
     name: i18n('TOKEN_HEALTH.tempHp2'),
@@ -715,27 +744,27 @@ export default () => {
   setDefaults();
 
   /*************** TOKEN HEALTH HOTKEY SETTINGS ***************/
-  // Hotkey defalt for applying damage to selected token(s)
+  // Hotkey default for applying damage to selected token(s)
   CONFIG.TokenHealth = {};
   game.settings.register(MODULE_NAME, 'toggleKey', {
-      name: i18n('TOKEN_HEALTH.toggleKeyName'),
-      hint: i18n('TOKEN_HEALTH.toggleKeyHint'),
-      // type: KeyBinding,
-      // default: DEFAULT.TOGGLE_KEY_BASE,
-      default: {
-        key: hotkeys.keys.Enter,
-        alt: false,
-        ctrl: false,
-        shift: false
-      },
-      scope: 'user',
-      config: false,
-      onChange: key => {
-        CONFIG.TokenHealth.TOGGLE_KEY_BASE = key;
-      },
-    });
+    name: i18n('TOKEN_HEALTH.toggleKeyName'),
+    hint: i18n('TOKEN_HEALTH.toggleKeyHint'),
+    // type: KeyBinding,
+    // default: DEFAULT.TOGGLE_KEY_BASE,
+    default: {
+      key: hotkeys.keys.Enter,
+      alt: false,
+      ctrl: false,
+      shift: false
+    },
+    scope: 'user',
+    config: false,
+    onChange: key => {
+      CONFIG.TokenHealth.TOGGLE_KEY_BASE = key;
+    },
+  });
   TH_CONFIG.TOGGLE_KEY_BASE = game.settings.get(MODULE_NAME, 'toggleKey');
-  // Hotkey defalt for applying healing to selected token(s) 
+  // Hotkey default for applying healing to selected token(s)
   game.settings.register(MODULE_NAME, 'toggleKeyAlt', {
     name: i18n('TOKEN_HEALTH.toggleKeyAltName'),
     hint: i18n('TOKEN_HEALTH.toggleKeyAltHint'),
@@ -754,7 +783,7 @@ export default () => {
     },
   });
   TH_CONFIG.TOGGLE_KEY_ALT = game.settings.get(MODULE_NAME, 'toggleKeyAlt');
-  // Hotkey defalt for applying damage to targeted token(s) 
+  // Hotkey default for applying damage to targeted token(s)
   game.settings.register(MODULE_NAME, 'toggleKeyTarget', {
     name: i18n('TOKEN_HEALTH.toggleKeyTargetName'),
     hint: i18n('TOKEN_HEALTH.toggleKeyTargetHint'),
@@ -773,7 +802,7 @@ export default () => {
     },
   });
   TH_CONFIG.TOGGLE_KEY_TARGET = game.settings.get(MODULE_NAME, 'toggleKeyTarget');
-  // Hotkey defalt for applying healing to targeted token(s) 
+  // Hotkey default for applying healing to targeted token(s)
   game.settings.register(MODULE_NAME, 'toggleKeyTargetAlt', {
     name: i18n('TOKEN_HEALTH.toggleKeyTargetAltName'),
     hint: i18n('TOKEN_HEALTH.toggleKeyTargetAltHint'),
@@ -790,6 +819,7 @@ export default () => {
     },
   });
   TH_CONFIG.TOGGLE_KEY_TARGET_ALT = game.settings.get(MODULE_NAME, 'toggleKeyTargetAlt');
+  /*************** TOKEN HEALTH TH_CONFIGURATION SETTINGS ***************/
   // Enable/disable display of token thumbnail images in dialog box
   game.settings.register(MODULE_NAME, 'enableTokenImages', {
     name: i18n('TOKEN_HEALTH.enableTokenImages'),
@@ -931,6 +961,19 @@ export default () => {
     },
   });
   TH_CONFIG.MAX_HITPOINTS_ATTRIBUTE_1 = game.settings.get(MODULE_NAME, 'hpSourceMax1');
+  // Attribute recording secondary max possible health pool (optional) - *** NEW! ***
+  game.settings.register(MODULE_NAME, 'altHpSourceMax1', {
+    name: i18n('TOKEN_HEALTH.altHpMax1'),
+    hint: i18n('TOKEN_HEALTH.altHpMax1Hint'),
+    type: String,
+    default: DEFAULT.ALT_MAX_HITPOINTS_ATTRIBUTE_1,
+    scope: 'world',
+    config: true,
+    onChange: key => {
+      TH_CONFIG.ALT_MAX_HITPOINTS_ATTRIBUTE_1 = key;
+    },
+  });
+  TH_CONFIG.ALT_MAX_HITPOINTS_ATTRIBUTE_1 = game.settings.get(MODULE_NAME, 'altHpSourceMax1');
   // Attribute for recording/tracking temporary health (optional)
   game.settings.register(MODULE_NAME, 'tempHpSource1', {
     name: i18n('TOKEN_HEALTH.tempHp1'),
@@ -983,6 +1026,19 @@ export default () => {
     },
   });
   TH_CONFIG.MAX_HITPOINTS_ATTRIBUTE_2 = game.settings.get(MODULE_NAME, 'hpSourceMax2');
+  // Attribute recording secondary max possible health pool (optional) - *** NEW! ***
+  game.settings.register(MODULE_NAME, 'altHpSourceMax2', {
+    name: i18n('TOKEN_HEALTH.altHpMax2'),
+    hint: i18n('TOKEN_HEALTH.altHpMax2Hint'),
+    type: String,
+    default: DEFAULT.ALT_MAX_HITPOINTS_ATTRIBUTE_2,
+    scope: 'world',
+    config: true,
+    onChange: key => {
+      CONFIG.TokenHealth.ALT_MAX_HITPOINTS_ATTRIBUTE_2 = key;
+    },
+  });
+  TH_CONFIG.ALT_MAX_HITPOINTS_ATTRIBUTE_2 = game.settings.get(MODULE_NAME, 'altHpSourceMax2');
   // Attribute for recording/tracking temporary health (optional)
   game.settings.register(MODULE_NAME, 'tempHpSource2', {
     name: i18n('TOKEN_HEALTH.tempHp2'),
@@ -1230,11 +1286,4 @@ export default () => {
     },
   });
   TH_CONFIG.WOUNDED = game.settings.get(MODULE_NAME, 'wounded');
-
-  CONFIG.TokenHealth = TH_CONFIG;
-  console.log(CONFIG);
-  console.log(TH_CONFIG);
 };
-
-// let CONFIG.TokenHealth = TH_CONFIG;
-// export CONFIG;
