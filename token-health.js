@@ -1,7 +1,8 @@
 // @ts-check
 
 import { hotkeys } from '../lib-df-hotkeys/lib-df-hotkeys.shim.js';
-import settings, {TH_CONFIG} from './settings.js';
+import MODULE_NAME, { TH_CONFIG } from './settings.js';
+import { registerSettings } from './settings.js';
 import {i18n} from './ui.js';
 import getNewHP from './getNewHP.js';
 
@@ -36,6 +37,7 @@ class TokenHealthDialog extends Dialog {
   // This example remove condition Active Effects - AGE System code will take care of checked/unchecked boxes and token statuses  let remove = [];
   // let actor = game.actors.getName("asdf"); // replace by your function to select the actor
   // const condId = "freefalling"; // replace this by the function to select which condition you want to delete
+  let remove = [];
   thisActor.effects.map(e => { /* this loop will capture all Active Effects causing the 'freefalling' condition and delete all of them. My code forsees only 1 installment of each Condition, but I am here on the safe side */
     const isCondition = (e.data.flags?.["age-system"]?.type === "conditions") ? true : false;
     const isId = (e.data.flags?.["age-system"]?.name === condId) ? true : false;
@@ -545,7 +547,7 @@ const ageDamageBuyoff = async(thisActor, dRemaining) => {
 
     // If this is an AGE System game
     if (game.system.id === 'age-system') {
-      // TH_CONFIGure conditions: Add the exhausted condition,
+      // Configure conditions: Add the exhausted condition,
       //    if already exhausted then helpless
       if (isExhausted) {
         isHelpless = true;
@@ -629,7 +631,7 @@ const ageDamageBuyoff = async(thisActor, dRemaining) => {
 
     // If this is an AGE System game
     if (game.system.id === 'age-system') {
-      // TH_CONFIGure conditions: Add the fatigued condition,
+      // Configure conditions: Add the fatigued condition,
       //    if already fatigued then exhausted,
       //    if already exhausted then helpless
       if (isExhausted) {
@@ -681,7 +683,7 @@ const ageDamageBuyoff = async(thisActor, dRemaining) => {
 
       // If this is an AGE System game
       if (game.system.id === 'age-system') {
-        // TH_CONFIGure conditions: Add the exhausted condition,
+        // Configure conditions: Add the exhausted condition,
         //    if already exhausted then helpless
         if (isExhausted) {
           isHelpless = true;
@@ -940,7 +942,7 @@ const displayOverlay = async (isDamage, isTargeted = false) => {
     // allowPenetratingDamage = true;
     helpText = [helpText, `${i18n('TOKEN_HEALTH.Dialog_Penetration_Help')}`].join('  ')
   }
-  // Determine if damage mitigation is TH_CONFIGured
+  // Determine if damage mitigation is Configured
   /*
   const mit1 = getProperty(data, TH_CONFIG.MITIGATION_ATTRIBUTE_1);
   const mit2 = getProperty(data, TH_CONFIG.MITIGATION_ATTRIBUTE_2);
@@ -1064,7 +1066,7 @@ const handleKeys = function (event, key, up) {
  * Initialize our stuff
  */
 // Make sure lib-df-hotkeys is installed and active
-Hooks.once('ready', () => {
+Hooks.once('ready', async () => {
 	if (!game.modules.get('lib-df-hotkeys')?.active) {
 		console.error('Missing lib-df-hotkeys module dependency');
 		if (game.user.isGM)
@@ -1075,7 +1077,53 @@ Hooks.once('ready', () => {
 	// Perform your Hotkey registrations
 
   // Initialize settings
-  settings();
+  // settings();
+  // Register custom module settings
+  registerSettings();
+
+  CONFIG.TokenHealth = TH_CONFIG;
+
+  // console.log(TH_CONFIG)
+  // console.log(CONFIG)
+
+
+  // CONFIG.TokenHealth.ENABLE_TOKEN_IMAGES = TH_CONFIG.ENABLE_TOKEN_IMAGES; // game.settings.get(MODULE_NAME, 'enableTokenImages');
+  // CONFIG.TokenHealth.ADDITIVE_DAMAGE = game.settings.get(MODULE_NAME, 'damageAdds');
+  // CONFIG.TokenHealth.DAMAGE_TYPE_1 = game.settings.get(MODULE_NAME, 'damageType1');
+  // CONFIG.TokenHealth.DAMAGE_TYPE_2 = game.settings.get(MODULE_NAME, 'damageType2');
+  // CONFIG.TokenHealth.DAMAGE_TYPE_3 = game.settings.get(MODULE_NAME, 'damageType3');
+  // CONFIG.TokenHealth.MITIGATION_ATTRIBUTE_1 = game.settings.get(MODULE_NAME, 'mitigationSource1');
+  // CONFIG.TokenHealth.MITIGATION_ATTRIBUTE_2 = game.settings.get(MODULE_NAME, 'mitigationSource2');
+  // CONFIG.TokenHealth.MITIGATION_ATTRIBUTE_3 = game.settings.get(MODULE_NAME, 'mitigationSource3');
+  // CONFIG.TokenHealth.DAMAGE_SUBTYPE_1 = game.settings.get(MODULE_NAME, 'damageSubtype1');
+  // CONFIG.TokenHealth.HITPOINTS_ATTRIBUTE_1 = game.settings.get(MODULE_NAME, 'hpSource1');
+  // CONFIG.TokenHealth.MAX_HITPOINTS_ATTRIBUTE_1 = game.settings.get(MODULE_NAME, 'hpSourceMax1');
+  // CONFIG.TokenHealth.TEMP_HITPOINTS_ATTRIBUTE_1 = game.settings.get(MODULE_NAME, 'tempHpSource1');
+  // CONFIG.TokenHealth.DAMAGE_SUBTYPE_2 = game.settings.get(MODULE_NAME, 'damageSubtype2');
+  // CONFIG.TokenHealth.HITPOINTS_ATTRIBUTE_2 = game.settings.get(MODULE_NAME, 'hpSource2');
+  // CONFIG.TokenHealth.MAX_HITPOINTS_ATTRIBUTE_2 = game.settings.get(MODULE_NAME, 'hpSourceMax2');
+  // CONFIG.TokenHealth.TEMP_HITPOINTS_ATTRIBUTE_2 = game.settings.get(MODULE_NAME, 'tempHpSource2');
+  // CONFIG.TokenHealth.ALLOW_NEGATIVE = game.settings.get(MODULE_NAME, 'allowNegative');
+  // CONFIG.TokenHealth.KO_THRESHOLD = game.settings.get(MODULE_NAME, 'koThreshold');
+  // CONFIG.TokenHealth.DEATH_THRESHOLD = game.settings.get(MODULE_NAME, 'deathThreshold');
+  // CONFIG.TokenHealth.ENABLE_CONDITIONS = game.settings.get(MODULE_NAME, 'enableConditions');
+  // CONFIG.TokenHealth.ALLOW_DAMAGE_BUYOFF = game.settings.get(MODULE_NAME, 'allowDamageBuyoff');
+  // CONFIG.TokenHealth.ENABLE_TOKEN_CHAT = game.settings.get(MODULE_NAME, 'enableChat');
+  // CONFIG.TokenHealth.OUCH = game.settings.get(MODULE_NAME, 'ouch');
+  // CONFIG.TokenHealth.DAMAGE_POINT = game.settings.get(MODULE_NAME, 'damagePoint');
+  // CONFIG.TokenHealth.DAMAGE_POINTS = game.settings.get(MODULE_NAME, 'damagePoints');
+  // CONFIG.TokenHealth.UNCONSCIOUS = game.settings.get(MODULE_NAME, 'unconscious');
+  // CONFIG.TokenHealth.DYING = game.settings.get(MODULE_NAME, 'dying');
+  // CONFIG.TokenHealth.DEAD = game.settings.get(MODULE_NAME, 'dead');
+  // CONFIG.TokenHealth.TY = game.settings.get(MODULE_NAME, 'ty');
+  // CONFIG.TokenHealth.HEALING_POINT = game.settings.get(MODULE_NAME, 'healingPoint');
+  // CONFIG.TokenHealth.HEALING_POINTS = game.settings.get(MODULE_NAME, 'healingPoints');
+  // CONFIG.TokenHealth.MEH = game.settings.get(MODULE_NAME, 'meh');
+  // CONFIG.TokenHealth.INJURED = game.settings.get(MODULE_NAME, 'injured');
+  // CONFIG.TokenHealth.WOUNDED = game.settings.get(MODULE_NAME, 'wounded');
+
+  // console.log(TH_CONFIG)
+  // console.log(CONFIG)
 
   /* SDR: Obsolete with change to DF Hotkeys
   // Extend _handleKeys method with our own function
@@ -1097,12 +1145,12 @@ Hooks.once('ready', () => {
   // KeyBinding = window.Azzu.SettingsTypes.KeyBinding;
 });
 
-Hooks.once('init', function() {
+Hooks.once('init', async function() {
   /* Hotkeys.registerGroup(group: HotkeyGroup, throwOnError?: boolean): boolean */
   hotkeys.registerGroup({
     name: 'token-health.token-health',
     label: 'Token Health', // Translate this? i18n('TOKEN_HEALTH.toggleKeyName')
-    description: 'Allows you to TH_CONFIGure and override the keybindings for Token Health' // <-- Optional
+    description: 'Allows you to Configure and override the keybindings for Token Health' // <-- Optional
   }, false);
 
   // TOGGLE_KEY_BASE: 'Enter'
