@@ -382,7 +382,7 @@
         .flatMap(m => m.settings)
         .forEach(setting => {
           const key = setting.module + '.' + setting.key;
-          const type = Compatibility.getGameSettting(key).type;
+          const type = Compatibility.getGameSettting(key)?.type;
           if (typeof type === 'function') {
             setting.type = type.name;
           } else {
