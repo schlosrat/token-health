@@ -1087,17 +1087,17 @@ Hooks.once('ready', async () => {
 
   // TOGGLE_KEY_ALT: 'Shift + Enter'
   let key2 = game.keybindings.actions.get("token-health.healSelectedTokens");
-	key2.name = i18n('TOKEN_HEALTH.toggleKeyAltName');
+  key2.name = i18n('TOKEN_HEALTH.toggleKeyAltName');
   key2.hint = i18n('TOKEN_HEALTH.toggleKeyAltHint');
 
   // TOGGLE_KEY_TARGET: 'Alt + Enter'
   let key3 = game.keybindings.actions.get("token-health.damageTargetedTokens");
-	key3.name = i18n('TOKEN_HEALTH.toggleKeyTargetName');
+  key3.name = i18n('TOKEN_HEALTH.toggleKeyTargetName');
   key3.hint = i18n('TOKEN_HEALTH.toggleKeyTargetHint');
 
   // TOGGLE_KEY_TARGET_ALT: 'Alt + Shift + Enter'
   let key4 = game.keybindings.actions.get("token-health.healTargetedTokens");
-	key4.name = i18n('TOKEN_HEALTH.toggleKeyTargetAltName');
+  key4.name = i18n('TOKEN_HEALTH.toggleKeyTargetAltName');
   key4.hint = i18n('TOKEN_HEALTH.toggleKeyTargetAltHint');
 
   // Initialize settings
