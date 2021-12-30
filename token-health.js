@@ -1202,7 +1202,7 @@ Hooks.once('init', async function() {
     //onDown: () => { ui.notifications.info("Pressed!") },
     onDown: self => {
       // Replace this with the code DF Hotkey should execute when the hot key is pressed
-      ui.notifications.info(i18n('TOKEN_HEALTH.toggleKeyHint'));
+      // ui.notifications.info(i18n('TOKEN_HEALTH.toggleKeyHint'));
       toggle(event);
     },
     onUp: () => {},
@@ -1225,7 +1225,7 @@ Hooks.once('init', async function() {
     ],
     onDown: self => {
       // Replace this with the code DF Hotkey should execute when the hot key is pressed
-      ui.notifications.info(i18n('TOKEN_HEALTH.toggleKeyAltHint'));
+      // ui.notifications.info(i18n('TOKEN_HEALTH.toggleKeyAltHint'));
       toggle(event, false);
     },
     onUp: () => {},
@@ -1248,7 +1248,7 @@ Hooks.once('init', async function() {
     ],
     onDown: self => {
       // Replace this with the code DF Hotkey should execute when the hot key is pressed
-      ui.notifications.info(i18n('TOKEN_HEALTH.toggleKeyTargetHint'));
+      // ui.notifications.info(i18n('TOKEN_HEALTH.toggleKeyTargetHint'));
       toggle(event, true, true);
     },
     onUp: () => {},
@@ -1271,7 +1271,7 @@ Hooks.once('init', async function() {
     ],
     onDown: self => {
       // Replace this with the code DF Hotkey should execute when the hot key is pressed
-      ui.notifications.info(i18n('TOKEN_HEALTH.toggleKeyTargetAltHint'));
+      // ui.notifications.info(i18n('TOKEN_HEALTH.toggleKeyTargetAltHint'));
       toggle(event, false, true);
     },
     onUp: () => {},
