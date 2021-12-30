@@ -2,7 +2,7 @@
 
 ## 0.5.0 (2021-12.29)
 - Updated for FVTT V9 and use of builtin key bindings capabilities.
-- Removed dependancy on DF Hotkeys
+- Removed dependency on DF Hotkeys
 - Added game system defaults for sfrpg
 
 ## 0.4.4 (2021-07-18)
