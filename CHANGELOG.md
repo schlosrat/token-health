@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.5.0 (2021-12.29)
+## 0.5.0 (2021-12-29)
 - Updated for FVTT V9 and use of builtin key bindings capabilities.
 - Removed dependency on DF Hotkeys
 - Added game system defaults for sfrpg
@@ -16,17 +16,17 @@
 - Disabled use of conditions for AGE games until that capability get's sorted out in 0.8.6
 - Updated minimum core version to 0.8.5
 
-## 0.4.2 (2021-05.30)
+## 0.4.2 (2021-05-30)
 - Added user configurable damage types (up to three) - mainly useful for AGE System games or other games that need both damage mitigation and the ability to bypass that.
 - Added user configurable damage subtypes (up to two) - Useful for games with two different health resource pools (e.g. SWADE, L5R5E, TORG, etc.) or games with different rules for application of damage to a single pool (e.g. AGE - wound vs. stun)
 - These changes improve the localization of the TH dialog box by allowing localized configuration of damage type and subtype terminology in addition to supporting many more game systems.
 
-## 0.4.1 (2021-05.29)
+## 0.4.1 (2021-05-29)
 - Added setting control for enabling/disabling token images in Token Health dialog. Defaults to enabled. When disabled the dialog box is vertically shorter
 - Added setting control for enabling/disabling setting of token conditions (specific to AGE system). Defaults to enabled. When disabled no token conditions will be set by Token Health, although the module will still track what the conditions would be so that otherwise the behavior is the same.
 - Added setting control for switching polarity on damage/healing (Damage is Additive). This enables support for game systems like SWADE and L5R5E where damage accumulates as a positive quantity from a base of zero (0) which is full health.
 
-## 0.4.0 (2021-05.23)
+## 0.4.0 (2021-05-23)
 - Updated to be compatible with FVTT 0.8.5
 - Switched keybinding to DF Hotkeys (added dependency to lib-df-hotkeys)
 
