@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.5.0 (2021-12.29)
+- Updated for FVTT V9 and use of builtin key bindings capabilities.
+- Removed dependancy on DF Hotkeys
+- Added game system defaults for sfrpg
+
 ## 0.4.4 (2021-07-18)
 - Overhauled how configurable settings are handled to correctly configure things without stomping on the configurations set by other mods and systems.
 - Added two new optional config settings (ALT_MAX_HITPOINTS_ATTRIBUTE_1 & ALT_MAX_HITPOINTS_ATTRIBUTE_2) which facilitate handling of temporary health in DnD5e.
