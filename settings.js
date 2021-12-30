@@ -82,6 +82,21 @@ const setDefaults = () => {
     DEFAULT.MITIGATION_ATTRIBUTE_3 = 'armor.ballistic';
     DEFAULT.ENABLE_CONDITIONS = true;
     DEFAULT.ALLOW_DAMAGE_BUYOFF = false;
+  } else if (game.system.id === 'expanse') {
+    DEFAULT.DAMAGE_TYPE_1 = 'Impact',
+    DEFAULT.DAMAGE_TYPE_2 = 'Ballistic',
+    DEFAULT.DAMAGE_TYPE_3 = 'Penetrating',
+    DEFAULT.DAMAGE_SUBTYPE_1 = 'Wound',
+    DEFAULT.HITPOINTS_ATTRIBUTE_1 = 'fortune.value';
+    DEFAULT.MAX_HITPOINTS_ATTRIBUTE_1 = 'fortune.max';
+    DEFAULT.DAMAGE_SUBTYPE_2 = 'Stun',
+    DEFAULT.HITPOINTS_ATTRIBUTE_2 = 'fortune.value';
+    DEFAULT.MAX_HITPOINTS_ATTRIBUTE_2 = 'fortune.max';
+    DEFAULT.MITIGATION_ATTRIBUTE_1 = 'toughness.modified';
+    DEFAULT.MITIGATION_ATTRIBUTE_2 = 'armor.modified';
+    DEFAULT.MITIGATION_ATTRIBUTE_3 = '';
+    DEFAULT.ENABLE_CONDITIONS = false;
+    DEFAULT.ALLOW_DAMAGE_BUYOFF = false;
   } else if (game.system.id === 'sfrpg') {
     DEFAULT.HITPOINTS_ATTRIBUTE_1 = 'attributes.hp.value';
     DEFAULT.MAX_HITPOINTS_ATTRIBUTE_1 = 'attributes.hp.max';
