@@ -1077,11 +1077,7 @@ const handleKeys = function (event, key, up) {
  */
 // Make sure lib-df-hotkeys is installed and active
 Hooks.once('ready', async () => {
-	// Perform your Hotkey registrations
-
-  // let sweetActions = game.keybindings.actions.get("sweetnothings.whisperSweetNothings");
-  // sweetActions.name = game.i18n.localize("SWEETNOTHINGS.TITLE");
-  // sweetActions.hint = game.i18n.localize("SWEETNOTHINGS.HINT");
+  // Perform your Hotkey registrations
 
   // ******* FIX FOR BUG IN V9 238 where keybinding name and hint localizations may not work *******
   // TOGGLE_KEY_BASE: 'Enter'
