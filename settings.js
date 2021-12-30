@@ -1,37 +1,11 @@
 import { i18n } from './ui.js';
-import { hotkeys } from '../lib-df-hotkeys/lib-df-hotkeys.shim.js';
+// import { hotkeys } from '../lib-df-hotkeys/lib-df-hotkeys.shim.js';
 
-const MODULE_NAME = 'token-health';
+export const MODULE_NAME = 'token-health';
 
 export const TH_CONFIG = {};
 
 const DEFAULT = {
-  /*
-  TOGGLE_KEY_BASE: {
-    key: hotkeys.keys.Enter,
-    alt: false,
-    ctrl: false,
-    shift: false
-    },
-  TOGGLE_KEY_ALT: {
-    key: hotkeys.keys.Enter,
-    alt: false,
-    ctrl: false,
-    shift: true
-    },
-  TOGGLE_KEY_TARGET: {
-    key: hotkeys.keys.Enter,
-    alt: true,
-    ctrl: false,
-    shift: false
-    },
-  TOGGLE_KEY_TARGET_ALT: {
-    key: hotkeys.keys.Enter,
-    alt: true,
-    ctrl: false,
-    shift: true
-    },
-  */
   DAMAGE_TYPE_1: '',
   DAMAGE_TYPE_2: '',
   DAMAGE_TYPE_3: '',
@@ -108,7 +82,12 @@ const setDefaults = () => {
     DEFAULT.MITIGATION_ATTRIBUTE_3 = 'armor.ballistic';
     DEFAULT.ENABLE_CONDITIONS = true;
     DEFAULT.ALLOW_DAMAGE_BUYOFF = false;
-  } else {
+  } else if (game.system.id === 'sfrpg') {
+    DEFAULT.HITPOINTS_ATTRIBUTE_1 = 'attributes.hp.value';
+    DEFAULT.MAX_HITPOINTS_ATTRIBUTE_1 = 'attributes.hp.max';
+    DEFAULT.ALT_MAX_HITPOINTS_ATTRIBUTE_1 = 'attributes.sp.max';
+    DEFAULT.TEMP_HITPOINTS_ATTRIBUTE_1 = 'attributes.sp.value';
+    } else {
     DEFAULT.HITPOINTS_ATTRIBUTE_1 = 'health.value';
     DEFAULT.MAX_HITPOINTS_ATTRIBUTE_1 = 'health.max';
   }
@@ -192,29 +171,31 @@ const initSetting = (key, setting) => {
 
 export const registerSettings = function () {
   setDefaults();
+  CONFIG.TokenHealth = {};
 
   /*************** TOKEN HEALTH HOTKEY SETTINGS ***************/
+  /*
   // Hotkey default for applying damage to selected token(s)
-  CONFIG.TokenHealth = {};
   TH_CONFIG.TOGGLE_KEY_BASE = initSetting('toggleKey', {
-      name: i18n('TOKEN_HEALTH.toggleKeyName'),
-      hint: i18n('TOKEN_HEALTH.toggleKeyHint'),
-      // type: KeyBinding,
-      // default: DEFAULT.TOGGLE_KEY_BASE,
-      default: {
-        key: hotkeys.keys.Enter,
-        alt: false,
-        ctrl: false,
-        shift: false
-      },
-      scope: 'user',
-      config: false,
-      onChange: key => {
-        CONFIG.TokenHealth.TOGGLE_KEY_BASE = key;
-      },
-    });
-    CONFIG.TokenHealth.TOGGLE_KEY_BASE = TH_CONFIG.TOGGLE_KEY_BASE; // = game.settings.get(MODULE_NAME, 'toggleKey');
-  // Hotkey default for applying healing to selected token(s) 
+    name: i18n('TOKEN_HEALTH.toggleKeyName'),
+    hint: i18n('TOKEN_HEALTH.toggleKeyHint'),
+    // type: KeyBinding,
+    // default: DEFAULT.TOGGLE_KEY_BASE,
+    default: {
+      key: hotkeys.keys.Enter,
+      alt: false,
+      ctrl: false,
+      shift: false
+    },
+    scope: 'user',
+    config: false,
+    onChange: key => {
+      CONFIG.TokenHealth.TOGGLE_KEY_BASE = key;
+    },
+  });
+  CONFIG.TokenHealth.TOGGLE_KEY_BASE = TH_CONFIG.TOGGLE_KEY_BASE; // = game.settings.get(MODULE_NAME, 'toggleKey');
+  
+    // Hotkey default for applying healing to selected token(s) 
   TH_CONFIG.TOGGLE_KEY_ALT = initSetting( 'toggleKeyAlt', {
     name: i18n('TOKEN_HEALTH.toggleKeyAltName'),
     hint: i18n('TOKEN_HEALTH.toggleKeyAltHint'),
@@ -233,6 +214,7 @@ export const registerSettings = function () {
     },
   });
   CONFIG.TokenHealth.TOGGLE_KEY_ALT = TH_CONFIG.TOGGLE_KEY_ALT; // = game.settings.get(MODULE_NAME, 'toggleKeyAlt');
+  
   // Hotkey default for applying damage to targeted token(s) 
   TH_CONFIG.TOGGLE_KEY_TARGET = initSetting( 'toggleKeyTarget', {
     name: i18n('TOKEN_HEALTH.toggleKeyTargetName'),
@@ -252,6 +234,7 @@ export const registerSettings = function () {
     },
   });
   CONFIG.TokenHealth.TOGGLE_KEY_TARGET = TH_CONFIG.TOGGLE_KEY_TARGET; // = game.settings.get(MODULE_NAME, 'toggleKeyTarget');
+  
   // Hotkey default for applying healing to targeted token(s) 
   TH_CONFIG.TOGGLE_KEY_TARGET_ALT = initSetting( 'toggleKeyTargetAlt', {
     name: i18n('TOKEN_HEALTH.toggleKeyTargetAltName'),
@@ -269,6 +252,8 @@ export const registerSettings = function () {
     },
   });
   CONFIG.TokenHealth.TOGGLE_KEY_TARGET_ALT = TH_CONFIG.TOGGLE_KEY_TARGET_ALT; // = game.settings.get(MODULE_NAME, 'toggleKeyTargetAlt');
+  */
+ 
   // Enable/disable display of token thumbnail images in dialog box
   TH_CONFIG.ENABLE_TOKEN_IMAGES = initSetting( 'enableTokenImages', {
     name: i18n('TOKEN_HEALTH.enableTokenImages'),
@@ -742,10 +727,11 @@ export const registerSettings = function () {
 
 export default () => {
   setDefaults();
+  CONFIG.TokenHealth = {};
 
   /*************** TOKEN HEALTH HOTKEY SETTINGS ***************/
+  /*
   // Hotkey default for applying damage to selected token(s)
-  CONFIG.TokenHealth = {};
   game.settings.register(MODULE_NAME, 'toggleKey', {
     name: i18n('TOKEN_HEALTH.toggleKeyName'),
     hint: i18n('TOKEN_HEALTH.toggleKeyHint'),
@@ -764,6 +750,7 @@ export default () => {
     },
   });
   TH_CONFIG.TOGGLE_KEY_BASE = game.settings.get(MODULE_NAME, 'toggleKey');
+
   // Hotkey default for applying healing to selected token(s)
   game.settings.register(MODULE_NAME, 'toggleKeyAlt', {
     name: i18n('TOKEN_HEALTH.toggleKeyAltName'),
@@ -783,6 +770,7 @@ export default () => {
     },
   });
   TH_CONFIG.TOGGLE_KEY_ALT = game.settings.get(MODULE_NAME, 'toggleKeyAlt');
+
   // Hotkey default for applying damage to targeted token(s)
   game.settings.register(MODULE_NAME, 'toggleKeyTarget', {
     name: i18n('TOKEN_HEALTH.toggleKeyTargetName'),
@@ -802,6 +790,7 @@ export default () => {
     },
   });
   TH_CONFIG.TOGGLE_KEY_TARGET = game.settings.get(MODULE_NAME, 'toggleKeyTarget');
+
   // Hotkey default for applying healing to targeted token(s)
   game.settings.register(MODULE_NAME, 'toggleKeyTargetAlt', {
     name: i18n('TOKEN_HEALTH.toggleKeyTargetAltName'),
@@ -819,6 +808,8 @@ export default () => {
     },
   });
   TH_CONFIG.TOGGLE_KEY_TARGET_ALT = game.settings.get(MODULE_NAME, 'toggleKeyTargetAlt');
+  */
+
   /*************** TOKEN HEALTH TH_CONFIGURATION SETTINGS ***************/
   // Enable/disable display of token thumbnail images in dialog box
   game.settings.register(MODULE_NAME, 'enableTokenImages', {
