@@ -123,17 +123,17 @@ Damage Type selections are Impact (default), Ballisitic, and Penetraiting
 
 ## Module Configuration
 
-Configuratation of the Token Health module is accomplished in two parts: Hotkey settings which control how the module is launched and the Token Health module settings themselves which control the behavior and functionality of the module once launched. Both of these are shown below.
+Configuratation of the Token Health module is accomplished in two parts: Keybinding settings which control how the module is launched and the Token Health module settings themselves which control the behavior and functionality of the module once launched. Starting in FVTT V9, the keybinding options are accessed from the FVTT Configure Controls dialog whereas the module options themselves are accessed via the Configure Settings > Module Settings dialog.
 
-NOTE: Some settings are game system specific and may not work correctly (or at all) with game systems that don't support those features. When this is the case it is noted in the configuration setting field and the configuration hint below that. 
+NOTE: Some settings are game system specific and may not work correctly (or at all) with game systems that don't support those features. When this is the case it is noted in the module setting field and the configuration hint below that. 
 
 ![screenshot](screenshot_3.png)
 
-To configure the hotkeys used to launch Token Health open the Hotkey Settings dialog included in the Library: DF Hotkeys group. Within the Hotkeys settings dialog there is a Token Health group shown below. Here you can select exactly which combination of key and modifiers (Shift, Ctrl, Alt) are used to launch Token Health with the four behavior options possible.
+To configure the keybindings used to launch Token Health open the FVTT Configure Controls dialog from the Game Settings menu. From there open the Token Health Action Category. An example of this dialog showing the default keybindings for Token Health is shown below. Here you can select exactly which combination of key and modifiers (Shift, Ctrl, Alt) are used to launch Token Health with the four behavior options possible.
 
 ![screenshot](screenshot_4.png)
 
-By default the key used is the main keyboard Enter key. If you click the Key Binding popup menu you'll be able to select from any of the possible key presses DF Hotkeys is able to recognize - such as the Numpad Enter key, etc.
+By default the key used is the main keyboard Enter key. If you click the edit icon for the key binding you'd like to change you'll be able to select from any of the possible key presses FVTT is able to recognize - such as the Numpad Enter key, etc.
 
 ## Credits
 
