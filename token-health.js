@@ -1077,13 +1077,13 @@ const handleKeys = function (event, key, up) {
  */
 // Make sure lib-df-hotkeys is installed and active
 Hooks.once('ready', async () => {
-	if (!game.modules.get('lib-df-hotkeys')?.active) {
-		console.error('Missing lib-df-hotkeys module dependency');
-		if (game.user.isGM)
-			ui.notifications.error("'Token Health' requires the 'Library: DF Hotkeys' module. Please install and activate this dependency.");
-		// Perform alternative code to handle missing library
-		return;
-	}
+	// if (!game.modules.get('lib-df-hotkeys')?.active) {
+	// 	console.error('Missing lib-df-hotkeys module dependency');
+	// 	if (game.user.isGM)
+	// 		ui.notifications.error("'Token Health' requires the 'Library: DF Hotkeys' module. Please install and activate this dependency.");
+	// 	// Perform alternative code to handle missing library
+	// 	return;
+	// }
 	// Perform your Hotkey registrations
 
   // let sweetActions = game.keybindings.actions.get("sweetnothings.whisperSweetNothings");
