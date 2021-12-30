@@ -1,7 +1,7 @@
 // @ts-check
 
-import { hotkeys } from '../lib-df-hotkeys/lib-df-hotkeys.shim.js';
-import MODULE_NAME, { TH_CONFIG } from './settings.js';
+// import { hotkeys } from '../lib-df-hotkeys/lib-df-hotkeys.shim.js';
+import { MODULE_NAME, TH_CONFIG } from './settings.js';
 import { registerSettings } from './settings.js';
 import {i18n} from './ui.js';
 import getNewHP from './getNewHP.js';
@@ -1086,6 +1086,31 @@ Hooks.once('ready', async () => {
 	}
 	// Perform your Hotkey registrations
 
+  // let sweetActions = game.keybindings.actions.get("sweetnothings.whisperSweetNothings");
+  // sweetActions.name = game.i18n.localize("SWEETNOTHINGS.TITLE");
+  // sweetActions.hint = game.i18n.localize("SWEETNOTHINGS.HINT");
+
+  // ******* FIX FOR BUG IN V9 238 where keybinding name and hint localizations may not work *******
+  // TOGGLE_KEY_BASE: 'Enter'
+  let key1 = game.keybindings.actions.get("token-health.damageSelectedTokens");
+  key1.name = i18n('TOKEN_HEALTH.toggleKeyName');
+  key1.hint = i18n('TOKEN_HEALTH.toggleKeyHint');
+
+  // TOGGLE_KEY_ALT: 'Shift + Enter'
+  let key2 = game.keybindings.actions.get("token-health.healSelectedTokens");
+	key2.name = i18n('TOKEN_HEALTH.toggleKeyAltName');
+  key2.hint = i18n('TOKEN_HEALTH.toggleKeyAltHint');
+
+  // TOGGLE_KEY_TARGET: 'Alt + Enter'
+  let key3 = game.keybindings.actions.get("token-health.damageTargetedTokens");
+	key3.name = i18n('TOKEN_HEALTH.toggleKeyTargetName');
+  key3.hint = i18n('TOKEN_HEALTH.toggleKeyTargetHint');
+
+  // TOGGLE_KEY_TARGET_ALT: 'Alt + Shift + Enter'
+  let key4 = game.keybindings.actions.get("token-health.healTargetedTokens");
+	key4.name = i18n('TOKEN_HEALTH.toggleKeyTargetAltName');
+  key4.hint = i18n('TOKEN_HEALTH.toggleKeyTargetAltHint');
+
   // Initialize settings
   // settings();
   // Register custom module settings
@@ -1156,7 +1181,120 @@ Hooks.once('ready', async () => {
 });
 
 Hooks.once('init', async function() {
-  /* Hotkeys.registerGroup(group: HotkeyGroup, throwOnError?: boolean): boolean */
+  // NEW FVTT V9 keybinding system
+	// game.keybindings.register(MODULE_NAME, "sneakyDoor", {
+  //   name: i18n('TOKEN_HEALTH.toggleKeyName'),
+  //   hint: i18n('TOKEN_HEALTH.toggleKeyHint'),
+  // editable: [
+	// 	  {
+	// 		key: "Enter"
+	// 	  }
+	// 	],
+	// 	precedence: CONST.KEYBINDING_PRECEDENCE.NORMAL,
+	// });
+
+  // TOGGLE_KEY_BASE: 'Enter'
+  game.keybindings.register(MODULE_NAME, "damageSelectedTokens", {
+    // name: "Damage Selected Tokens", // TOKEN_HEALTH.toggleKeyName
+    hint: "Display a dialog to enter damage for selected tokens", // TOKEN_HEALTH.toggleKeyHint
+		name: i18n('TOKEN_HEALTH.toggleKeyName'),
+    // hint: i18n('TOKEN_HEALTH.toggleKeyHint'),
+    // uneditable: [
+    //   {
+    //     key: "Keyp",
+    //     modifiers: [ "CONTROL" ]
+    //   }
+    // ],
+    editable: [
+      {
+        key: "Enter"
+      }
+    ],
+    //onDown: () => { ui.notifications.info("Pressed!") },
+    onDown: self => {
+      // Replace this with the code DF Hotkey should execute when the hot key is pressed
+      ui.notifications.info(i18n('TOKEN_HEALTH.toggleKeyHint'));
+      toggle(event);
+    },
+    onUp: () => {},
+    restricted: true,              // Restrict this Keybinding to gamemaster only?
+    // reservedModifiers: [ "ALT" ],  // If ALT is pressed, the notification is permanent instead of temporary
+    precedence: CONST.KEYBINDING_PRECEDENCE.NORMAL
+  });
+
+  // TOGGLE_KEY_ALT: 'Shift + Enter'
+  game.keybindings.register(MODULE_NAME, "healSelectedTokens", {
+    // name: "Heal Selected Tokens", // TOKEN_HEALTH.toggleKeyAltName
+    hint: "Display a dialog to enter healing for selected tokens", // TOKEN_HEALTH.toggleKeyAltHint
+		name: i18n('TOKEN_HEALTH.toggleKeyAltName'),
+    // hint: i18n('TOKEN_HEALTH.toggleKeyAltHint'),
+    editable: [
+      {
+        key: "Enter",
+        modifiers: [ "SHIFT" ]
+      }
+    ],
+    onDown: self => {
+      // Replace this with the code DF Hotkey should execute when the hot key is pressed
+      ui.notifications.info(i18n('TOKEN_HEALTH.toggleKeyAltHint'));
+      toggle(event, false);
+    },
+    onUp: () => {},
+    restricted: true,              // Restrict this Keybinding to gamemaster only?
+    // reservedModifiers: [ "ALT" ],  // If ALT is pressed, the notification is permanent instead of temporary
+    precedence: CONST.KEYBINDING_PRECEDENCE.NORMAL
+  });
+
+  // TOGGLE_KEY_TARGET: 'Alt + Enter'
+  game.keybindings.register(MODULE_NAME, "damageTargetedTokens", {
+    // name: "Damage Targeted Tokens", // TOKEN_HEALTH.toggleKeyTargetName
+    hint: "Display a dialog to enter damage for targeted tokens", // TOKEN_HEALTH.toggleKeyTargetHint
+		name: i18n('TOKEN_HEALTH.toggleKeyTargetName'),
+    // hint: i18n('TOKEN_HEALTH.toggleKeyTargetHint'),
+    editable: [
+      {
+        key: "Enter",
+        modifiers: [ "ALT" ]
+      }
+    ],
+    onDown: self => {
+      // Replace this with the code DF Hotkey should execute when the hot key is pressed
+      ui.notifications.info(i18n('TOKEN_HEALTH.toggleKeyTargetHint'));
+      toggle(event, true, true);
+    },
+    onUp: () => {},
+    restricted: true,              // Restrict this Keybinding to gamemaster only?
+    // reservedModifiers: [ "ALT" ],  // If ALT is pressed, the notification is permanent instead of temporary
+    precedence: CONST.KEYBINDING_PRECEDENCE.NORMAL
+  });
+
+  // TOGGLE_KEY_TARGET_ALT: 'Alt + Shift + Enter'
+  game.keybindings.register(MODULE_NAME, "healTargetedTokens", {
+    // name: "Heal Targeted Tokens", // TOKEN_HEALTH.toggleKeyTargetAltName
+    hint: "Display a dialog to enter damage for targeted tokens", // TOKEN_HEALTH.toggleKeyTargetAltHint
+		name: i18n('TOKEN_HEALTH.toggleKeyTargetAltName'),
+    // hint: i18n('TOKEN_HEALTH.toggleKeyTargetAltHint'),
+    editable: [
+      {
+        key: "Enter",
+        modifiers: [ "ALT", "SHIFT" ]
+      }
+    ],
+    onDown: self => {
+      // Replace this with the code DF Hotkey should execute when the hot key is pressed
+      ui.notifications.info(i18n('TOKEN_HEALTH.toggleKeyTargetAltHint'));
+      toggle(event, false, true);
+    },
+    onUp: () => {},
+    restricted: true,              // Restrict this Keybinding to gamemaster only?
+    // reservedModifiers: [ "ALT" ],  // If ALT is pressed, the notification is permanent instead of temporary
+    precedence: CONST.KEYBINDING_PRECEDENCE.NORMAL
+  });
+
+
+  //******* DF HotKeys  ********/
+  /*
+  // Hotkeys.registerGroup(group: HotkeyGroup, throwOnError?: boolean): boolean
   hotkeys.registerGroup({
     name: 'token-health.token-health',
     label: 'Token Health', // Translate this? i18n('TOKEN_HEALTH.toggleKeyName')
@@ -1164,7 +1302,6 @@ Hooks.once('init', async function() {
   }, false);
 
   // TOGGLE_KEY_BASE: 'Enter'
-  /* Hotkeys.registerShortcut(TH_CONFIG: HotkeySetting, throwOnError?: boolean) */
   try {
     game.settings.get('token-health', 'toggleKey');
   } catch (e) {
@@ -1183,6 +1320,7 @@ Hooks.once('init', async function() {
       throw e;
     }
   }
+  // Hotkeys.registerShortcut(TH_CONFIG: HotkeySetting, throwOnError?: boolean)
   hotkeys.registerShortcut({
 		name: 'token-health.toggleKey',
 		label: i18n('TOKEN_HEALTH.toggleKeyName'),
@@ -1194,13 +1332,6 @@ Hooks.once('init', async function() {
       // Replace this with the code DF Hotkey should execute when the hot key is pressed
       // console.log('Token Health: Base key pressed!');
       toggle(event);
-      // SDR: This is all wrong - but an example of what custom Hotbar does
-      // if (game.settings.get("custom-hotbar","chbDisabled") !== true) {
-      //   CHBDebug('Custom Hotbar | Fire custom hotbar macro slot 1!');
-      //   const num = 1;
-      //   const slot = ui.customHotbar.macros.find(m => m.key === num);
-      //   if ( ui.customHotbar.macros[num] ) slot.macro.execute();
-      // }
     }
 	});
 
@@ -1234,13 +1365,6 @@ Hooks.once('init', async function() {
       // Replace this with the code DF Hotkey should execute when the hot key is pressed
       // console.log('Token Health: Alt key pressed!');
       toggle(event, false);
-      // SDR: This is all wrong - but an example of what custom Hotbar does
-      // if (game.settings.get("custom-hotbar","chbDisabled") !== true) {
-      //   CHBDebug('Custom Hotbar | Fire custom hotbar macro slot 1!');
-      //   const num = 1;
-      //   const slot = ui.customHotbar.macros.find(m => m.key === num);
-      //   if ( ui.customHotbar.macros[num] ) slot.macro.execute();
-      // }
     }
 	});
 
@@ -1274,13 +1398,6 @@ Hooks.once('init', async function() {
       // Replace this with the code DF Hotkey should execute when the hot key is pressed
       // console.log('Token Health: Target key pressed!');
       toggle(event, true, true);
-      // SDR: This is all wrong - but an example of what custom Hotbar does
-      // if (game.settings.get("custom-hotbar","chbDisabled") !== true) {
-      //   CHBDebug('Custom Hotbar | Fire custom hotbar macro slot 1!');
-      //   const num = 1;
-      //   const slot = ui.customHotbar.macros.find(m => m.key === num);
-      //   if ( ui.customHotbar.macros[num] ) slot.macro.execute();
-      // }
     }
 	});
 
@@ -1314,14 +1431,7 @@ Hooks.once('init', async function() {
       // Replace this with the code DF Hotkey should execute when the hot key is pressed
       // console.log('Token Health: Target Alt key pressed!');
       toggle(event, false, true);
-      // SDR: This is all wrong - but an example of what custom Hotbar does
-      // if (game.settings.get("custom-hotbar","chbDisabled") !== true) {
-      //   CHBDebug('Custom Hotbar | Fire custom hotbar macro slot 1!');
-      //   const num = 1;
-      //   const slot = ui.customHotbar.macros.find(m => m.key === num);
-      //   if ( ui.customHotbar.macros[num] ) slot.macro.execute();
-      // }
     }
 	});
-
+  */
 });
