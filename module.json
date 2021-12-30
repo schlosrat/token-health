@@ -8,9 +8,9 @@
   "readme": "https://github.com/schlosrat/token-health/blob/master/README.md",
   "changelog": "https://github.com/schlosrat/token-health/blob/master/CHANGELOG.md",
   "flags": {},
-  "version": "0.4.4",
-  "minimumCoreVersion": "0.8.5",
-  "compatibleCoreVersion": "0.8.8",
+  "version": "0.5.0",
+  "minimumCoreVersion": "0.9",
+  "compatibleCoreVersion": "0.9",
   "scripts": [],
   "esmodules": [
     "contrib/settings-extender.js",
@@ -48,15 +48,10 @@
   ],
   "packs": [],
   "system": [],
-  "dependencies": [
-    {
-      "name": "lib-df-hotkeys",
-      "type": "module"
-    }
-  ],
+  "dependencies": [],
   "socket": false,
   "manifest": "https://raw.githubusercontent.com/schlosrat/token-health/master/module.json",
-  "download": "https://github.com/schlosrat/token-health/archive/refs/tags/0.4.4.zip",
+  "download": "https://github.com/schlosrat/token-health/archive/refs/tags/0.5.0.zip",
   "protected": false,
   "coreTranslation": false
 }
