@@ -1,7 +1,7 @@
 # Changelog
 
 ## 0.5.1 (2021-12-29)
-- Hotfix to removed errant DF Hotkeys dependency check
+- Hotfix to remove errant DF Hotkeys dependency check
 - Added game system defaults for expanse (work in progress - system lacks some functionality)
 
 ## 0.5.0 (2021-12-29)
