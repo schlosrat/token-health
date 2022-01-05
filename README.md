@@ -8,7 +8,7 @@ Apply damage/healing with a few keystrokes to all selected tokens at once.
 
 This is a module for [FoundryVTT](https://foundryvtt.com/) intended for GMs that want to apply damage or healing more easily. Without this mod, you have to click several times to adjust the hit points of a token. With Token Health installed, you can press a hotkey, enter the amount of damage or healing, and then press Enter to apply it.
 
-Token Health also supports a detailed system of (optional) automatic token chat messages to alert players and GM to what's going on. All chat messages are user configurable, and only the GM will see messages that state how much damage or healing has been applied.
+Token Health also supports a detailed system of (optional) automatic token chat messages to alert players and GM to what's going on. All chat messages are user configurable. Details indicating how much healing or damage has been applied may be limited to messages sent to the GM or can be shared with the players.
 
 ## Install
 
@@ -24,12 +24,16 @@ Before using Token Health it is recommended that you first check and configure t
 - Legend of the Five Rings (5th Edition)
 - Pathfinder 1
 - Pathfinder 2nd Edition 
-- Savage Worlds Adventure Edition
+- Savage Worlds Adventure Edition (SWADE)
 - TORG Eternity
+- Star Wars FFG (SFRPG)
+- The Expanse RPG (AGE) *Work In Progress*
 
 If your preferred game system is not on that list then generic defaults will be used and it's **very likely** you'll need to do at least a minimum amount of configuration to make sure damage and healing are being applied to the correct attribute! If you would like to see your preferred system supported with default settings, or if you find an issue with the default settings applied to one of the systems listed above, please open an GitHub issue for this with specific details about the system you'd like supported and the settings you need.
 
 ### Use Token Health
+
+NOTE: To use Token Health you must either have one or more tokens selected or one or more tokens targeted, depending on the hot key you're presseing! If you press a hotkey mapped to an effect for *selected* tokens and there are no selected tokens, then the dialog will not be presented. Similarly if you press a hotkey mapped to an effect for *targeted* tokens and there are not tokens currently targeted, then the dialog will not be presented.
 
 1. Select/target one or more token(s)
 1. Press the **hot key** (default: <kbd>Enter</kbd>) to display the Damage dialog or the **alternate hot key** (default: <kbd>Shift</kbd> + <kbd>Enter</kbd>) to display the Healing dialog. To apply damage/healing to **targeted tokens** instead of **selected tokens**, add the <kbd>Alt</kbd> key by default.
@@ -40,6 +44,7 @@ If your preferred game system is not on that list then generic defaults will be 
 
 ### What you can do
 
+#### Apply Damage to *Selected* Token(s)
 - Multiple tokens may be selected.
 - Press the **hot key** and enter a value to apply **damage** to the selected token(s).
 	- To help ensure you've got the right tokens selected the name for each token will appear in the title bar of the dialog box.
@@ -48,6 +53,7 @@ If your preferred game system is not on that list then generic defaults will be 
 
 ![screenshot](screenshot_0.png)
 
+#### Apply Healing to *Selected* Tokens(s)
 - Multiple tokens may be selected.
 - Press the **alternate hot key** and enter a value to apply **healing** to the selected token(s)
 	- To help ensure you've got the right tokens selected the name for each token will appear in the title bar of the dialog box.
@@ -56,6 +62,7 @@ If your preferred game system is not on that list then generic defaults will be 
 
 ![screenshot](screenshot_2.png)
 
+#### Apply Damage or Healing to *Targeted* Token(s)
 - Combine above with the <kbd>Alt</kbd> key to apply to **targeted token(s)** instead of **selected token(s)**
 
 ### Damage Types and Subtypes
@@ -76,7 +83,7 @@ The second way to control the application of damage is through **Damage Subtypes
 
 The Primary Damage Subtype is an optional field when configuring Token Health, however the Primary Health Pool and corresponding Max are required. The Secondary Health Pool and its corresponding Max are only required if a Secondary Damage Type is defined. In some cases you may need more than one damage subtype when both types affect the same health pool. For example in the AGE System the two damage subtypes are Wound and Stun, where Stun damage can at most incapacitate an actor while Wound damage is able to kill. 
 
-**Example Single Rresouce System with Two Damage Subtypes**: AGE System. The configuration settings and damage dialog for AGE games are shown below. Note that as the AGE system also employed Damage Types and Mitigation Sources there is also a Damage Type pulldown menu in the Token Health dialog.
+**Example Single Resource System with Two Damage Subtypes**: AGE System. The configuration settings and damage dialog for AGE games are shown below. Note that as the AGE system also employed Damage Types and Mitigation Sources there is also a Damage Type pulldown menu in the Token Health dialog.
 
 ![screenshot](screenshot_7.png)
 
@@ -87,7 +94,7 @@ The **"Stun"** damage subtype is a special case in that like the "Penetrating" d
 Token Health will optionally create chat messages from each affected token indicating the effect and how much actual damage was done or healing received. This is particularly useful when applying damage to multiple tokens where damage mitigation is being employed and each token may be mitigating a different amount of damage.
 - Token chat may be enabled/disabled through the module configuration settings (default: enabled)
 - Tokens will output one message that's visible to everyone indicating the token's reaction to the effect
-- Tokens also output an additional GM-Only message indicating the total amount of damage or healing done
+- Tokens also output an additional GM-Only message that may include details the GM does not want players to see indicating the total amount of damage or healing done
 - Tokens announce the following results in chat
 	- When they are damaged or healed, with optionally different messages if the amount is trivial
 	- If they're uneffected by damage/healing
@@ -95,6 +102,29 @@ Token Health will optionally create chat messages from each affected token indic
 	- If they die due to the damage applied (based on user configurable health threshold for death)
 	- If damage is being applied to them but they were already dead
 - Token chat messages default to language localizations, but each case may be overridden via module settings so they'll say what you want them to say
+
+Token Health chat messages to either the players or the GM may be customized to include the following values using the associcated chat codes
+- $D: The total amount of damage or healing being applied. This is the ammount prior to any mitigations or limitations.
+- $DS: The damage subtype (eg. Ballistic, Impcat, Stun, Penetrating, etc.)
+- $NE: The Net Effect (how much damage was actually done or healing received) after mitigation by armor, toughness, etc. Net Effect is also capped by how much capacity the token has to accept damage/healing. For example, if a token has previously recieved 3 points of damage reducing their health pool from 10 to 7, and that token is given 5 points of healing, the healing applied can't take the token over their max health pool so the Net Effect is 3 even though 5 were applied. Similarly if a token has 62 points of health and 99 points of damage are done, and assuming the game system doen't allow for going negative, then only 62 points of damage were done taking that token to a health pool of 0.
+
+The chat codes ($D, $DS, $NE) can appear anywhere and in any order in a configurable chat message. For example, the default chat message sent to the GM by a token taking more than 1 point of damage is
+
+- "$NE points of $DS damage (out of $D)"
+
+If a token with armor able to mitigate the first 3 points of damage from any blow were to have 7 points of Blunt damage applied to it, that token would generate a message to the GM like this
+
+- "4 points of Blunt damage (out of 7)"
+
+The default chat message sent to all players under these circumstances is this
+
+- "You hit me for $NE points of $DS damage!"
+
+Consequently the chat message visible to the players from that token in this example would be
+
+- "You hit me for 4 points of Blunt damage!"
+
+In this way, the user can configure what information is included in Token Health chat messages visible to players as well as those only visible to the GM.
 
 ### Support for Additive Damage System
 By default Token Health assumes that damage is to be subtracted from a current health value and that healing is added to health with a cap at a max health value. This works great for any system like D&D with a health or hp pool; however such behavior is incompatible with systems where damage is additive - i.e. increasing from a base of 0 until some maximum threshold is reached or exceeded resulting in unconcousness, death or some other incapacitation.

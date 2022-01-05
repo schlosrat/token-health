@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.5.2 (2022-01-04)
+- Added chat codes to enable user customization of what and how much information is given to players and GM via Token Chat capability
+  - $D: Used to represent the total amlunt of damage/healing applied prior to any mitigation
+  - $DS: Used to represent the Damage Subtype being applied
+  - $NE: Used to represent the Net Effect of damage/healing after any mitigation and capped by the amount of damage/healing the actor is able to receive
+- Fixed handling of Active Effect conditions in AGE System (Unofficial)
+- Removed old dead code from previous keybinding system
 ## 0.5.1 (2021-12-29)
 - Hotfix to remove errant DF Hotkeys dependency check
 - Added game system defaults for expanse (work in progress - system lacks some functionality)
