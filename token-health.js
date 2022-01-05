@@ -9,7 +9,8 @@ import getNewHP from './getNewHP.js';
 const DELAY = 400;
 
 let tokenHealthDisplayed = false;
-let dialog, timer, KeyBinding;
+let dialog, timer;
+//let KeyBinding;
 
 /**
  * Extend Dialog class to force focus on the input
@@ -27,23 +28,80 @@ class TokenHealthDialog extends Dialog {
 }
 
 /**
+ * Check a condition (AGE System dependent)
+ * 
+ * @param {actor} thisActor
+ * @param {string} condId
+ * @returns {boolean} condStatus
+ */
+  // async function checkCondition(thisActor, condId) {
+  const checkCondition = async (thisActor, condId) => {
+  // Check the Token Health relevant condition for this actor and return boolean to indicate status
+
+  let condStatus = false;
+
+  // Behavior depends on system
+  if (game.system.id === 'age-system') {
+    // Token Health relevant conditions are maintained in age-system as Active Effects
+
+    // console.log(thisToken);
+    console.log(thisActor);
+
+    // thisActor.effects.map(e => {
+    thisActor.effects.map(e => {
+      /* This loop will find all Active Effects causing the condId condition.
+      AGE System code forsees only 1 installment of each Condition, but we do it this way on the safe side */
+      console.log(e);
+      const isCondition = (e.data.flags?.["age-system"]?.isCondition) ? true : false;
+      const isId = (e.data.flags?.core?.statusId === condId) ? true : false;
+      // const isCondition = (e.data.flags?.["age-system"]?.isCondition) ? true : false;
+      // const isId = (e.data.flags?.core?.statusId === condId) ? true : false;
+      if (isCondition && isId) condStatus = true
+    });
+  } else {
+    // For all other systems Token Health conditions are maintained as world-readable flags within the actor
+
+    // Make sure we've got a flag for this condition, get it if we do
+    if (thisActor.getFlag("world", condId) === undefined) {
+      // If the flag isn't present then set it to false
+      thisActor.setFlag("world", condId, condStatus);
+    } else {
+      condStatus = thisActor.getFlag("world", condId);
+    }
+  }
+  return condStatus;
+}
+
+
+/**
  * Remove a condition (AGE System dependent)
  * 
  * @param {actor} thisActor
  * @param {string} condId
  */
- const removeCondition = async (thisActor, condId) => {
-  /* THIS IS THE EXAMPLE TO REMOVE A CONDITION - async function */
-  // This example remove condition Active Effects - AGE System code will take care of checked/unchecked boxes and token statuses  let remove = [];
-  // let actor = game.actors.getName("asdf"); // replace by your function to select the actor
-  // const condId = "freefalling"; // replace this by the function to select which condition you want to delete
-  let remove = [];
-  thisActor.effects.map(e => { /* this loop will capture all Active Effects causing the 'freefalling' condition and delete all of them. My code forsees only 1 installment of each Condition, but I am here on the safe side */
-    const isCondition = (e.data.flags?.["age-system"]?.type === "conditions") ? true : false;
-    const isId = (e.data.flags?.["age-system"]?.name === condId) ? true : false;
-    if (isCondition && isId) remove.push(e.data._id);
-  });
-  await thisActor.deleteEmbeddedDocuments("ActiveEffect", remove);
+  const removeCondition = async (thisActor, condId) => {
+  // Clear a Token Health relevant condition for this actor
+
+  // Behavior depends on system
+  if (game.system.id === 'age-system') {
+    // Token Health relevant conditions are maintained in age-system as Active Effects
+
+    let remove = [];
+    // thisActor.effects.map(e => {
+    thisActor.effects.map(e => { // vkdolea changed this line
+      /* This loop will capture all Active Effects causing the condId condition and delete all of them.
+      AGE System code forsees only 1 installment of each Condition, but we do it this way on the safe side */
+      const isCondition = (e.data.flags?.["age-system"]?.isCondition) ? true : false;
+      const isId = (e.data.flags?.core?.statusId === condId) ? true : false;
+      if (isCondition && isId) remove.push(e._id);
+    });
+    await thisActor.deleteEmbeddedDocuments("ActiveEffect", remove); // vkdolea changed this line
+  } else {
+    // For all other systems Token Health conditions are maintained as world-readable flags for the actor
+
+    // Set this condition to false (this also creates the flag if needed)
+    thisActor.setFlag("world", condId, false); 
+  }
 }
 
 /**
@@ -54,16 +112,30 @@ class TokenHealthDialog extends Dialog {
  * @returns {actor} thisActor
  */
 const applyCondition = async (thisActor, condId) => {
-  /* THIS IS THE EXAMPLE TO ADD A CONDITION */
-  // let actor = game.actors.getName("asdf"); // replace by your function to select the actor
-  // const condId = "prone"; // replace by you method to select the condition
-  const condArr = thisActor.effects.filter(e => (e.data.flags?.["age-system"]?.type === "conditions") && (e.data.flags?.["age-system"]?.name === condId)); // creates and array with the active effects with the condId
-  if (condArr.length < 1) { // if the array is empty, creates a new Active Effect
-    const newEffect = CONFIG.statusEffects.filter(e => e.flags?.["age-system"]?.name === condId)[0]; // search for condId inside statusEffects array
-    newEffect["flags.core.statusId"] = newEffect.id; // this is not really necessary, but I opted to keep like this so all Active Effects generated for conditions (no matter how they are generated) will have the same set of flags
-    return thisActor.createEmbeddedDocuments("ActiveEffect", [newEffect]);
+  // Set the Token Health relevant condition for this actor
+
+  // Behavior depends on system
+  if (game.system.id === 'age-system') {
+    // For AGE System, Token Health relevant conditions are maintained as Active Effects
+
+    // let thisActor = game.actors.get(thisToken.data.actorId);
+    // const condArr = thisActor.effects.filter(e => (e.data.flags?.["age-system"]?.isCondition) &&
+    //   (e.data.flags?.core?.statusId === condId)); // creates an array with the active effects with the condId
+    // console.log(thisToken);
+    console.log(thisActor);
+    const condArr = thisActor.effects.filter(e => (e.data.flags?.["age-system"]?.isCondition) &&
+      (e.data.flags?.core?.statusId === condId)); // creates an array with the active effects with the condId
+    if (condArr.length < 1) { // if the array is empty, creates a new Active Effect
+      const newEffect = CONFIG.statusEffects.filter(e => e.id === condId)[0]; // search for condId inside statusEffects array
+      newEffect["flags.core.statusId"] = newEffect.id; // this is not really necessary, but I opted to keep like this so all Active Effects generated for conditions (no matter how they are generated) will have the same set of flags
+      return thisActor.createEmbeddedDocuments("ActiveEffect", [newEffect]);
+    }
+  } else {
+    // For all other systems Token Health conditions are maintained as world-readable flags for the actor
+
+    // Set this condition to true (this also creates the flag if needed)
+    thisActor.setFlag("world", condId, true);
   }
-  // return Promise.all(promises);
 }
 
 /**
@@ -107,8 +179,14 @@ const applyDamage = async (html, isDamage, isTargeted) => {
   // Get the control paramater for enabling/disabling token chat
   let enableChat = TH_CONFIG.ENABLE_TOKEN_CHAT;
 
-  // Get the control parameter for enablibng/disabling the application of token condtions
-  let enableConditions = TH_CONFIG.ENABLE_CONDITIONS;
+  // Get the control parameter for enablibng/disabling the application of actor condtions
+  let enableConditions;
+  if (game.settings.get("age-system", "inUseConditions") === 'expanse') {
+    enableConditions = TH_CONFIG.ENABLE_CONDITIONS;
+  } else {
+    enableConditions = false;
+  }
+
   // Temporary setting to prevent issues in 0.8.6
   // enableConditions = false;
 
@@ -178,33 +256,17 @@ const applyDamage = async (html, isDamage, isTargeted) => {
     let isUnconscious = false;
     let isDying       = false;
 
-    // Make sure we've got a flag for injured, get it if we do
-    if (actor.getFlag("world", "injured") === undefined) {
-      actor.setFlag("world", "injured", isInjured);
-    } else {
-      isInjured = actor.getFlag("world", "injured");
-    }
+    // Conditions are applied to tokens, not actors
+    isInjured     = await checkCondition(actor, "injured");
+    isWounded     = await checkCondition(actor, "wounded");
+    isUnconscious = await checkCondition(actor, "unconscious");
+    isDying       = await checkCondition(actor, "dying");
 
-    // Make sure we've got a flag for wounded, get it if we do
-    if (actor.getFlag("world", "wounded") === undefined) {
-      actor.setFlag("world", "wounded", isWounded);
-    } else {
-      isWounded = actor.getFlag("world", "wounded");
-    }
-
-    // Make sure we've got a flag for unconscious, get it if we do
-    if (actor.getFlag("world", "unconscious") === undefined) {
-      actor.setFlag("world", "unconscious", isUnconscious);
-    } else {
-      isUnconscious = actor.getFlag("world", "unconscious");
-    }
-
-    // Make sure we've got a flag for dying, get it if we do
-    if (actor.getFlag("world", "dying") === undefined) {
-      actor.setFlag("world", "dying", isDying);
-    } else {
-      isDying = actor.getFlag("world", "dying");
-    }
+    // console.log("applyDamage: Initial conditions:");
+    // console.log("isDying = ", isDying);
+    // console.log("isUnconscious = ", isUnconscious);
+    // console.log("isWounded = ", isWounded);
+    // console.log("isInjured = ", isInjured);
 
     // Default to full damage applied
     let dapplied = damage;
@@ -237,31 +299,49 @@ const applyDamage = async (html, isDamage, isTargeted) => {
 
     let anounceGM = '';
     let anouncePlayer = '';
-    if (dapplied > 1) { // multiple points of damage applied
-      anouncePlayer = TH_CONFIG.OUCH;
-      anounceGM = dapplied + " " + TH_CONFIG.DAMAGE_POINTS + " (" + damageSubtype + ")";
+    if (dapplied > 0) { // Damage will be done
+      // Compute damage capacity
+      let damageCapacity = 0;
+      if (dAdd) {
+        damageCapacity = max - hp; // Max damage is the difference between max and hp
+      } else {
+        damageCapacity = hp;       // Max damage is eual to hp
+      }
+      // Compute net effect (healing can't take the token above their max capacity)
+      let netEffect = Math.min(dapplied, damageCapacity);
+
+      if (dapplied > 1) { // multiple points of damage applied
+        anouncePlayer = TH_CONFIG.OUCH.replace('$DS', damageSubtype).replace('$D', dapplied).replace('$NE', netEffect);
+        // anounceGM = dapplied + " " + TH_CONFIG.DAMAGE_POINTS + " (" + damageSubtype + ")";
+        anounceGM = TH_CONFIG.DAMAGE_POINTS.replace('$DS', damageSubtype).replace('$D', damage).replace('$NE', netEffect);
+      }
+      if (dapplied === 1) { // One point of damage applied
+        anouncePlayer = TH_CONFIG.OUCH.replace('$DS', damageSubtype).replace('$D', dapplied).replace('$NE', netEffect);
+        // anounceGM = TH_CONFIG.DAMAGE_POINT + " (" + damageSubtype + ")";
+        anounceGM = TH_CONFIG.DAMAGE_POINT.replace('$DS', damageSubtype).replace('$D', damage).replace('$NE', netEffect);
+      }
     }
-    if (dapplied === 1) { // One point of damage applied
-      anouncePlayer = TH_CONFIG.OUCH;
-      anounceGM = TH_CONFIG.DAMAGE_POINT + " (" + damageSubtype + ")";
-    }
-    if (dapplied === 0) { // No effective damage applied
+    if (dapplied === 0) { // No effective damage or healing applied
       anouncePlayer = TH_CONFIG.MEH;
       anounceGM = anouncePlayer;
     }
-    if (dapplied < 0) { // Healing applied (negative damage is healing)
-      anouncePlayer = TH_CONFIG.TY;
+    if (dapplied < 0) { // Healing applied (negative damage done is healing)
       // Compute healing capacity
       let healingCapacity = 0;
       if (dAdd) {
-        healingCapacity = hp; // hp is really the amount of damage taken
+        healingCapacity = hp;       // Max healing is the current hp
       } else {
-        healingCapacity = max - hp; // damage is the difference between max and hp
+        healingCapacity = max - hp; // Max healing is the difference between max and hp
       }
+      // Compute net effect (healing can't take the token above their max capacity)
+      let netEffect = Math.min(-dapplied, healingCapacity);
+      anouncePlayer = TH_CONFIG.TY.replace('$DS', damageSubtype).replace('$D', -dapplied).replace('$NE', netEffect);
       if ((dapplied === -1) || (healingCapacity === 1)) {
-        anounceGM = TH_CONFIG.HEALING_POINT + " (" + damageSubtype + ")";
+        // anounceGM = TH_CONFIG.HEALING_POINT + " (" + damageSubtype + ")";
+        anounceGM = TH_CONFIG.HEALING_POINT.replace('$DS', damageSubtype).replace('$D', -dapplied).replace('$NE', netEffect);
       } else if ((dapplied < -1) && (healingCapacity > 1)) {
-        anounceGM = Math.min(-dapplied, healingCapacity) + " " + TH_CONFIG.HEALING_POINTS + " (" + damageSubtype + ")";
+        // anounceGM = Math.min(-dapplied, healingCapacity) + " " + TH_CONFIG.HEALING_POINTS + " (" + damageSubtype + ")";
+        anounceGM = TH_CONFIG.HEALING_POINTS.replace('$DS', damageSubtype).replace('$D', -dapplied).replace('$NE', netEffect);
       } else {
         anouncePlayer = TH_CONFIG.MEH;
         anounceGM = anouncePlayer;
@@ -289,7 +369,7 @@ const applyDamage = async (html, isDamage, isTargeted) => {
       if (dapplied >= damageCapacity) {
         // Set KO State
         isUnconscious = true;
-        actor.setFlag("world", "unconscious", isUnconscious);
+        // actor.setFlag("world", "unconscious", isUnconscious);
         // Announce KO State
         anouncePlayer = TH_CONFIG.UNCONSCIOUS;
         if (enableChat) ChatMessage.create({content: anouncePlayer, speaker: ChatMessage.getSpeaker({actor: actor})});
@@ -309,7 +389,7 @@ const applyDamage = async (html, isDamage, isTargeted) => {
         } else {
           // Set KO State
           isUnconscious = true;
-          actor.setFlag("world", "unconscious", isUnconscious);
+          // actor.setFlag("world", "unconscious", isUnconscious);
           // Announce KO State
           anouncePlayer = TH_CONFIG.UNCONSCIOUS;
           if (enableChat) ChatMessage.create({content: anouncePlayer, speaker: ChatMessage.getSpeaker({actor: actor})});
@@ -336,45 +416,24 @@ const applyDamage = async (html, isDamage, isTargeted) => {
       }
 
       // Update flags and conditions]
-      actor.setFlag("world", "injured", isInjured);
-      actor.setFlag("world", "wounded", isWounded);
-      actor.setFlag("world", "unconscious", isUnconscious);
-      actor.setFlag("world", "dying", isDying);
-      if (game.system.id === 'age-system') {
-        if (enableConditions) { // Control automatic vs. manual setting of conditions
-          //   await actor.update({
-          //   "data": {
-          //     "conditions.dying": false,
-          //     "conditions.helpless": false,
-          //     "conditions.unconscious": false,
-          //   }
-          // });
-          // actor.handleConditions("dying", false);
-          // actor.handleConditions("helpless", false);
-          // actor.handleConditions("unconscious", false);
-          await removeCondition(actor, "dying");
-          await removeCondition(actor, "helpless");
-          await removeCondition(actor, "unconscious");
-        }
+      // actor.setFlag("world", "injured", isInjured);
+      // actor.setFlag("world", "wounded", isWounded);
+      // actor.setFlag("world", "unconscious", isUnconscious);
+      // actor.setFlag("world", "dying", isDying);
+
+      if (enableConditions) { // Control automatic vs. manual setting of conditions
+        await removeCondition(actor, "dying");
+        await removeCondition(actor, "helpless");
+        await removeCondition(actor, "unconscious");
       }
     } else {
-      if (game.system.id === 'age-system') {
-        if (enableConditions) { // Control automatic vs. manual setting of conditions
-          // await actor.update({
-          //   "data": {
-          //     "conditions.helpless": isUnconscious,
-          //     "conditions.unconscious": isUnconscious,
-          //   }
-          // });
-          // actor.handleConditions("helpless", isUnconscious);
-          // actor.handleConditions("unconscious", isUnconscious);
-          if (isUnconscious) {
-            await applyCondition(actor, "helpless");
-            await applyCondition(actor, "unconscious")
-          } else {
-            await removeCondition(actor, "helpless");
-            await removeCondition(actor, "unconscious");
-          }
+      if (enableConditions) { // Control automatic vs. manual setting of conditions
+        if (isUnconscious) {
+          await applyCondition(actor, "helpless");
+          await applyCondition(actor, "unconscious")
+        } else {
+          await removeCondition(actor, "helpless");
+          await removeCondition(actor, "unconscious");
         }
       }
     }
@@ -394,7 +453,7 @@ const applyDamage = async (html, isDamage, isTargeted) => {
         [`data.${hpSource || 'attributes.hp.value'}`]: newHP,
       };
     }
-
+    // tidx++
     // Prepare the update
     return actor.update(updates);
   });
@@ -429,6 +488,7 @@ const ageDamageBuyoff = async(thisActor, dRemaining) => {
   // let speedMod      = 0;
   // let speedTotal    = 0;
 
+  // let thisActor = game.actors.get(thisToken.data.actorId);
   // Get the control paramater for enabling/disabling token chat
   let enableChat = TH_CONFIG.ENABLE_TOKEN_CHAT;
 
@@ -437,52 +497,34 @@ const ageDamageBuyoff = async(thisActor, dRemaining) => {
   // Temporary setting to prevent issues in 0.8.6
   // enableConditions = false;
 
-  // Make sure we've got a flag for injured, get it if we do
-  if (thisActor.getFlag("world", "injured") === undefined) {
-    thisActor.setFlag("world", "injured", isInjured);
-  } else {
-    isInjured = thisActor.getFlag("world", "injured");
-  }
-
-  // Make sure we've got a flag for wounded, get it if we do
-  if (thisActor.getFlag("world", "wounded") === undefined) {
-    thisActor.setFlag("world", "wounded", isWounded);
-  } else {
-    isWounded = thisActor.getFlag("world", "wounded");
-  }
-
-  // Make sure we've got a flag for unconscious, get it if we do
-  if (thisActor.getFlag("world", "unconscious") === undefined) {
-    thisActor.setFlag("world", "unconscious", isUnconscious);
-  } else {
-    isUnconscious = thisActor.getFlag("world", "unconscious");
-  }
-
-  // Make sure we've got a flag for dying, get it if we do
-  if (thisActor.getFlag("world", "dying") === undefined) {
-    thisActor.setFlag("world", "dying", isDying);
-  } else {
-    isDying = thisActor.getFlag("world", "dying");
-  }
-
   if (game.system.id === 'age-system') {
-    conditions = thisActor .data.data.conditions;
+    // conditions = thisActor .data.data.conditions;
     abilities = thisActor .data.data.abilities;
     // speed = thisActor .data.data.speed;
     origin = thisActor .data.data.ancestry;
 
     // Get the AGE-specific conditions and attributes needed
     // This allows other mods and macros to override this mod
-    isExhausted   = conditions.exhausted;
-    isFatigued    = conditions.fatigued;
-    isInjured     = conditions.injured;
-    isWounded     = conditions.wounded;
-    isDying       = conditions.dying;
-    isProne       = conditions.prone;
-    isFreefalling = conditions.freefalling;
-    isHelpless    = conditions.helpless;
-    // speedMod      = speed.mod;
-    // speedTotal    = speed.total;
+    isFatigued    = await checkCondition(thisActor, "fatigued");
+    isExhausted   = await checkCondition(thisActor, "exhausted");
+    isInjured     = await checkCondition(thisActor, "injured");
+    isWounded     = await checkCondition(thisActor, "wounded");
+    isUnconscious = await checkCondition(thisActor, "unconscious");
+    isDying       = await checkCondition(thisActor, "dying");
+    isProne       = await checkCondition(thisActor, "prone");
+    isFreefalling = await checkCondition(thisActor, "freefalling");
+    isHelpless    = await checkCondition(thisActor, "helpless");
+
+    // console.log("ageDamageBuyoff: Initial conditions:")
+    // console.log("isFatigued = ",    isFatigued)
+    // console.log("isExhausted = ",   isExhausted)
+    // console.log("isInjured = ",     isInjured)
+    // console.log("isWounded = ",     isWounded)
+    // console.log("isUnconscious = ", isUnconscious)
+    // console.log("isDying = ",       isDying)
+    // console.log("isProne = ",       isProne)
+    // console.log("isFreefalling = ", isFreefalling)
+    // console.log("isHelpless = ",    isHelpless)
 
     // Make sure this actor has their baseConValue recorded as a flag
     if (thisActor.getFlag("world", "baseConValue") === undefined) {
@@ -510,45 +552,32 @@ const ageDamageBuyoff = async(thisActor, dRemaining) => {
   } else if (isWounded) { // Damage being applied to a wounded character
     // Set the dying state flag
     isDying = true;
-    thisActor.setFlag("world", "dying", isDying);
+    // thisActor.setFlag("world", "dying", isDying);
 
     // If not freefalling, then character will also be prone
     if (!isFreefalling) isProne = true;
 
     // If this is an AGE System game
-    if (game.system.id === 'age-system') {
+    // if (game.system.id === 'age-system') {
       if (enableConditions) { // Control automatic vs. manual setting of conditions
         // Set the dying condition
         // Dying characters are also unconscious, and helpless
         // Helpless characters can't move.
-        // Set the actor's speed.mod = -speed.total and speed.total = 0
-        // await thisActor.update({
-        //   "data": {
-        //     "conditions.dying": true,
-        //     "conditions.unconscious": true,
-        //     "conditions.helpless": true,
-        //     "conditions.prone": isProne,
-        //   }
-        // });
-        // thisActor.handleConditions("dying", true);
-        // thisActor.handleConditions("unconscious", true);
-        // thisActor.handleConditions("helpless", true);
-        // thisActor.handleConditions("prone", isProne);
         await applyCondition(thisActor, "dying");
         await applyCondition(thisActor, "unconscious");
         await applyCondition(thisActor, "helpless");
         if (isProne) await applyCondition(thisActor, "prone");
         else await removeCondition(thisActor, "prone");
       }
-    }
+    // }
     if (enableChat) ChatMessage.create({speaker: this_speaker, content: flavor3}); // Good by cruel world!
   } else if (isInjured) { // Damage being applied to a injured character
     // Set the wounded state flag
     isWounded = true;
-    thisActor.setFlag("world", "wounded", isWounded);
+    // thisActor.setFlag("world", "wounded", isWounded);
 
     // Buy off 1d6 damage when taking the wounded condition
-    let roll1 = new Roll("1d6").roll();
+    let roll1 = await new Roll("1d6").roll({async: true});
     // Roll#evaluate is becoming asynchronous. In the short term you may pass async=true or async=false to
     // evaluation options to nominate your preferred behavior.
 
@@ -556,7 +585,7 @@ const ageDamageBuyoff = async(thisActor, dRemaining) => {
     roll1.toMessage({speaker:{alias:this_speaker.alias}, flavor: flavor2});
 
     // If this is an AGE System game
-    if (game.system.id === 'age-system') {
+    // if (game.system.id === 'age-system') {
       // Configure conditions: Add the exhausted condition,
       //    if already exhausted then helpless
       if (isExhausted) {
@@ -571,68 +600,43 @@ const ageDamageBuyoff = async(thisActor, dRemaining) => {
 
       if (enableConditions) { // Control automatic vs. manual setting of conditions
         // Set the wounded condition
-        // await thisActor.update({
-        //   "data": {
-        //     "conditions.wounded": true,
-        //     "conditions.exhausted": isExhausted,
-        //     "conditions.helpless": isHelpless,
-        //   }
-        // });
-        // thisActor.handleConditions("wounded", true);
-        // thisActor.handleConditions("exhausted", isExhausted);
-        // thisActor.handleConditions("helpless", isHelpless);
         await applyCondition(thisActor, "wounded");
         if (isExhausted) await applyCondition(thisActor, "exhausted");
         else await removeCondition(thisActor, "exhausted");
         if (isHelpless) await applyCondition(thisActor, "helpless");
         else await removeCondition(thisActor, "helpless");
       }
-    }
+    // }
 
     if (roll1._total < dRemaining) { // out of options, advance to dying
       // Set the dying state flag
       isDying = true;
-      thisActor.setFlag("world", "dying", isDying);
+      // thisActor.setFlag("world", "dying", isDying);
 
       // Character is wounded but has more damage to account for, so now they're dying!
       // If not freefalling, then character will also be prone
       if (!isFreefalling) isProne = true;
 
       // If this is an AGE System game
-      if (game.system.id === 'age-system') {
-        if (enableConditions) { // Control automatic vs. manual setting of conditions
-          // Set the dying condition
-          // Dying characters are also unconscious, and helpless
-          // Helpless characters can't move.
-          // Set the actor's speed.mod = -speed.total and speed.total = 0
-          // await thisActor.update({
-          //   "data": {
-          //     "conditions.dying": true,
-          //     "conditions.unconscious": true,
-          //     "conditions.helpless": true,
-          //     "conditions.prone": isProne,
-          //   }
-          // });
-          // thisActor.handleConditions("dying", true);
-          // thisActor.handleConditions("unconscious", true);
-          // thisActor.handleConditions("helpless", true);
-          // thisActor.handleConditions("prone", isProne);
-          await applyCondition(thisActor, "dying");
-          await applyCondition(thisActor, "unconscious");
-          await applyCondition(thisActor, "helpless");
-          if (isProne) await applyCondition(thisActor, "prone");
-          else await removeCondition(thisActor, "prone");
-          }
-      }
+      if (enableConditions) { // Control automatic vs. manual setting of conditions
+        // Set the dying condition
+        // Dying characters are also unconscious, and helpless
+
+        await applyCondition(thisActor, "dying");
+        await applyCondition(thisActor, "unconscious");
+        await applyCondition(thisActor, "helpless");
+        if (isProne) await applyCondition(thisActor, "prone");
+        // else await removeCondition(thisActor, "prone"); don't remove Prone - they might be that way voluntarily
+        }
       if (enableChat) ChatMessage.create({speaker: this_speaker, content: flavor3}); // Good by cruel world!
     }
   } else {  // Damage being applied to an uninjured character
     // Set the injured state flag
     isInjured = true;
-    thisActor.setFlag("world", "injured", isInjured);
+    // thisActor.setFlag("world", "injured", isInjured);
 
     // Buy off 1d6 damage when taking the injured condition
-    let roll1 = new Roll("1d6").roll();
+    let roll1 = await new Roll("1d6").roll({async: true});
     // Roll#evaluate is becoming asynchronous. In the short term you may pass async=true or async=false to
     // evaluation options to nominate your preferred behavior.
 
@@ -640,7 +644,7 @@ const ageDamageBuyoff = async(thisActor, dRemaining) => {
     roll1.toMessage({speaker: {alias:this_speaker.alias}, flavor: flavor1});
 
     // If this is an AGE System game
-    if (game.system.id === 'age-system') {
+    if (enableConditions) { // Control automatic vs. manual setting of conditions
       // Configure conditions: Add the fatigued condition,
       //    if already fatigued then exhausted,
       //    if already exhausted then helpless
@@ -654,45 +658,31 @@ const ageDamageBuyoff = async(thisActor, dRemaining) => {
         // speedTotal = speed.total + speedMod;
       } else isFatigued = true;
 
-      if (enableConditions) { // Control automatic vs. manual setting of conditions
-        // Set the conditions
-        // await thisActor.update({
-        //   "data": {
-        //     "conditions.injured": true,
-        //     "conditions.fatigued": isFatigued,
-        //     "conditions.exhausted": isExhausted,
-        //     "conditions.helpless": isHelpless,
-        //   }
-        // });
-        // thisActor.handleConditions("injured", true);
-        // thisActor.handleConditions("fatigued", isFatigued);
-        // thisActor.handleConditions("exhausted", isExhausted);
-        // thisActor.handleConditions("helpless", isHelpless);
-        await applyCondition(thisActor, "injured");
-        if (isFatigued) await applyCondition(thisActor, "fatigued");
-        else await removeCondition(thisActor, "fatigued");
-        if (isExhausted) await applyCondition(thisActor, "exhausted");
-        else await removeCondition(thisActor, "exhausted");
-        if (isProne) await applyCondition(thisActor, "helpless");
-        else await removeCondition(thisActor, "helpless");
-    }
+      // Set the conditions
+      await applyCondition(thisActor, "injured");
+      if (isFatigued) await applyCondition(thisActor, "fatigued");
+      else await removeCondition(thisActor, "fatigued");
+      if (isExhausted) await applyCondition(thisActor, "exhausted");
+      else await removeCondition(thisActor, "exhausted");
+      if (isProne) await applyCondition(thisActor, "helpless");
+      else await removeCondition(thisActor, "helpless");
     }
 
     if (roll1._total < dRemaining) {
       // Set the wounded state flag
       isWounded = true;
-      thisActor.setFlag("world", "wounded", isWounded);
+      // thisActor.setFlag("world", "wounded", isWounded);
 
       // Buy off 1d6 damage when taking the wounded condition
-      let roll2 = new Roll("1d6").roll();
-    // Roll#evaluate is becoming asynchronous. In the short term you may pass async=true or async=false to
-    // evaluation options to nominate your preferred behavior.
+      let roll2 = await new Roll("1d6").roll({async: true});
+      // Roll#evaluate is becoming asynchronous. In the short term you may pass async=true or async=false to
+      // evaluation options to nominate your preferred behavior.
 
       // Announce the roll
       roll2.toMessage({speaker: {alias:this_speaker.alias}, flavor: flavor2});
 
       // If this is an AGE System game
-      if (game.system.id === 'age-system') {
+      if (enableConditions) { // Control automatic vs. manual setting of conditions
         // Configure conditions: Add the exhausted condition,
         //    if already exhausted then helpless
         if (isExhausted) {
@@ -705,59 +695,34 @@ const ageDamageBuyoff = async(thisActor, dRemaining) => {
           // speedTotal = speed.total + speedMod;
         }
 
-        if (enableConditions) { // Control automatic vs. manual setting of conditions
-          // Set the conditions
-          // await thisActor.update({
-          //   "data": {
-          //     "conditions.wounded": true,
-          //     "conditions.exhausted": isExhausted,
-          //     "conditions.helpless": isHelpless,
-          //   }
-          // });
-          // thisActor.handleConditions("wounded", true);
-          // thisActor.handleConditions("exhausted", isExhausted);
-          // thisActor.handleConditions("helpless", isHelpless);
-          await applyCondition(thisActor, "wounded");
-          if (isExhausted) await applyCondition(thisActor, "exhausted");
-          else await removeCondition(thisActor, "exhausted");
-          if (isHelpless) await applyCondition(thisActor, "helpless");
-          else await removeCondition(thisActor, "helpless");
-          }
+        // Set the conditions
+
+        await applyCondition(thisActor, "wounded");
+        if (isExhausted) await applyCondition(thisActor, "exhausted");
+        else await removeCondition(thisActor, "exhausted");
+        if (isHelpless) await applyCondition(thisActor, "helpless");
+        else await removeCondition(thisActor, "helpless");
       }
       if ((roll1._total + roll2._total) < dRemaining) {
         // Character is wounded but has more damage to account for, so now they're dying!
         // Set the dying state flag
         isDying = true;
-        thisActor.setFlag("world", "dying", isDying);
+        // thisActor.setFlag("world", "dying", isDying);
 
         // If not freefalling, then character will also be prone
         if (!isFreefalling) isProne = true;
 
         // If this is an AGE System game
-        if (game.system.id === 'age-system') {
-          if (enableConditions) { // Control automatic vs. manual setting of conditions
-            // Set the dying condition
-            // Dying characters are also unconscious, and helpless
-            // Helpless characters can't move.
-            // Set the actor's speed.mod = -speed.total and speed.total = 0
-            // await thisActor.update({
-            //   "data": {
-            //     "conditions.dying": true,
-            //     "conditions.unconscious": true,
-            //     "conditions.helpless": true,
-            //     "conditions.prone": isProne,
-            //   }
-            // });
-            // thisActor.handleConditions("dying", true);
-            // thisActor.handleConditions("unconscious", true);
-            // thisActor.handleConditions("helpless", true);
-            // thisActor.handleConditions("prone", isProne);
-            await applyCondition(thisActor, "dying");
-            await applyCondition(thisActor, "unconscious");
-            await applyCondition(thisActor, "helpless");
-            if (isProne) await applyCondition(thisActor, "prone");
-            else await removeCondition(thisActor, "prone");
-          }
+
+        if (enableConditions) { // Control automatic vs. manual setting of conditions
+          // Set the dying condition
+          // Dying characters are also unconscious, and helpless
+
+          await applyCondition(thisActor, "dying");
+          await applyCondition(thisActor, "unconscious");
+          await applyCondition(thisActor, "helpless");
+          if (isProne) await applyCondition(thisActor, "prone");
+          else await removeCondition(thisActor, "prone");
         }
         if (enableChat) ChatMessage.create({speaker: this_speaker, content: flavor3}); // Good by cruel world!
       }
@@ -771,8 +736,8 @@ const ageDamageBuyoff = async(thisActor, dRemaining) => {
  * @param {actor} thisActor The actor being to apply conditions to
  *
  */
- const ageNoDamageBuyoff = async(thisActor) => {
-  let conditions;
+const ageNoDamageBuyoff = async(thisActor) => {
+  // let conditions;
   let abilities;
   // let speed;
   let origin;
@@ -800,6 +765,21 @@ const ageDamageBuyoff = async(thisActor, dRemaining) => {
   // Temporary setting to prevent issues in 0.8.6
   // enableConditions = false;
 
+  // let thisActor = game.actors.get(thisToken.data.actorId);
+
+  // Get the AGE-specific conditions and attributes needed
+  // This allows other mods and macros to override this mod
+  // isExhausted   = await checkCondition(thisActor, "exhausted");
+  // isFatigued    = await checkCondition(thisActor, "fatigued");
+  // isInjured     = await checkCondition(thisActor, "injured");
+  // isWounded     = await checkCondition(thisActor, "wounded");
+  isUnconscious = await checkCondition(thisActor, "unconscious");
+  isDying       = await checkCondition(thisActor, "dying");
+  isProne       = await checkCondition(thisActor, "prone");
+  isFreefalling = await checkCondition(thisActor, "freefalling");
+  isHelpless    = await checkCondition(thisActor, "helpless");
+
+  /*
   // Make sure we've got a flag for unconscious, get it if we do
   if (thisActor.getFlag("world", "unconscious") === undefined) {
     thisActor.setFlag("world", "unconscious", isUnconscious);
@@ -813,31 +793,43 @@ const ageDamageBuyoff = async(thisActor, dRemaining) => {
   } else {
     isDying = thisActor.getFlag("world", "dying");
   }
+  */
 
   if (game.system.id === 'age-system') {
-    conditions = thisActor .data.data.conditions;
+    // conditions = thisActor .data.data.conditions;
     abilities = thisActor .data.data.abilities;
     // speed = thisActor .data.data.speed;
     origin = thisActor .data.data.ancestry;
 
     // Get the AGE-specific conditions and attributes needed
     // This allows other mods and macros to override this mod
-    // isExhausted   = conditions.exhausted;
-    // isFatigued    = conditions.fatigued;
-    // isInjured     = conditions.injured;
-    // isWounded     = conditions.wounded;
-    isDying       = conditions.dying;
-    isProne       = conditions.prone;
-    isFreefalling = conditions.freefalling;
-    isHelpless    = conditions.helpless;
-    // speedMod      = speed.mod;
-    // speedTotal    = speed.total;
+    // isFatigued    = await checkCondition(thisActor, "fatigued");
+    // isExhausted   = await checkCondition(thisActor, "exhausted");
+    // isInjured     = await checkCondition(thisActor, "injured");
+    // isWounded     = await checkCondition(thisActor, "wounded");
+    isUnconscious = await checkCondition(thisActor, "unconscious");
+    isDying       = await checkCondition(thisActor, "dying");
+    isProne       = await checkCondition(thisActor, "prone");
+    isFreefalling = await checkCondition(thisActor, "freefalling");
+    isHelpless    = await checkCondition(thisActor, "helpless");
+
+    console.log("ageNoDamageBuyoff: Initial conditions:")
+    // console.log("isFatigued = ",    isFatigued)
+    // console.log("isExhausted = ",   isExhausted)
+    // console.log("isInjured = ",     isInjured)
+    // console.log("isWounded = ",     isWounded)
+
+    // console.log("isUnconscious = ", isUnconscious)
+    // console.log("isDying = ",       isDying)
+    // console.log("isProne = ",       isProne)
+    // console.log("isFreefalling = ", isFreefalling)
+    // console.log("isHelpless = ",    isHelpless)
 
     // Make sure this actor has their baseConValue recorded as a flag
     if (thisActor.getFlag("world", "baseConValue") === undefined) {
       thisActor.setFlag("world", "baseConValue", abilities.cons.value);
     } else if (abilities.cons.value > thisActor.getFlag("world", "baseConValue")) {
-        thisActor.setFlag("world", "baseConValue", abilities.cons.value);
+      thisActor.setFlag("world", "baseConValue", abilities.cons.value);
     }
     if (origin === "Belter") {
       // flavor1 = "Ouch! Deting hurt!";                // English: "Ouch! That hurt!"
@@ -860,35 +852,18 @@ const ageDamageBuyoff = async(thisActor, dRemaining) => {
 
     // Set the dying state flag
     isDying = true;
-    thisActor.setFlag("world", "dying", isDying);
+    // thisActor.setFlag("world", "dying", isDying);
 
     // If this is an AGE System game
-    if (game.system.id === 'age-system') {
-      if (enableConditions) { // Control automatic vs. manual setting of conditions
-        // Set the dying condition
-        // Dying characters are also unconscious, and helpless
-        // Helpless characters can't move.
-        // Set the actor's speed.mod = -speed.total and speed.total = 0
-        // await thisActor.update({
-        //   "data": {
-        //     "conditions.dying": true,
-        //     "conditions.unconscious": true,
-        //     "conditions.helpless": true,
-        //     "conditions.prone": isProne,
-        //     // "speed.mod": -speed.total,
-        //     // "speed.total": 0,
-        //   }
-        // });
-        // thisActor.handleConditions("dying", true);
-        // thisActor.handleConditions("unconscious", true);
-        // thisActor.handleConditions("helpless", true);
-        // thisActor.handleConditions("prone", isProne);
-        await applyCondition(thisActor, "dying");
-        await applyCondition(thisActor, "unconscious");
-        await applyCondition(thisActor, "helpless");
-        if (isProne) await applyCondition(thisActor, "prone");
-        else await removeCondition(thisActor, "prone");
-      }
+    if (enableConditions) { // Control automatic vs. manual setting of conditions
+      // Set the dying condition
+      // Dying characters are also unconscious, and helpless
+      // Helpless characters can't move.
+      await applyCondition(thisActor, "dying");
+      await applyCondition(thisActor, "unconscious");
+      await applyCondition(thisActor, "helpless");
+      if (isProne) await applyCondition(thisActor, "prone");
+      // else await removeCondition(thisActor, "prone");
     }
     if (enableChat) ChatMessage.create({speaker: this_speaker, content: flavor3}); // Good by cruel world!
   }
@@ -1041,38 +1016,6 @@ const toggle = (event, isDamage = true, isTarget = false) => {
 };
 
 /**
- * Handle custom keys not handled by FVTT
- *
- * @param {KeyboardEvent} event The keyboard event
- * @param {string} key The pressed key
- * @param {Boolean} up Is the button up
- */
-/* SDR: OBSOLETE! Fold functionality into use of DF HotKeys
-const handleKeys = function (event, key, up) {
-  if (up || this.hasFocus) return;
-
-  // Base key is pressed.
-  const toggleKeyBase = KeyBinding.parse(TH_CONFIG.TOGGLE_KEY_BASE);
-  if (KeyBinding.eventIsForBinding(event, toggleKeyBase)) toggle(event, key);
-
-  // Alt key is pressed.
-  const toggleKeyAlt = KeyBinding.parse(TH_CONFIG.TOGGLE_KEY_ALT);
-  if (KeyBinding.eventIsForBinding(event, toggleKeyAlt))
-    toggle(event, key, false);
-
-  // Targeting key is pressed
-  const toggleKeyTarget = KeyBinding.parse(TH_CONFIG.TOGGLE_KEY_TARGET);
-  if (KeyBinding.eventIsForBinding(event, toggleKeyTarget))
-    toggle(event, key, true, true);
-
-  // Alt Targeting key is pressed
-  const toggleKeyTargetAlt = KeyBinding.parse(TH_CONFIG.TOGGLE_KEY_TARGET_ALT);
-  if (KeyBinding.eventIsForBinding(event, toggleKeyTargetAlt))
-    toggle(event, key, false, true);
-};
-*/
-
-/**
  * Initialize our stuff
  */
 // Make sure lib-df-hotkeys is installed and active
@@ -1107,66 +1050,6 @@ Hooks.once('ready', async () => {
 
   CONFIG.TokenHealth = TH_CONFIG;
 
-  // console.log(TH_CONFIG)
-  // console.log(CONFIG)
-
-
-  // CONFIG.TokenHealth.ENABLE_TOKEN_IMAGES = TH_CONFIG.ENABLE_TOKEN_IMAGES; // game.settings.get(MODULE_NAME, 'enableTokenImages');
-  // CONFIG.TokenHealth.ADDITIVE_DAMAGE = game.settings.get(MODULE_NAME, 'damageAdds');
-  // CONFIG.TokenHealth.DAMAGE_TYPE_1 = game.settings.get(MODULE_NAME, 'damageType1');
-  // CONFIG.TokenHealth.DAMAGE_TYPE_2 = game.settings.get(MODULE_NAME, 'damageType2');
-  // CONFIG.TokenHealth.DAMAGE_TYPE_3 = game.settings.get(MODULE_NAME, 'damageType3');
-  // CONFIG.TokenHealth.MITIGATION_ATTRIBUTE_1 = game.settings.get(MODULE_NAME, 'mitigationSource1');
-  // CONFIG.TokenHealth.MITIGATION_ATTRIBUTE_2 = game.settings.get(MODULE_NAME, 'mitigationSource2');
-  // CONFIG.TokenHealth.MITIGATION_ATTRIBUTE_3 = game.settings.get(MODULE_NAME, 'mitigationSource3');
-  // CONFIG.TokenHealth.DAMAGE_SUBTYPE_1 = game.settings.get(MODULE_NAME, 'damageSubtype1');
-  // CONFIG.TokenHealth.HITPOINTS_ATTRIBUTE_1 = game.settings.get(MODULE_NAME, 'hpSource1');
-  // CONFIG.TokenHealth.MAX_HITPOINTS_ATTRIBUTE_1 = game.settings.get(MODULE_NAME, 'hpSourceMax1');
-  // CONFIG.TokenHealth.TEMP_HITPOINTS_ATTRIBUTE_1 = game.settings.get(MODULE_NAME, 'tempHpSource1');
-  // CONFIG.TokenHealth.DAMAGE_SUBTYPE_2 = game.settings.get(MODULE_NAME, 'damageSubtype2');
-  // CONFIG.TokenHealth.HITPOINTS_ATTRIBUTE_2 = game.settings.get(MODULE_NAME, 'hpSource2');
-  // CONFIG.TokenHealth.MAX_HITPOINTS_ATTRIBUTE_2 = game.settings.get(MODULE_NAME, 'hpSourceMax2');
-  // CONFIG.TokenHealth.TEMP_HITPOINTS_ATTRIBUTE_2 = game.settings.get(MODULE_NAME, 'tempHpSource2');
-  // CONFIG.TokenHealth.ALLOW_NEGATIVE = game.settings.get(MODULE_NAME, 'allowNegative');
-  // CONFIG.TokenHealth.KO_THRESHOLD = game.settings.get(MODULE_NAME, 'koThreshold');
-  // CONFIG.TokenHealth.DEATH_THRESHOLD = game.settings.get(MODULE_NAME, 'deathThreshold');
-  // CONFIG.TokenHealth.ENABLE_CONDITIONS = game.settings.get(MODULE_NAME, 'enableConditions');
-  // CONFIG.TokenHealth.ALLOW_DAMAGE_BUYOFF = game.settings.get(MODULE_NAME, 'allowDamageBuyoff');
-  // CONFIG.TokenHealth.ENABLE_TOKEN_CHAT = game.settings.get(MODULE_NAME, 'enableChat');
-  // CONFIG.TokenHealth.OUCH = game.settings.get(MODULE_NAME, 'ouch');
-  // CONFIG.TokenHealth.DAMAGE_POINT = game.settings.get(MODULE_NAME, 'damagePoint');
-  // CONFIG.TokenHealth.DAMAGE_POINTS = game.settings.get(MODULE_NAME, 'damagePoints');
-  // CONFIG.TokenHealth.UNCONSCIOUS = game.settings.get(MODULE_NAME, 'unconscious');
-  // CONFIG.TokenHealth.DYING = game.settings.get(MODULE_NAME, 'dying');
-  // CONFIG.TokenHealth.DEAD = game.settings.get(MODULE_NAME, 'dead');
-  // CONFIG.TokenHealth.TY = game.settings.get(MODULE_NAME, 'ty');
-  // CONFIG.TokenHealth.HEALING_POINT = game.settings.get(MODULE_NAME, 'healingPoint');
-  // CONFIG.TokenHealth.HEALING_POINTS = game.settings.get(MODULE_NAME, 'healingPoints');
-  // CONFIG.TokenHealth.MEH = game.settings.get(MODULE_NAME, 'meh');
-  // CONFIG.TokenHealth.INJURED = game.settings.get(MODULE_NAME, 'injured');
-  // CONFIG.TokenHealth.WOUNDED = game.settings.get(MODULE_NAME, 'wounded');
-
-  // console.log(TH_CONFIG)
-  // console.log(CONFIG)
-
-  /* SDR: Obsolete with change to DF Hotkeys
-  // Extend _handleKeys method with our own function
-  const cached_handleKeys = keyboard._handleKeys;
-  keyboard._handleKeys = function () {
-    handleKeys.call(this, ...arguments);
-    cached_handleKeys.call(this, ...arguments);
-  };
-
-  // Extend _onEscape method with our own function
-  const cached_onEscape = keyboard._onEscape;
-  keyboard._onEscape = function () {
-    onEscape.call(this, ...arguments);
-    cached_onEscape.call(this, ...arguments);
-  };
-  */
-
-  // Use Azzurite settings-extender
-  // KeyBinding = window.Azzu.SettingsTypes.KeyBinding;
 });
 
 Hooks.once('init', async function() {
@@ -1280,147 +1163,4 @@ Hooks.once('init', async function() {
     precedence: CONST.KEYBINDING_PRECEDENCE.NORMAL
   });
 
-
-  //******* DF HotKeys  ********/
-  /*
-  // Hotkeys.registerGroup(group: HotkeyGroup, throwOnError?: boolean): boolean
-  hotkeys.registerGroup({
-    name: 'token-health.token-health',
-    label: 'Token Health', // Translate this? i18n('TOKEN_HEALTH.toggleKeyName')
-    description: 'Allows you to Configure and override the keybindings for Token Health' // <-- Optional
-  }, false);
-
-  // TOGGLE_KEY_BASE: 'Enter'
-  try {
-    game.settings.get('token-health', 'toggleKey');
-  } catch (e) {
-    if (e.message === 'This is not a registered game setting') {
-      game.settings.register("token-health", "toggleKey", {
-        scope: 'user',
-        TH_CONFIG: false,
-        default: {
-            key: hotkeys.keys.Enter,
-            alt: false,
-            ctrl: false,
-            shift: false
-        }
-      });
-    } else {
-      throw e;
-    }
-  }
-  // Hotkeys.registerShortcut(TH_CONFIG: HotkeySetting, throwOnError?: boolean)
-  hotkeys.registerShortcut({
-		name: 'token-health.toggleKey',
-		label: i18n('TOKEN_HEALTH.toggleKeyName'),
-		group: 'token-health.token-health',
-		get: () => game.settings.get('token-health', 'toggleKey'),
-		set: async value => await game.settings.set('token-health', 'toggleKey', value),
-		default: () => { return { key: hotkeys.keys.Enter, alt: false, ctrl: false, shift: false }; },
-		onKeyDown: self => {
-      // Replace this with the code DF Hotkey should execute when the hot key is pressed
-      // console.log('Token Health: Base key pressed!');
-      toggle(event);
-    }
-	});
-
-  // TOGGLE_KEY_ALT: 'Shift + Enter'
-  try {
-    game.settings.get('token-health', 'toggleKeyAlt');
-  } catch (e) {
-    if (e.message === 'This is not a registered game setting') {
-      game.settings.register("token-health", "toggleKeyAlt", {
-        scope: 'user',
-        TH_CONFIG: false,
-        default: {
-            key: hotkeys.keys.Enter,
-            alt: false,
-            ctrl: false,
-            shift: true
-        }
-      });
-    } else {
-      throw e;
-    }
-  }
-  hotkeys.registerShortcut({
-		name: 'token-health.toggleKeyAlt',
-		label: i18n('TOKEN_HEALTH.toggleKeyAltName'),
-		group: 'token-health.token-health',
-		get: () => game.settings.get('token-health', 'toggleKeyAlt'),
-		set: async value => await game.settings.set('token-health', 'toggleKeyAlt', value),
-		default: () => { return { key: hotkeys.keys.Enter, alt: false, ctrl: false, shift: true }; },
-		onKeyDown: self => {
-      // Replace this with the code DF Hotkey should execute when the hot key is pressed
-      // console.log('Token Health: Alt key pressed!');
-      toggle(event, false);
-    }
-	});
-
-  // TOGGLE_KEY_TARGET: 'Alt + Enter'
-  try {
-    game.settings.get('token-health', 'toggleKeyTarget');
-  } catch (e) {
-    if (e.message === 'This is not a registered game setting') {
-      game.settings.register("token-health", "toggleKeyTarget", {
-        scope: 'user',
-        TH_CONFIG: false,
-        default: {
-            key: hotkeys.keys.Enter,
-            alt: true,
-            ctrl: false,
-            shift: false
-        }
-      });
-    } else {
-      throw e;
-    }
-  }
-  hotkeys.registerShortcut({
-		name: 'token-health.toggleKeyTarget',
-		label: i18n('TOKEN_HEALTH.toggleKeyTargetName'),
-		group: 'token-health.token-health',
-		get: () => game.settings.get('token-health', 'toggleKeyTarget'),
-		set: async value => await game.settings.set('token-health', 'toggleKeyTarget', value),
-		default: () => { return { key: hotkeys.keys.Enter, alt: true, ctrl: false, shift: false }; },
-		onKeyDown: self => {
-      // Replace this with the code DF Hotkey should execute when the hot key is pressed
-      // console.log('Token Health: Target key pressed!');
-      toggle(event, true, true);
-    }
-	});
-
-  // TOGGLE_KEY_TARGET_ALT: 'Alt + Shift + Enter'
-  try {
-    game.settings.get('token-health', 'toggleKeyTargetAlt');
-  } catch (e) {
-    if (e.message === 'This is not a registered game setting') {
-      game.settings.register("token-health", "toggleKeyTargetAlt", {
-        scope: 'user',
-        TH_CONFIG: false,
-        default: {
-            key: hotkeys.keys.Enter,
-            alt: true,
-            ctrl: false,
-            shift: true
-        }
-      });
-    } else {
-      throw e;
-    }
-  }
-  hotkeys.registerShortcut({
-		name: 'token-health.toggleKeyTargetAlt',
-		label: i18n('TOKEN_HEALTH.toggleKeyTargetAltName'),
-		group: 'token-health.token-health',
-		get: () => game.settings.get('token-health', 'toggleKeyTargetAlt'),
-		set: async value => await game.settings.set('token-health', 'toggleKeyTargetAlt', value),
-		default: () => { return { key: hotkeys.keys.Enter, alt: true, ctrl: false, shift: true }; },
-		onKeyDown: self => {
-      // Replace this with the code DF Hotkey should execute when the hot key is pressed
-      // console.log('Token Health: Target Alt key pressed!');
-      toggle(event, false, true);
-    }
-	});
-  */
 });
