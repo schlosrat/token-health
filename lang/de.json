@@ -55,6 +55,8 @@
   "TOKEN_HEALTH.allowDamageBuyoffHint": "Einige AGE Spielsysteme erlauben das Abkaufen von überschüßigem Schaden (z.B. Modern AGE, The Expanse, etc.)",
   "TOKEN_HEALTH.enableTokenImages": "Enable Token Images in Dialog",
   "TOKEN_HEALTH.enableTokenImagesHint": "Wenn Sie dies aktivieren, sind bis zu vier Token-Miniaturansichten möglich (Unserer ist abgeschnitten) im Dialogfeld anzuzeigen",
+  "TOKEN_HEALTH.restrictPlayerLaunch": "Spieler daran hindern, Token Health zu starten",
+  "TOKEN_HEALTH.restrictPlayerLaunchHint": "Wenn Sie dies aktivieren, wird verhindert, dass Spieler Token Health starten",
   "TOKEN_HEALTH.enableConditions": "Token-Bedingungen festlegen - AGE Systemspezifisch",
   "TOKEN_HEALTH.enableConditionsHint": "Wenn Sie dies aktivieren, kann Token-Gesundheit Token-Bedingungen basierend auf dem angewendeten Schaden festlegen - AGE Systemspezifisch",
   "TOKEN_HEALTH.damageAdds": "Zusatzschaden",

@@ -55,6 +55,8 @@
     "TOKEN_HEALTH.allowDamageBuyoffHint": "AGE Gamesには過剰なダメージをBuyoffができるものがあります (例：Modern AGE、The Expanseなど)。",
     "TOKEN_HEALTH.enableTokenImages": "ダイアログでトークン画像を有効にする",
     "TOKEN_HEALTH.enableTokenImagesHint": "これを有効にすると、ダイアログ ボックスに最大 4 つのトークン サムネイル画像を表示できます (4 番目は切り取られます)。",
+    "TOKEN_HEALTH.restrictPlayerLaunch": "プレイヤーがトークンヘルスを起動するのを制限する",
+    "TOKEN_HEALTH.restrictPlayerLaunchHint": "これを有効にすると、プレイヤーはトークンヘルスを起動できなくなります",
     "TOKEN_HEALTH.enableConditions": "Set Token Conditions (AGE Games)",
     "TOKEN_HEALTH.enableConditionsHint": "これを有効にすると、トークンヘルスは、適用されたダメージに基づいてトークン条件を設定できます",
     "TOKEN_HEALTH.damageAdds": "追加ダメージ",

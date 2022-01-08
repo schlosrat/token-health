@@ -55,6 +55,8 @@
   "TOKEN_HEALTH.allowDamageBuyoffHint": "Algunos juegos AGE permiten comprar el daño en exceso (ej. Modern AGE, The Expanse, etc.)",
   "TOKEN_HEALTH.enableTokenImages": "Activa Imagen del Token",
   "TOKEN_HEALTH.enableTokenImagesHint": "Activando permitirá ver hasta cuatro ilustraciones de los tokens (cuarto sale partido) en los cajetines de diálogo",
+  "TOKEN_HEALTH.restrictPlayerLaunch": "Restringir a los jugadores el lanzamiento de Token Health",
+  "TOKEN_HEALTH.restrictPlayerLaunchHint": "Habilitar esto evitará que los jugadores inicien Token Health",
   "TOKEN_HEALTH.enableConditions": "Estados en el Token - Juegos AGE",
   "TOKEN_HEALTH.enableConditionsHint": "Activando se permitirá que el módulo gestione los estados en base al daño aplicado - Específico para Sistemas AGE",
   "TOKEN_HEALTH.damageAdds": "Daño Creciente",
