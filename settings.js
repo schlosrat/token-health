@@ -1,5 +1,4 @@
 import { i18n } from './ui.js';
-// import { hotkeys } from '../lib-df-hotkeys/lib-df-hotkeys.shim.js';
 
 export const MODULE_NAME = 'token-health';
 
@@ -31,6 +30,7 @@ const DEFAULT = {
   ENABLE_TOKEN_IMAGES: true,
   ENABLE_CONDITIONS: false,
   ADDITIVE_DAMAGE: false,
+  RESTRICT_PLAYER_LAUNCH: true,
 };
 
 /**
@@ -108,50 +108,6 @@ const setDefaults = () => {
   }
 };
 
-//KEYBIND SETTINGS
-/*
-game.settings.register("token-health", "toggleKey", {
-  scope: 'user',
-  config: false,
-  default: {
-      key: hotkeys.keys.Enter,
-      alt: false,
-      ctrl: false,
-      shift: false
-  }
-});
-game.settings.register("token-health", "toggleKeyAlt", {
-  scope: 'user',
-  config: false,
-  default: {
-      key: hotkeys.keys.Enter,
-      alt: false,
-      ctrl: false,
-      shift: true
-  }
-});
-game.settings.register("token-health", "toggleKeyTarget", {
-  scope: 'user',
-  config: false,
-  default: {
-      key: hotkeys.keys.Enter,
-      alt: true,
-      ctrl: false,
-      shift: false
-  }
-});
-game.settings.register("token-health", "toggleKeyTargetAlt", {
-  scope: 'user',
-  config: false,
-  default: {
-      key: hotkeys.keys.Enter,
-      alt: true,
-      ctrl: false,
-      shift: true
-  }
-});
-*/
-
 /**
  * Sets the settings or returns the current value.
  *
@@ -187,87 +143,6 @@ const initSetting = (key, setting) => {
 export const registerSettings = function () {
   setDefaults();
   CONFIG.TokenHealth = {};
-
-  /*************** TOKEN HEALTH HOTKEY SETTINGS ***************/
-  /*
-  // Hotkey default for applying damage to selected token(s)
-  TH_CONFIG.TOGGLE_KEY_BASE = initSetting('toggleKey', {
-    name: i18n('TOKEN_HEALTH.toggleKeyName'),
-    hint: i18n('TOKEN_HEALTH.toggleKeyHint'),
-    // type: KeyBinding,
-    // default: DEFAULT.TOGGLE_KEY_BASE,
-    default: {
-      key: hotkeys.keys.Enter,
-      alt: false,
-      ctrl: false,
-      shift: false
-    },
-    scope: 'user',
-    config: false,
-    onChange: key => {
-      CONFIG.TokenHealth.TOGGLE_KEY_BASE = key;
-    },
-  });
-  CONFIG.TokenHealth.TOGGLE_KEY_BASE = TH_CONFIG.TOGGLE_KEY_BASE; // = game.settings.get(MODULE_NAME, 'toggleKey');
-  
-    // Hotkey default for applying healing to selected token(s) 
-  TH_CONFIG.TOGGLE_KEY_ALT = initSetting( 'toggleKeyAlt', {
-    name: i18n('TOKEN_HEALTH.toggleKeyAltName'),
-    hint: i18n('TOKEN_HEALTH.toggleKeyAltHint'),
-    // type: KeyBinding,
-    // default: DEFAULT.TOGGLE_KEY_ALT,
-    default: {
-      key: hotkeys.keys.Enter,
-      alt: false,
-      ctrl: false,
-      shift: true
-    },
-    scope: 'user',
-    config: false,
-    onChange: key => {
-      CONFIG.TokenHealth.TOGGLE_KEY_ALT = key;
-    },
-  });
-  CONFIG.TokenHealth.TOGGLE_KEY_ALT = TH_CONFIG.TOGGLE_KEY_ALT; // = game.settings.get(MODULE_NAME, 'toggleKeyAlt');
-  
-  // Hotkey default for applying damage to targeted token(s) 
-  TH_CONFIG.TOGGLE_KEY_TARGET = initSetting( 'toggleKeyTarget', {
-    name: i18n('TOKEN_HEALTH.toggleKeyTargetName'),
-    hint: i18n('TOKEN_HEALTH.toggleKeyTargetHint'),
-    // type: KeyBinding,
-    // default: DEFAULT.TOGGLE_KEY_TARGET,
-    default: {
-      key: hotkeys.keys.Enter,
-      alt: true,
-      ctrl: false,
-      shift: false
-    },
-    scope: 'user',
-    config: false,
-    onChange: key => {
-      CONFIG.TokenHealth.TOGGLE_KEY_TARGET = key;
-    },
-  });
-  CONFIG.TokenHealth.TOGGLE_KEY_TARGET = TH_CONFIG.TOGGLE_KEY_TARGET; // = game.settings.get(MODULE_NAME, 'toggleKeyTarget');
-  
-  // Hotkey default for applying healing to targeted token(s) 
-  TH_CONFIG.TOGGLE_KEY_TARGET_ALT = initSetting( 'toggleKeyTargetAlt', {
-    name: i18n('TOKEN_HEALTH.toggleKeyTargetAltName'),
-    hint: i18n('TOKEN_HEALTH.toggleKeyTargetAltHint'),
-    default: {
-      key: hotkeys.keys.Enter,
-      alt: true,
-      ctrl: false,
-      shift: true
-    },
-    scope: 'user',
-    config: false,
-    onChange: key => {
-      CONFIG.TokenHealth.TOGGLE_KEY_TARGET_ALT = key;
-    },
-  });
-  CONFIG.TokenHealth.TOGGLE_KEY_TARGET_ALT = TH_CONFIG.TOGGLE_KEY_TARGET_ALT; // = game.settings.get(MODULE_NAME, 'toggleKeyTargetAlt');
-  */
  
   // Enable/disable display of token thumbnail images in dialog box
   TH_CONFIG.ENABLE_TOKEN_IMAGES = initSetting( 'enableTokenImages', {
@@ -282,6 +157,48 @@ export const registerSettings = function () {
     },
   });
   CONFIG.TokenHealth.ENABLE_TOKEN_IMAGES = TH_CONFIG.ENABLE_TOKEN_IMAGES; // = game.settings.get(MODULE_NAME, 'enableTokenImages');
+  // Enable/disable ability for players to launch Token Health
+  TH_CONFIG.RESTRICT_PLAYER_LAUNCH = initSetting( 'restrictPlayerLaunch', {
+    name: i18n('TOKEN_HEALTH.restrictPlayerLaunch'),
+    hint: i18n('TOKEN_HEALTH.restrictPlayerLaunchHint'),
+    type: Boolean,
+    default: DEFAULT.RESTRICT_PLAYER_LAUNCH,
+    scope: 'world',
+    config: true,
+    onChange: key => {
+      CONFIG.TokenHealth.RESTRICT_PLAYER_LAUNCH = key;
+
+      // console.log("restrictPlayerLaunch.onChange")
+      // TOGGLE_KEY_BASE: 'Enter'
+      let key1 = game.keybindings.actions.get("token-health.damageSelectedTokens");
+      // console.log("Was damageSelectedTokens.restricted:", key1.restricted)
+      key1.restricted = key;
+      let key1new = game.keybindings.actions.get("token-health.damageSelectedTokens");
+      // console.log("Updated damageSelectedTokens.restricted:", key1new.restricted)
+        
+      // TOGGLE_KEY_ALT: 'Shift + Enter'
+      let key2 = game.keybindings.actions.get("token-health.healSelectedTokens");
+      // console.log("Was healSelectedTokens.restricted:", key2.restricted)
+      key2.restricted = key;
+      let key2new = game.keybindings.actions.get("token-health.healSelectedTokens");
+      // console.log("Updated healSelectedTokens.restricted:", key2new.restricted)
+        
+      // TOGGLE_KEY_TARGET: 'Alt + Enter'
+      let key3 = game.keybindings.actions.get("token-health.damageTargetedTokens");
+      // console.log("Was damageTargetedTokens.restricted:", key3.restricted)
+      key3.restricted = key;
+      let key3new = game.keybindings.actions.get("token-health.damageTargetedTokens");
+      // console.log("Updated damageTargetedTokens.restricted:", key3new.restricted)
+        
+      // TOGGLE_KEY_TARGET_ALT: 'Alt + Shift + Enter'
+      let key4 = game.keybindings.actions.get("token-health.healTargetedTokens");
+      // console.log("Was healTargetedTokens.restricted:", key4.restricted)
+      key4.restricted = key;
+      let key4new = game.keybindings.actions.get("token-health.healTargetedTokens");
+      // console.log("Updated healTargetedTokens.restricted:", key4new.restricted)
+    },
+  });
+  CONFIG.TokenHealth.RESTRICT_PLAYER_LAUNCH = TH_CONFIG.RESTRICT_PLAYER_LAUNCH; // = game.settings.get(MODULE_NAME, 'restrictPlayerLaunch');
   // Enable/disable Additive Damage (for systems like SWADE, L5R5E, and TORG)
   TH_CONFIG.ADDITIVE_DAMAGE = initSetting( 'damageAdds', {
     name: i18n('TOKEN_HEALTH.damageAdds'),
@@ -744,87 +661,6 @@ export default () => {
   setDefaults();
   CONFIG.TokenHealth = {};
 
-  /*************** TOKEN HEALTH HOTKEY SETTINGS ***************/
-  /*
-  // Hotkey default for applying damage to selected token(s)
-  game.settings.register(MODULE_NAME, 'toggleKey', {
-    name: i18n('TOKEN_HEALTH.toggleKeyName'),
-    hint: i18n('TOKEN_HEALTH.toggleKeyHint'),
-    // type: KeyBinding,
-    // default: DEFAULT.TOGGLE_KEY_BASE,
-    default: {
-      key: hotkeys.keys.Enter,
-      alt: false,
-      ctrl: false,
-      shift: false
-    },
-    scope: 'user',
-    config: false,
-    onChange: key => {
-      CONFIG.TokenHealth.TOGGLE_KEY_BASE = key;
-    },
-  });
-  TH_CONFIG.TOGGLE_KEY_BASE = game.settings.get(MODULE_NAME, 'toggleKey');
-
-  // Hotkey default for applying healing to selected token(s)
-  game.settings.register(MODULE_NAME, 'toggleKeyAlt', {
-    name: i18n('TOKEN_HEALTH.toggleKeyAltName'),
-    hint: i18n('TOKEN_HEALTH.toggleKeyAltHint'),
-    // type: KeyBinding,
-    // default: DEFAULT.TOGGLE_KEY_ALT,
-    default: {
-      key: hotkeys.keys.Enter,
-      alt: false,
-      ctrl: false,
-      shift: true
-    },
-    scope: 'user',
-    config: false,
-    onChange: key => {
-      CONFIG.TokenHealth.TOGGLE_KEY_ALT = key;
-    },
-  });
-  TH_CONFIG.TOGGLE_KEY_ALT = game.settings.get(MODULE_NAME, 'toggleKeyAlt');
-
-  // Hotkey default for applying damage to targeted token(s)
-  game.settings.register(MODULE_NAME, 'toggleKeyTarget', {
-    name: i18n('TOKEN_HEALTH.toggleKeyTargetName'),
-    hint: i18n('TOKEN_HEALTH.toggleKeyTargetHint'),
-    // type: KeyBinding,
-    // default: DEFAULT.TOGGLE_KEY_TARGET,
-    default: {
-      key: hotkeys.keys.Enter,
-      alt: true,
-      ctrl: false,
-      shift: false
-    },
-    scope: 'user',
-    config: false,
-    onChange: key => {
-      CONFIG.TokenHealth.TOGGLE_KEY_TARGET = key;
-    },
-  });
-  TH_CONFIG.TOGGLE_KEY_TARGET = game.settings.get(MODULE_NAME, 'toggleKeyTarget');
-
-  // Hotkey default for applying healing to targeted token(s)
-  game.settings.register(MODULE_NAME, 'toggleKeyTargetAlt', {
-    name: i18n('TOKEN_HEALTH.toggleKeyTargetAltName'),
-    hint: i18n('TOKEN_HEALTH.toggleKeyTargetAltHint'),
-    default: {
-      key: hotkeys.keys.Enter,
-      alt: true,
-      ctrl: false,
-      shift: true
-    },
-    scope: 'user',
-    config: false,
-    onChange: key => {
-      CONFIG.TokenHealth.TOGGLE_KEY_TARGET_ALT = key;
-    },
-  });
-  TH_CONFIG.TOGGLE_KEY_TARGET_ALT = game.settings.get(MODULE_NAME, 'toggleKeyTargetAlt');
-  */
-
   /*************** TOKEN HEALTH TH_CONFIGURATION SETTINGS ***************/
   // Enable/disable display of token thumbnail images in dialog box
   game.settings.register(MODULE_NAME, 'enableTokenImages', {
@@ -839,6 +675,48 @@ export default () => {
     },
   });
   TH_CONFIG.ENABLE_TOKEN_IMAGES = game.settings.get(MODULE_NAME, 'enableTokenImages');
+  // Enable/disable ability for players to launch Token Health
+  game.settings.register(MODULE_NAME, 'restrictPlayerLaunch', {
+    name: i18n('TOKEN_HEALTH.restrictPlayerLaunch'),
+    hint: i18n('TOKEN_HEALTH.restrictPlayerLaunchHint'),
+    type: Boolean,
+    default: DEFAULT.RESTRICT_PLAYER_LAUNCH,
+    scope: 'world',
+    config: true,
+    onChange: key => {
+      CONFIG.TokenHealth.RESTRICT_PLAYER_LAUNCH = key;
+
+      // console.log("restrictPlayerLaunch.onChange")
+      // TOGGLE_KEY_BASE: 'Enter'
+      let key1 = game.keybindings.actions.get("token-health.damageSelectedTokens");
+      // console.log("Was damageSelectedTokens.restricted:", key1.restricted)
+      key1.restricted = key;
+      let key1new = game.keybindings.actions.get("token-health.damageSelectedTokens");
+      // console.log("Updated damageSelectedTokens.restricted:", key1new.restricted)
+        
+      // TOGGLE_KEY_ALT: 'Shift + Enter'
+      let key2 = game.keybindings.actions.get("token-health.healSelectedTokens");
+      // console.log("Was healSelectedTokens.restricted:", key2.restricted)
+      key2.restricted = key;
+      let key2new = game.keybindings.actions.get("token-health.healSelectedTokens");
+      // console.log("Updated healSelectedTokens.restricted:", key2new.restricted)
+        
+      // TOGGLE_KEY_TARGET: 'Alt + Enter'
+      let key3 = game.keybindings.actions.get("token-health.damageTargetedTokens");
+      // console.log("Was damageTargetedTokens.restricted:", key3.restricted)
+      key3.restricted = key;
+      let key3new = game.keybindings.actions.get("token-health.damageTargetedTokens");
+      // console.log("Updated damageTargetedTokens.restricted:", key3new.restricted)
+        
+      // TOGGLE_KEY_TARGET_ALT: 'Alt + Shift + Enter'
+      let key4 = game.keybindings.actions.get("token-health.healTargetedTokens");
+      // console.log("Was healTargetedTokens.restricted:", key4.restricted)
+      key4.restricted = key;
+      let key4new = game.keybindings.actions.get("token-health.healTargetedTokens");
+      // console.log("Updated healTargetedTokens.restricted:", key4new.restricted)
+    },
+  });
+  CONFIG.TokenHealth.RESTRICT_PLAYER_LAUNCH = TH_CONFIG.RESTRICT_PLAYER_LAUNCH; // = game.settings.get(MODULE_NAME, 'restrictPlayerLaunch');
   // Enable/disable Additive Damage (for systems like SWADE, L5R5E, and TORG)
   game.settings.register(MODULE_NAME, 'damageAdds', {
     name: i18n('TOKEN_HEALTH.damageAdds'),
