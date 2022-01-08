@@ -1,6 +1,5 @@
 // @ts-check
 
-// import { hotkeys } from '../lib-df-hotkeys/lib-df-hotkeys.shim.js';
 import { MODULE_NAME, TH_CONFIG } from './settings.js';
 import { registerSettings } from './settings.js';
 import {i18n} from './ui.js';
@@ -45,13 +44,13 @@ class TokenHealthDialog extends Dialog {
     // Token Health relevant conditions are maintained in age-system as Active Effects
 
     // console.log(thisToken);
-    console.log(thisActor);
+    // console.log(thisActor);
 
     // thisActor.effects.map(e => {
     thisActor.effects.map(e => {
       /* This loop will find all Active Effects causing the condId condition.
       AGE System code forsees only 1 installment of each Condition, but we do it this way on the safe side */
-      console.log(e);
+      // console.log(e);
       const isCondition = (e.data.flags?.["age-system"]?.isCondition) ? true : false;
       const isId = (e.data.flags?.core?.statusId === condId) ? true : false;
       // const isCondition = (e.data.flags?.["age-system"]?.isCondition) ? true : false;
@@ -122,7 +121,7 @@ const applyCondition = async (thisActor, condId) => {
     // const condArr = thisActor.effects.filter(e => (e.data.flags?.["age-system"]?.isCondition) &&
     //   (e.data.flags?.core?.statusId === condId)); // creates an array with the active effects with the condId
     // console.log(thisToken);
-    console.log(thisActor);
+    // console.log(thisActor);
     const condArr = thisActor.effects.filter(e => (e.data.flags?.["age-system"]?.isCondition) &&
       (e.data.flags?.core?.statusId === condId)); // creates an array with the active effects with the condId
     if (condArr.length < 1) { // if the array is empty, creates a new Active Effect
@@ -813,7 +812,7 @@ const ageNoDamageBuyoff = async(thisActor) => {
     isFreefalling = await checkCondition(thisActor, "freefalling");
     isHelpless    = await checkCondition(thisActor, "helpless");
 
-    console.log("ageNoDamageBuyoff: Initial conditions:")
+    // console.log("ageNoDamageBuyoff: Initial conditions:")
     // console.log("isFatigued = ",    isFatigued)
     // console.log("isExhausted = ",   isExhausted)
     // console.log("isInjured = ",     isInjured)
@@ -1018,31 +1017,7 @@ const toggle = (event, isDamage = true, isTarget = false) => {
 /**
  * Initialize our stuff
  */
-// Make sure lib-df-hotkeys is installed and active
 Hooks.once('ready', async () => {
-  // Perform your Hotkey registrations
-
-  // ******* FIX FOR BUG IN V9 238 where keybinding name and hint localizations may not work *******
-  // TOGGLE_KEY_BASE: 'Enter'
-  let key1 = game.keybindings.actions.get("token-health.damageSelectedTokens");
-  key1.name = i18n('TOKEN_HEALTH.toggleKeyName');
-  key1.hint = i18n('TOKEN_HEALTH.toggleKeyHint');
-
-  // TOGGLE_KEY_ALT: 'Shift + Enter'
-  let key2 = game.keybindings.actions.get("token-health.healSelectedTokens");
-  key2.name = i18n('TOKEN_HEALTH.toggleKeyAltName');
-  key2.hint = i18n('TOKEN_HEALTH.toggleKeyAltHint');
-
-  // TOGGLE_KEY_TARGET: 'Alt + Enter'
-  let key3 = game.keybindings.actions.get("token-health.damageTargetedTokens");
-  key3.name = i18n('TOKEN_HEALTH.toggleKeyTargetName');
-  key3.hint = i18n('TOKEN_HEALTH.toggleKeyTargetHint');
-
-  // TOGGLE_KEY_TARGET_ALT: 'Alt + Shift + Enter'
-  let key4 = game.keybindings.actions.get("token-health.healTargetedTokens");
-  key4.name = i18n('TOKEN_HEALTH.toggleKeyTargetAltName');
-  key4.hint = i18n('TOKEN_HEALTH.toggleKeyTargetAltHint');
-
   // Initialize settings
   // settings();
   // Register custom module settings
@@ -1050,6 +1025,47 @@ Hooks.once('ready', async () => {
 
   CONFIG.TokenHealth = TH_CONFIG;
 
+  // console.log("Hooks.once('ready')");
+  // console.log(TH_CONFIG);
+  // console.log("Restrict Player Launch:", TH_CONFIG.RESTRICT_PLAYER_LAUNCH);
+
+  // Customize keybinding registrations - This needs to execute after registerSettings
+  // ******* FIX FOR BUG IN V9 238 where keybinding name and hint localizations may not work *******
+  // TOGGLE_KEY_BASE: 'Enter'
+  let key1 = game.keybindings.actions.get("token-health.damageSelectedTokens");
+  // console.log("Was damageSelectedTokens.restricted:", key1.restricted)
+  key1.name = i18n('TOKEN_HEALTH.toggleKeyName');
+  key1.hint = i18n('TOKEN_HEALTH.toggleKeyHint');
+  key1.restricted = TH_CONFIG.RESTRICT_PLAYER_LAUNCH;
+  let key1new = game.keybindings.actions.get("token-health.damageSelectedTokens");
+  // console.log("Updated damageSelectedTokens.restricted:", key1new.restricted)
+
+  // TOGGLE_KEY_ALT: 'Shift + Enter'
+  let key2 = game.keybindings.actions.get("token-health.healSelectedTokens");
+  // console.log("Was healSelectedTokens.restricted:", key2.restricted)
+  key2.name = i18n('TOKEN_HEALTH.toggleKeyAltName');
+  key2.hint = i18n('TOKEN_HEALTH.toggleKeyAltHint');
+  key2.restricted = TH_CONFIG.RESTRICT_PLAYER_LAUNCH;
+  let key2new = game.keybindings.actions.get("token-health.healSelectedTokens");
+  // console.log("Updated healSelectedTokens.restricted:", key2new.restricted)
+
+  // TOGGLE_KEY_TARGET: 'Alt + Enter'
+  let key3 = game.keybindings.actions.get("token-health.damageTargetedTokens");
+  // console.log("Was damageTargetedTokens.restricted:", key3.restricted)
+  key3.name = i18n('TOKEN_HEALTH.toggleKeyTargetName');
+  key3.hint = i18n('TOKEN_HEALTH.toggleKeyTargetHint');
+  key3.restricted = TH_CONFIG.RESTRICT_PLAYER_LAUNCH;
+  let key3new = game.keybindings.actions.get("token-health.damageTargetedTokens");
+  // console.log("Updated damageTargetedTokens.restricted:", key3new.restricted)
+
+  // TOGGLE_KEY_TARGET_ALT: 'Alt + Shift + Enter'
+  let key4 = game.keybindings.actions.get("token-health.healTargetedTokens");
+  // console.log("Was healTargetedTokens.restricted:", key4.restricted)
+  key4.name = i18n('TOKEN_HEALTH.toggleKeyTargetAltName');
+  key4.hint = i18n('TOKEN_HEALTH.toggleKeyTargetAltHint');
+  key4.restricted = TH_CONFIG.RESTRICT_PLAYER_LAUNCH;
+  let key4new = game.keybindings.actions.get("token-health.healTargetedTokens");
+  // console.log("Updated healTargetedTokens.restricted:", key4new.restricted)
 });
 
 Hooks.once('init', async function() {
@@ -1065,6 +1081,16 @@ Hooks.once('init', async function() {
 	// 	precedence: CONST.KEYBINDING_PRECEDENCE.NORMAL,
 	// });
 
+  // Register custom module settings
+  // registerSettings();
+
+  // CONFIG.TokenHealth = TH_CONFIG;
+
+  // console.log("Hooks.once('init')");
+  // console.log(TH_CONFIG);
+  // console.log("Restrict Player Launch:", TH_CONFIG.RESTRICT_PLAYER_LAUNCH);
+
+  // Initialize Keybindings (this executes before registerSettings, so TOKEN_HEALTH stucture is not available yet)
   // TOGGLE_KEY_BASE: 'Enter'
   game.keybindings.register(MODULE_NAME, "damageSelectedTokens", {
     // name: "Damage Selected Tokens", // TOKEN_HEALTH.toggleKeyName
@@ -1084,12 +1110,13 @@ Hooks.once('init', async function() {
     ],
     //onDown: () => { ui.notifications.info("Pressed!") },
     onDown: self => {
-      // Replace this with the code DF Hotkey should execute when the hot key is pressed
+      // Replace this with the code the keybinding should execute when pressed
       // ui.notifications.info(i18n('TOKEN_HEALTH.toggleKeyHint'));
       toggle(event);
     },
     onUp: () => {},
     restricted: true,              // Restrict this Keybinding to gamemaster only?
+    // restricted: TH_CONFIG.RESTRICT_PLAYER_LAUNCH,
     // reservedModifiers: [ "ALT" ],  // If ALT is pressed, the notification is permanent instead of temporary
     precedence: CONST.KEYBINDING_PRECEDENCE.NORMAL
   });
@@ -1107,12 +1134,13 @@ Hooks.once('init', async function() {
       }
     ],
     onDown: self => {
-      // Replace this with the code DF Hotkey should execute when the hot key is pressed
+      // Replace this with the code the keybinding should execute when pressed
       // ui.notifications.info(i18n('TOKEN_HEALTH.toggleKeyAltHint'));
       toggle(event, false);
     },
     onUp: () => {},
     restricted: true,              // Restrict this Keybinding to gamemaster only?
+    // restricted: TH_CONFIG.RESTRICT_PLAYER_LAUNCH,
     // reservedModifiers: [ "ALT" ],  // If ALT is pressed, the notification is permanent instead of temporary
     precedence: CONST.KEYBINDING_PRECEDENCE.NORMAL
   });
@@ -1130,12 +1158,13 @@ Hooks.once('init', async function() {
       }
     ],
     onDown: self => {
-      // Replace this with the code DF Hotkey should execute when the hot key is pressed
+      // Replace this with the code the keybinding should execute when pressed
       // ui.notifications.info(i18n('TOKEN_HEALTH.toggleKeyTargetHint'));
       toggle(event, true, true);
     },
     onUp: () => {},
     restricted: true,              // Restrict this Keybinding to gamemaster only?
+    // restricted: TH_CONFIG.RESTRICT_PLAYER_LAUNCH,
     // reservedModifiers: [ "ALT" ],  // If ALT is pressed, the notification is permanent instead of temporary
     precedence: CONST.KEYBINDING_PRECEDENCE.NORMAL
   });
@@ -1153,12 +1182,13 @@ Hooks.once('init', async function() {
       }
     ],
     onDown: self => {
-      // Replace this with the code DF Hotkey should execute when the hot key is pressed
+      // Replace this with the code the keybinding should execute when pressed
       // ui.notifications.info(i18n('TOKEN_HEALTH.toggleKeyTargetAltHint'));
       toggle(event, false, true);
     },
     onUp: () => {},
     restricted: true,              // Restrict this Keybinding to gamemaster only?
+    // restricted: TH_CONFIG.RESTRICT_PLAYER_LAUNCH,
     // reservedModifiers: [ "ALT" ],  // If ALT is pressed, the notification is permanent instead of temporary
     precedence: CONST.KEYBINDING_PRECEDENCE.NORMAL
   });
