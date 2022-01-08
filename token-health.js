@@ -179,11 +179,11 @@ const applyDamage = async (html, isDamage, isTargeted) => {
   let enableChat = TH_CONFIG.ENABLE_TOKEN_CHAT;
 
   // Get the control parameter for enablibng/disabling the application of actor condtions
-  let enableConditions;
-  if (game.settings.get("age-system", "inUseConditions") === 'expanse') {
-    enableConditions = TH_CONFIG.ENABLE_CONDITIONS;
-  } else {
-    enableConditions = false;
+  let enableConditions = false;
+  if (game.system.id === 'age-system') {
+    if (game.settings.get("age-system", "inUseConditions") === 'expanse') {
+      enableConditions = TH_CONFIG.ENABLE_CONDITIONS;
+    }
   }
 
   // Temporary setting to prevent issues in 0.8.6
