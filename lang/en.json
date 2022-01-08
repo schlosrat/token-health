@@ -56,7 +56,7 @@
   "TOKEN_HEALTH.enableTokenImages": "Enable Token Images in Dialog",
   "TOKEN_HEALTH.enableTokenImagesHint": "Enabling this will allow up to four token thumbnail images (fourth is cut off) to be displayed in the dialog box",
   "TOKEN_HEALTH.restrictPlayerLaunch": "Restrict Players from Launching Token Health",
-  "TOKEN_HEALTH.restrictPlayerLaunchHint": "Disabling this will allow players as well as GM to launch Token Health",
+  "TOKEN_HEALTH.restrictPlayerLaunchHint": "Enabling this will prevent players from launching Token Health",
   "TOKEN_HEALTH.enableConditions": "Set Token Conditions - AGE Games",
   "TOKEN_HEALTH.enableConditionsHint": "Enabling this will allow Token Health to set token conditions based on damage applied - AGE System Specific",
   "TOKEN_HEALTH.damageAdds": "Additive Damage",
