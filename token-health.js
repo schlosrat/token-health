@@ -219,6 +219,11 @@ const applyDamage = async (html, isDamage, isTargeted) => {
 
   // SDR: It would be nice to add an async to this arrow function...
   const promises = tokens.map(async ({actor}) => {
+    // console.log(actor)
+    if (actor.isOwner === false) {
+      // console.log("You're not worthy!")
+      return;
+    }
     // Get the actor data structure
     const data = actor.data.data;
     // Assume damageSubtype == type 1 and populate health values based on this
@@ -895,8 +900,13 @@ const displayOverlay = async (isDamage, isTargeted = false) => {
     isTargeted ? '_targeted' : ''
   }`;
 
-  const tokens = isTargeted ? Array.from(game.user.targets) : canvas.tokens.controlled
+  const allTokens = isTargeted ? Array.from(game.user.targets) : canvas.tokens.controlled
+  var tokens = allTokens.filter((x) => { return x.isOwner === true; });
   const nameOfTokens = tokens.map(t => t.name).sort((a, b) => a.length - b.length).join(', ')
+  console.log(allTokens)
+  console.log(tokens)
+
+  if (tokens.length < 1) return;
 
   let thumbnails = {}
   if (TH_CONFIG.ENABLE_TOKEN_IMAGES){
