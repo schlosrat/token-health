@@ -4,8 +4,8 @@
 - Added capability for GM to allow players to launch Token health
   - Module Setting: Restrict Players from Launching defaults to true (checked), but may be unchecked
   - Players can have different keybindings than the GM, and may in fact need different ones than the defaults depending on the keys captured by their OS and/or browser.
-  - Token Health now checks to see if the targeted/selected tokens are owned by the launching account and will filter the list of tokens to exlude any that are not owned. If the resulting list is empty, the dialog box will not be displayed.
-- Fixed bug where age-system setting was being checked in non age-system games
+  - Token Health now checks to see if the targeted/selected tokens are owned by the launching account and will filter the list of tokens to exclude any that are not owned. If the resulting list is empty, the dialog box will not be displayed.
+- Fixed bug where the age-system setting was being checked in non age-system games
 - Removed more old dead code from previous keybinding system
 
 ## 0.5.2 (2022-01-04)
