@@ -900,13 +900,14 @@ const displayOverlay = async (isDamage, isTargeted = false) => {
     isTargeted ? '_targeted' : ''
   }`;
 
-  const allTokens = isTargeted ? Array.from(game.user.targets) : canvas.tokens.controlled
-  var tokens = allTokens.filter((x) => { return x.isOwner === true; });
+  // const allTokens = isTargeted ? Array.from(game.user.targets) : canvas.tokens.controlled
+  // var tokens = allTokens.filter((x) => { return x.isOwner === true; });
+  const tokens = isTargeted ? Array.from(game.user.targets) : canvas.tokens.controlled
   const nameOfTokens = tokens.map(t => t.name).sort((a, b) => a.length - b.length).join(', ')
-  console.log(allTokens)
-  console.log(tokens)
+  // console.log(allTokens)
+  // console.log(tokens)
 
-  if (tokens.length < 1) return;
+  // if (tokens.length < 1) return;
 
   let thumbnails = {}
   if (TH_CONFIG.ENABLE_TOKEN_IMAGES){
@@ -1009,16 +1010,18 @@ const toggle = (event, isDamage = true, isTarget = false) => {
   // Make sure to call only once.
   // SDR: BROKE BROKE BROKE keyboard._handled.add(key);
 
+  if (!game.user.isGM && TH_CONFIG.RESTRICT_PLAYER_LAUNCH) {
+    ui.notifications.info("Token Health: You're not worthy!")
+    // bail out here
+    return;
+  }
+
   // Don't display if no tokens are controlled. Don't display as well if we were trying
-  // to apply damage to targets
-  if (
-    !tokenHealthDisplayed &&
-    canvas.tokens.controlled.length > 0 &&
-    !isTarget
-  ) {
+  // to apply damage/healing to targets
+  if (!tokenHealthDisplayed && canvas.tokens.controlled.length > 0 && !isTarget) {
     displayOverlay(isDamage).catch(console.error);
   }
-  // Don't display if no tokens are targeted and we were trying to attack selected
+  // Don't display if no tokens are targeted and we were trying to affect selected
   if (!tokenHealthDisplayed && game.user.targets.size > 0 && isTarget) {
     displayOverlay(isDamage, isTarget).catch(console.error);
   }
@@ -1046,7 +1049,7 @@ Hooks.once('ready', async () => {
   // console.log("Was damageSelectedTokens.restricted:", key1.restricted)
   key1.name = i18n('TOKEN_HEALTH.toggleKeyName');
   key1.hint = i18n('TOKEN_HEALTH.toggleKeyHint');
-  key1.restricted = TH_CONFIG.RESTRICT_PLAYER_LAUNCH;
+  // key1.restricted = TH_CONFIG.RESTRICT_PLAYER_LAUNCH;
   let key1new = game.keybindings.actions.get("token-health.damageSelectedTokens");
   // console.log("Updated damageSelectedTokens.restricted:", key1new.restricted)
 
@@ -1055,7 +1058,7 @@ Hooks.once('ready', async () => {
   // console.log("Was healSelectedTokens.restricted:", key2.restricted)
   key2.name = i18n('TOKEN_HEALTH.toggleKeyAltName');
   key2.hint = i18n('TOKEN_HEALTH.toggleKeyAltHint');
-  key2.restricted = TH_CONFIG.RESTRICT_PLAYER_LAUNCH;
+  // key2.restricted = TH_CONFIG.RESTRICT_PLAYER_LAUNCH;
   let key2new = game.keybindings.actions.get("token-health.healSelectedTokens");
   // console.log("Updated healSelectedTokens.restricted:", key2new.restricted)
 
@@ -1064,7 +1067,7 @@ Hooks.once('ready', async () => {
   // console.log("Was damageTargetedTokens.restricted:", key3.restricted)
   key3.name = i18n('TOKEN_HEALTH.toggleKeyTargetName');
   key3.hint = i18n('TOKEN_HEALTH.toggleKeyTargetHint');
-  key3.restricted = TH_CONFIG.RESTRICT_PLAYER_LAUNCH;
+  // key3.restricted = TH_CONFIG.RESTRICT_PLAYER_LAUNCH;
   let key3new = game.keybindings.actions.get("token-health.damageTargetedTokens");
   // console.log("Updated damageTargetedTokens.restricted:", key3new.restricted)
 
@@ -1073,7 +1076,7 @@ Hooks.once('ready', async () => {
   // console.log("Was healTargetedTokens.restricted:", key4.restricted)
   key4.name = i18n('TOKEN_HEALTH.toggleKeyTargetAltName');
   key4.hint = i18n('TOKEN_HEALTH.toggleKeyTargetAltHint');
-  key4.restricted = TH_CONFIG.RESTRICT_PLAYER_LAUNCH;
+  // key4.restricted = TH_CONFIG.RESTRICT_PLAYER_LAUNCH;
   let key4new = game.keybindings.actions.get("token-health.healTargetedTokens");
   // console.log("Updated healTargetedTokens.restricted:", key4new.restricted)
 });
@@ -1125,7 +1128,7 @@ Hooks.once('init', async function() {
       toggle(event);
     },
     onUp: () => {},
-    restricted: true,              // Restrict this Keybinding to gamemaster only?
+    restricted: false,              // Restrict this Keybinding to gamemaster only?
     // restricted: TH_CONFIG.RESTRICT_PLAYER_LAUNCH,
     // reservedModifiers: [ "ALT" ],  // If ALT is pressed, the notification is permanent instead of temporary
     precedence: CONST.KEYBINDING_PRECEDENCE.NORMAL
@@ -1149,7 +1152,7 @@ Hooks.once('init', async function() {
       toggle(event, false);
     },
     onUp: () => {},
-    restricted: true,              // Restrict this Keybinding to gamemaster only?
+    restricted: false,              // Restrict this Keybinding to gamemaster only?
     // restricted: TH_CONFIG.RESTRICT_PLAYER_LAUNCH,
     // reservedModifiers: [ "ALT" ],  // If ALT is pressed, the notification is permanent instead of temporary
     precedence: CONST.KEYBINDING_PRECEDENCE.NORMAL
@@ -1173,7 +1176,7 @@ Hooks.once('init', async function() {
       toggle(event, true, true);
     },
     onUp: () => {},
-    restricted: true,              // Restrict this Keybinding to gamemaster only?
+    restricted: false,              // Restrict this Keybinding to gamemaster only?
     // restricted: TH_CONFIG.RESTRICT_PLAYER_LAUNCH,
     // reservedModifiers: [ "ALT" ],  // If ALT is pressed, the notification is permanent instead of temporary
     precedence: CONST.KEYBINDING_PRECEDENCE.NORMAL
@@ -1197,7 +1200,7 @@ Hooks.once('init', async function() {
       toggle(event, false, true);
     },
     onUp: () => {},
-    restricted: true,              // Restrict this Keybinding to gamemaster only?
+    restricted: false,              // Restrict this Keybinding to gamemaster only?
     // restricted: TH_CONFIG.RESTRICT_PLAYER_LAUNCH,
     // reservedModifiers: [ "ALT" ],  // If ALT is pressed, the notification is permanent instead of temporary
     precedence: CONST.KEYBINDING_PRECEDENCE.NORMAL
