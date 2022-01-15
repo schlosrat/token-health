@@ -170,31 +170,31 @@ export const registerSettings = function () {
 
       // console.log("restrictPlayerLaunch.onChange")
       // TOGGLE_KEY_BASE: 'Enter'
-      let key1 = game.keybindings.actions.get("token-health.damageSelectedTokens");
+      // let key1 = game.keybindings.actions.get("token-health.damageSelectedTokens");
       // console.log("Was damageSelectedTokens.restricted:", key1.restricted)
-      key1.restricted = key;
-      let key1new = game.keybindings.actions.get("token-health.damageSelectedTokens");
+      // key1.restricted = key;
+      // let key1new = game.keybindings.actions.get("token-health.damageSelectedTokens");
       // console.log("Updated damageSelectedTokens.restricted:", key1new.restricted)
         
       // TOGGLE_KEY_ALT: 'Shift + Enter'
-      let key2 = game.keybindings.actions.get("token-health.healSelectedTokens");
+      // let key2 = game.keybindings.actions.get("token-health.healSelectedTokens");
       // console.log("Was healSelectedTokens.restricted:", key2.restricted)
-      key2.restricted = key;
-      let key2new = game.keybindings.actions.get("token-health.healSelectedTokens");
+      // key2.restricted = key;
+      // let key2new = game.keybindings.actions.get("token-health.healSelectedTokens");
       // console.log("Updated healSelectedTokens.restricted:", key2new.restricted)
         
       // TOGGLE_KEY_TARGET: 'Alt + Enter'
-      let key3 = game.keybindings.actions.get("token-health.damageTargetedTokens");
+      // let key3 = game.keybindings.actions.get("token-health.damageTargetedTokens");
       // console.log("Was damageTargetedTokens.restricted:", key3.restricted)
-      key3.restricted = key;
-      let key3new = game.keybindings.actions.get("token-health.damageTargetedTokens");
+      // key3.restricted = key;
+      // let key3new = game.keybindings.actions.get("token-health.damageTargetedTokens");
       // console.log("Updated damageTargetedTokens.restricted:", key3new.restricted)
         
       // TOGGLE_KEY_TARGET_ALT: 'Alt + Shift + Enter'
-      let key4 = game.keybindings.actions.get("token-health.healTargetedTokens");
+      // let key4 = game.keybindings.actions.get("token-health.healTargetedTokens");
       // console.log("Was healTargetedTokens.restricted:", key4.restricted)
-      key4.restricted = key;
-      let key4new = game.keybindings.actions.get("token-health.healTargetedTokens");
+      // key4.restricted = key;
+      // let key4new = game.keybindings.actions.get("token-health.healTargetedTokens");
       // console.log("Updated healTargetedTokens.restricted:", key4new.restricted)
     },
   });
@@ -688,31 +688,31 @@ export default () => {
 
       // console.log("restrictPlayerLaunch.onChange")
       // TOGGLE_KEY_BASE: 'Enter'
-      let key1 = game.keybindings.actions.get("token-health.damageSelectedTokens");
+      // let key1 = game.keybindings.actions.get("token-health.damageSelectedTokens");
       // console.log("Was damageSelectedTokens.restricted:", key1.restricted)
-      key1.restricted = key;
-      let key1new = game.keybindings.actions.get("token-health.damageSelectedTokens");
+      // key1.restricted = key;
+      // let key1new = game.keybindings.actions.get("token-health.damageSelectedTokens");
       // console.log("Updated damageSelectedTokens.restricted:", key1new.restricted)
         
       // TOGGLE_KEY_ALT: 'Shift + Enter'
-      let key2 = game.keybindings.actions.get("token-health.healSelectedTokens");
+      // let key2 = game.keybindings.actions.get("token-health.healSelectedTokens");
       // console.log("Was healSelectedTokens.restricted:", key2.restricted)
-      key2.restricted = key;
-      let key2new = game.keybindings.actions.get("token-health.healSelectedTokens");
+      // key2.restricted = key;
+      // let key2new = game.keybindings.actions.get("token-health.healSelectedTokens");
       // console.log("Updated healSelectedTokens.restricted:", key2new.restricted)
         
       // TOGGLE_KEY_TARGET: 'Alt + Enter'
-      let key3 = game.keybindings.actions.get("token-health.damageTargetedTokens");
+      // let key3 = game.keybindings.actions.get("token-health.damageTargetedTokens");
       // console.log("Was damageTargetedTokens.restricted:", key3.restricted)
-      key3.restricted = key;
-      let key3new = game.keybindings.actions.get("token-health.damageTargetedTokens");
+      // key3.restricted = key;
+      // let key3new = game.keybindings.actions.get("token-health.damageTargetedTokens");
       // console.log("Updated damageTargetedTokens.restricted:", key3new.restricted)
         
       // TOGGLE_KEY_TARGET_ALT: 'Alt + Shift + Enter'
-      let key4 = game.keybindings.actions.get("token-health.healTargetedTokens");
+      // let key4 = game.keybindings.actions.get("token-health.healTargetedTokens");
       // console.log("Was healTargetedTokens.restricted:", key4.restricted)
-      key4.restricted = key;
-      let key4new = game.keybindings.actions.get("token-health.healTargetedTokens");
+      // key4.restricted = key;
+      // let key4new = game.keybindings.actions.get("token-health.healTargetedTokens");
       // console.log("Updated healTargetedTokens.restricted:", key4new.restricted)
     },
   });
