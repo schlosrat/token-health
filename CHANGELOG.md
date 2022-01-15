@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.5.4 (2022-01-08)
+## 0.5.4 (2022-01-15)
 - Fixed capability that allows GM to permit or restrict players launching Token Health
 
 ## 0.5.3 (2022-01-08)
