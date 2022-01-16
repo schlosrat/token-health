@@ -5,6 +5,8 @@ export const MODULE_NAME = 'token-health';
 export const TH_CONFIG = {};
 
 const DEFAULT = {
+  WORTHY: '',
+  ACCESS: '',
   DAMAGE_TYPE_1: '',
   DAMAGE_TYPE_2: '',
   DAMAGE_TYPE_3: '',
@@ -199,6 +201,32 @@ export const registerSettings = function () {
     },
   });
   CONFIG.TokenHealth.RESTRICT_PLAYER_LAUNCH = TH_CONFIG.RESTRICT_PLAYER_LAUNCH; // = game.settings.get(MODULE_NAME, 'restrictPlayerLaunch');
+  // UI warning message sent to player if they try to launch Token Health when GM has restricgted it
+  TH_CONFIG.WORTHY = initSetting( 'worthy', {
+    name: i18n('TOKEN_HEALTH.worthy'),
+    hint: i18n('TOKEN_HEALTH.worthyHint'),
+    type: String,
+    default: DEFAULT.WORTHY,
+    scope: 'world',
+    config: true,
+    onChange: key => {
+      CONFIG.TokenHealth.worthy = key;
+    },
+  });
+  CONFIG.TokenHealth.WORTHY = TH_CONFIG.WORTHY; // = game.settings.get(MODULE_NAME, 'worthy');
+  // UI warning message sent to player if they try to launch Token Health for tokens they don't own
+  TH_CONFIG.ACCESS = initSetting( 'access', {
+    name: i18n('TOKEN_HEALTH.access'),
+    hint: i18n('TOKEN_HEALTH.accessHint'),
+    type: String,
+    default: DEFAULT.ACCESS,
+    scope: 'world',
+    config: true,
+    onChange: key => {
+      CONFIG.TokenHealth.access = key;
+    },
+  });
+  CONFIG.TokenHealth.ACCESS = TH_CONFIG.ACCESS; // = game.settings.get(MODULE_NAME, 'access');
   // Enable/disable Additive Damage (for systems like SWADE, L5R5E, and TORG)
   TH_CONFIG.ADDITIVE_DAMAGE = initSetting( 'damageAdds', {
     name: i18n('TOKEN_HEALTH.damageAdds'),
@@ -716,7 +744,33 @@ export default () => {
       // console.log("Updated healTargetedTokens.restricted:", key4new.restricted)
     },
   });
-  CONFIG.TokenHealth.RESTRICT_PLAYER_LAUNCH = TH_CONFIG.RESTRICT_PLAYER_LAUNCH; // = game.settings.get(MODULE_NAME, 'restrictPlayerLaunch');
+  CONFIG.TokenHealth.RESTRICT_PLAYER_LAUNCH = game.settings.get(MODULE_NAME, 'restrictPlayerLaunch');
+  // UI warning message sent to player if they try to launch Token Health when GM has restricgted it
+  game.settings.register(MODULE_NAME, 'worthy', {
+    name: i18n('TOKEN_HEALTH.worthy'),
+    hint: i18n('TOKEN_HEALTH.worthyHint'),
+    type: String,
+    default: DEFAULT.WORTHY,
+    scope: 'world',
+    config: true,
+    onChange: key => {
+      CONFIG.TokenHealth.WORTHY = key;
+    },
+  });
+  CONFIG.TokenHealth.WORTHY = game.settings.get(MODULE_NAME, 'worthy');
+  // UI warning message sent to player if they try to launch Token Health for tokens they don't own
+  game.settings.register(MODULE_NAME, 'access', {
+    name: i18n('TOKEN_HEALTH.access'),
+    hint: i18n('TOKEN_HEALTH.accessHint'),
+    type: String,
+    default: DEFAULT.ACCESS,
+    scope: 'world',
+    config: true,
+    onChange: key => {
+      CONFIG.TokenHealth.ACCESS = key;
+    },
+  });
+  CONFIG.TokenHealth.ACCESS = game.settings.get(MODULE_NAME, 'access');
   // Enable/disable Additive Damage (for systems like SWADE, L5R5E, and TORG)
   game.settings.register(MODULE_NAME, 'damageAdds', {
     name: i18n('TOKEN_HEALTH.damageAdds'),
