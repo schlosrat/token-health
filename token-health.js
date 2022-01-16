@@ -876,9 +876,13 @@ const ageNoDamageBuyoff = async(thisActor) => {
 /**
  * Display token Health overlay.
  *
+ * @param {boolean} isDamage Flag to determine if launching to apply damage or healing
+ * @param {array} tokens An array of token obeject to affect
+ * @param {boolean} isTargeted Flag to determine if launching to affect targeted vs selected
+ * 
  * @returns {Promise<void>}
  */
-const displayOverlay = async (isDamage, isTargeted = false) => {
+const displayOverlay = async (isDamage, tokens, isTargeted = false) => {
   tokenHealthDisplayed = true;
 
   const buttons = {
@@ -902,7 +906,7 @@ const displayOverlay = async (isDamage, isTargeted = false) => {
 
   // const allTokens = isTargeted ? Array.from(game.user.targets) : canvas.tokens.controlled
   // var tokens = allTokens.filter((x) => { return x.isOwner === true; });
-  const tokens = isTargeted ? Array.from(game.user.targets) : canvas.tokens.controlled
+  // const tokens = isTargeted ? Array.from(game.user.targets) : canvas.tokens.controlled
   const nameOfTokens = tokens.map(t => t.name).sort((a, b) => a.length - b.length).join(', ')
   // console.log(allTokens)
   // console.log(tokens)
@@ -1016,14 +1020,28 @@ const toggle = (event, isDamage = true, isTarget = false) => {
     return;
   }
 
+  // Cull the array of targeted/selected tokens to only include those owned by the user
+  const allTokens = isTarget ? Array.from(game.user.targets) : canvas.tokens.controlled
+  var tokens = allTokens.filter((x) => { return x.isOwner === true; });
+
+  console.log(allTokens)
+  console.log(tokens)
+
+  // If there are no owned tokens then no need to launch the dialog
+  if (tokens.length < 1) {
+    ui.notifications.info("Token Health: Access Denied!")
+    // bail out here
+    return;
+  }
+
   // Don't display if no tokens are controlled. Don't display as well if we were trying
   // to apply damage/healing to targets
   if (!tokenHealthDisplayed && canvas.tokens.controlled.length > 0 && !isTarget) {
-    displayOverlay(isDamage).catch(console.error);
+    displayOverlay(isDamage, tokens).catch(console.error);
   }
   // Don't display if no tokens are targeted and we were trying to affect selected
   if (!tokenHealthDisplayed && game.user.targets.size > 0 && isTarget) {
-    displayOverlay(isDamage, isTarget).catch(console.error);
+    displayOverlay(isDamage, tokens, isTarget).catch(console.error);
   }
 };
 
