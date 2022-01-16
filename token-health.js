@@ -1015,7 +1015,7 @@ const toggle = (event, isDamage = true, isTarget = false) => {
   // SDR: BROKE BROKE BROKE keyboard._handled.add(key);
 
   if (!game.user.isGM && TH_CONFIG.RESTRICT_PLAYER_LAUNCH) {
-    ui.notifications.info(i18n('TOKEN_HEALTH.worthy'))
+    ui.notifications.info(i18n('TOKEN_HEALTH.worthyMsg'))
     // bail out here
     return;
   }
@@ -1024,12 +1024,12 @@ const toggle = (event, isDamage = true, isTarget = false) => {
   const allTokens = isTarget ? Array.from(game.user.targets) : canvas.tokens.controlled
   var tokens = allTokens.filter((x) => { return x.isOwner === true; });
 
-  console.log(allTokens)
-  console.log(tokens)
+  // console.log(allTokens)
+  // console.log(tokens)
 
   // If there are no owned tokens then no need to launch the dialog
   if (tokens.length < 1) {
-    ui.notifications.info(i18n('TOKEN_HEALTH.access'))
+    ui.notifications.info(i18n('TOKEN_HEALTH.accessMsg'))
     // bail out here
     return;
   }
