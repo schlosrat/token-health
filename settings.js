@@ -5,8 +5,6 @@ export const MODULE_NAME = 'token-health';
 export const TH_CONFIG = {};
 
 const DEFAULT = {
-  WORTHY: '',
-  ACCESS: '',
   DAMAGE_TYPE_1: '',
   DAMAGE_TYPE_2: '',
   DAMAGE_TYPE_3: '',
@@ -206,7 +204,7 @@ export const registerSettings = function () {
     name: i18n('TOKEN_HEALTH.worthy'),
     hint: i18n('TOKEN_HEALTH.worthyHint'),
     type: String,
-    default: DEFAULT.WORTHY,
+    default: i18n("TOKEN_HEALTH.worthyMsg"),
     scope: 'world',
     config: true,
     onChange: key => {
@@ -219,7 +217,7 @@ export const registerSettings = function () {
     name: i18n('TOKEN_HEALTH.access'),
     hint: i18n('TOKEN_HEALTH.accessHint'),
     type: String,
-    default: DEFAULT.ACCESS,
+    default: i18n("TOKEN_HEALTH.accessMsg"),
     scope: 'world',
     config: true,
     onChange: key => {
@@ -750,7 +748,7 @@ export default () => {
     name: i18n('TOKEN_HEALTH.worthy'),
     hint: i18n('TOKEN_HEALTH.worthyHint'),
     type: String,
-    default: DEFAULT.WORTHY,
+    default: i18n("TOKEN_HEALTH.worthyMsg"),
     scope: 'world',
     config: true,
     onChange: key => {
@@ -763,7 +761,7 @@ export default () => {
     name: i18n('TOKEN_HEALTH.access'),
     hint: i18n('TOKEN_HEALTH.accessHint'),
     type: String,
-    default: DEFAULT.ACCESS,
+    default: i18n("TOKEN_HEALTH.accessMsg"),
     scope: 'world',
     config: true,
     onChange: key => {
