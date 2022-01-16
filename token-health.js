@@ -1015,7 +1015,7 @@ const toggle = (event, isDamage = true, isTarget = false) => {
   // SDR: BROKE BROKE BROKE keyboard._handled.add(key);
 
   if (!game.user.isGM && TH_CONFIG.RESTRICT_PLAYER_LAUNCH) {
-    ui.notifications.info("Token Health: You're not worthy!")
+    ui.notifications.info(i18n('TOKEN_HEALTH.worthy'))
     // bail out here
     return;
   }
@@ -1029,7 +1029,7 @@ const toggle = (event, isDamage = true, isTarget = false) => {
 
   // If there are no owned tokens then no need to launch the dialog
   if (tokens.length < 1) {
-    ui.notifications.info("Token Health: Access Denied!")
+    ui.notifications.info(i18n('TOKEN_HEALTH.access'))
     // bail out here
     return;
   }
