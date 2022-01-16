@@ -3,7 +3,8 @@
 ## 0.5.5 (2022-01-16)
 - Added the capability to prevent launching Token Health when no targeted tokens are owned by the user
   - If the player is using Token Health on targeted tokens which include some they own and some they don't, those they don't own (and thus can't affect) are culled from the list and no warning is generated; however, the complete list of affected tokens will still be apparent in the Token Health dialog box. If they've only targeted tokens they don't own, and so there are no tokens that can be affected, then the dialog box is not presented, and instead, a UI warning message is generated to alert them to this situation.
-- Added configuration settings to control the UI warning messages when GM has restricted player access and a player is attempting to affect (target) tokens they don't own
+- Added configuration setting to control the UI warning message when GM has restricted player access and a player is attempting to affect (target) tokens they don't own
+- Added configuration setting to control the UI warning message when the player had targeted only tokens they don't own and thus cannot affect
 - Added German, French, Spanish, and Japanese translations for all UI warning message controls
 
 ## 0.5.4 (2022-01-15)
