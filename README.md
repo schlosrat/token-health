@@ -14,7 +14,7 @@ Token Health also supports a detailed system of (optional) automatic token chat 
 
 You can install this module directly from the "Add-on Modules" page on the FoudryVTT Setup screen. 
 
-Make sure to enable the module once your world is launched, in the Manage Modules setting page. This module also requires and depends on the Library: DF Hotkeys module which must be installed and enabled.
+Make sure to enable the module once your world is launched, in the Manage Modules setting page.
 
 ## Usage
 
