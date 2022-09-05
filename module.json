@@ -8,9 +8,9 @@
   "readme": "https://github.com/schlosrat/token-health/blob/master/README.md",
   "changelog": "https://github.com/schlosrat/token-health/blob/master/CHANGELOG.md",
   "flags": {},
-  "version": "0.5.6",
-  "minimumCoreVersion": "0.8.5",
-  "compatibleCoreVersion": "9",
+  "version": "0.5.7",
+  "minimumCoreVersion": "10",
+  "compatibleCoreVersion": "10",
   "scripts": [],
   "esmodules": [
     "token-health.js"
@@ -50,7 +50,7 @@
   "dependencies": [],
   "socket": false,
   "manifest": "https://raw.githubusercontent.com/schlosrat/token-health/master/module.json",
-  "download": "https://github.com/schlosrat/token-health/archive/refs/tags/0.5.6.zip",
+  "download": "https://github.com/schlosrat/token-health/archive/refs/tags/0.5.7.zip",
   "protected": false,
   "coreTranslation": false,
   "library": false
