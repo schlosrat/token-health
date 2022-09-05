@@ -8,7 +8,7 @@
   "readme": "https://github.com/schlosrat/token-health/blob/master/README.md",
   "changelog": "https://github.com/schlosrat/token-health/blob/master/CHANGELOG.md",
   "flags": {},
-  "version": "0.5.5",
+  "version": "0.5.6",
   "minimumCoreVersion": "0.8.5",
   "compatibleCoreVersion": "9",
   "scripts": [],
