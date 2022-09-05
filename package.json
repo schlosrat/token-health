@@ -11,7 +11,7 @@
     "babel-jest": "^26.5.2",
     "foundry-pc-types": "https://gitlab.com/foundry-projects/foundry-pc/foundry-pc-types.git",
     "jest": "^26.5.2",
-    "node-sass": "^4.13.1",
+    "node-sass": "^7.0.0",
     "prettier": "^2.0.4"
   },
   "prettier": {
