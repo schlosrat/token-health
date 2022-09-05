@@ -51,10 +51,10 @@ class TokenHealthDialog extends Dialog {
       /* This loop will find all Active Effects causing the condId condition.
       AGE System code forsees only 1 installment of each Condition, but we do it this way on the safe side */
       // console.log(e);
-      const isCondition = (e.data.flags?.["age-system"]?.isCondition) ? true : false;
-      const isId = (e.data.flags?.core?.statusId === condId) ? true : false;
-      // const isCondition = (e.data.flags?.["age-system"]?.isCondition) ? true : false;
-      // const isId = (e.data.flags?.core?.statusId === condId) ? true : false;
+      // V9: const isCondition = (e.data.flags?.["age-system"]?.isCondition) ? true : false;
+      // V9: const isId = (e.data.flags?.core?.statusId === condId) ? true : false;
+      const isCondition = (e.flags?.["age-system"]?.isCondition) ? true : false;
+      const isId = (e.flags?.core?.statusId === condId) ? true : false;
       if (isCondition && isId) condStatus = true
     });
   } else {
@@ -90,8 +90,10 @@ class TokenHealthDialog extends Dialog {
     thisActor.effects.map(e => { // vkdolea changed this line
       /* This loop will capture all Active Effects causing the condId condition and delete all of them.
       AGE System code forsees only 1 installment of each Condition, but we do it this way on the safe side */
-      const isCondition = (e.data.flags?.["age-system"]?.isCondition) ? true : false;
-      const isId = (e.data.flags?.core?.statusId === condId) ? true : false;
+      // V9: const isCondition = (e.data.flags?.["age-system"]?.isCondition) ? true : false;
+      // V9: const isId = (e.data.flags?.core?.statusId === condId) ? true : false;
+      const isCondition = (e.flags?.["age-system"]?.isCondition) ? true : false;
+      const isId = (e.flags?.core?.statusId === condId) ? true : false;
       if (isCondition && isId) remove.push(e._id);
     });
     await thisActor.deleteEmbeddedDocuments("ActiveEffect", remove); // vkdolea changed this line
@@ -117,13 +119,13 @@ const applyCondition = async (thisActor, condId) => {
   if (game.system.id === 'age-system') {
     // For AGE System, Token Health relevant conditions are maintained as Active Effects
 
-    // let thisActor = game.actors.get(thisToken.data.actorId);
-    // const condArr = thisActor.effects.filter(e => (e.data.flags?.["age-system"]?.isCondition) &&
-    //   (e.data.flags?.core?.statusId === condId)); // creates an array with the active effects with the condId
+    // let thisActor = game.actors.get(thisToken.document.actorId);
     // console.log(thisToken);
     // console.log(thisActor);
-    const condArr = thisActor.effects.filter(e => (e.data.flags?.["age-system"]?.isCondition) &&
-      (e.data.flags?.core?.statusId === condId)); // creates an array with the active effects with the condId
+    // V9: const condArr = thisActor.effects.filter(e => (e.data.flags?.["age-system"]?.isCondition) &&
+    //       (e.data.flags?.core?.statusId === condId)); // creates an array with the active effects with the condId
+    const condArr = thisActor.effects.filter(e => (e.flags?.["age-system"]?.isCondition) &&
+      (e.flags?.core?.statusId === condId)); // creates an array with the active effects with the condId
     if (condArr.length < 1) { // if the array is empty, creates a new Active Effect
       const newEffect = CONFIG.statusEffects.filter(e => e.id === condId)[0]; // search for condId inside statusEffects array
       newEffect["flags.core.statusId"] = newEffect.id; // this is not really necessary, but I opted to keep like this so all Active Effects generated for conditions (no matter how they are generated) will have the same set of flags
@@ -225,7 +227,8 @@ const applyDamage = async (html, isDamage, isTargeted) => {
       return;
     }
     // Get the actor data structure
-    const data = actor.data.data;
+    // V9: const data = actor.data.data;
+    const data = actor.system; // is the AGE System only or all systems in V10?
     // Assume damageSubtype == type 1 and populate health values based on this
 
     let hpSource = TH_CONFIG.HITPOINTS_ATTRIBUTE_1;
@@ -353,6 +356,7 @@ const applyDamage = async (html, isDamage, isTargeted) => {
     }
 
     if (enableChat) {
+      // console.log(ChatMessage)
       ChatMessage.create({content: anouncePlayer, speaker: ChatMessage.getSpeaker({actor: actor})});
       ChatMessage.create({content: anounceGM, speaker: ChatMessage.getSpeaker({actor: actor}),
         whisper: ChatMessage.getWhisperRecipients("GM")});
@@ -492,7 +496,7 @@ const ageDamageBuyoff = async(thisActor, dRemaining) => {
   // let speedMod      = 0;
   // let speedTotal    = 0;
 
-  // let thisActor = game.actors.get(thisToken.data.actorId);
+  // let thisActor = game.actors.get(thisToken.document.actorId);
   // Get the control paramater for enabling/disabling token chat
   let enableChat = TH_CONFIG.ENABLE_TOKEN_CHAT;
 
@@ -502,10 +506,12 @@ const ageDamageBuyoff = async(thisActor, dRemaining) => {
   // enableConditions = false;
 
   if (game.system.id === 'age-system') {
-    // conditions = thisActor .data.data.conditions;
-    abilities = thisActor .data.data.abilities;
-    // speed = thisActor .data.data.speed;
-    origin = thisActor .data.data.ancestry;
+    // V9: conditions = thisActor .data.data.conditions;
+    // V9: abilities = thisActor .data.data.abilities;
+    abilities = thisActor .system.abilities;
+    // V9: speed = thisActor .data.data.speed;
+    // V9: origin = thisActor .data.data.ancestry;
+    origin = thisActor .system.ancestry;
 
     // Get the AGE-specific conditions and attributes needed
     // This allows other mods and macros to override this mod
@@ -769,7 +775,7 @@ const ageNoDamageBuyoff = async(thisActor) => {
   // Temporary setting to prevent issues in 0.8.6
   // enableConditions = false;
 
-  // let thisActor = game.actors.get(thisToken.data.actorId);
+  // let thisActor = game.actors.get(thisToken.document.actorId);
 
   // Get the AGE-specific conditions and attributes needed
   // This allows other mods and macros to override this mod
@@ -800,10 +806,12 @@ const ageNoDamageBuyoff = async(thisActor) => {
   */
 
   if (game.system.id === 'age-system') {
-    // conditions = thisActor .data.data.conditions;
-    abilities = thisActor .data.data.abilities;
-    // speed = thisActor .data.data.speed;
-    origin = thisActor .data.data.ancestry;
+    // V9: conditions = thisActor .data.data.conditions;
+    // V9: abilities = thisActor .data.data.abilities;
+    abilities = thisActor .system.abilities;
+    // V9: speed = thisActor .data.data.speed;
+    // V9: origin = thisActor .data.data.ancestry;
+    origin = thisActor .system.ancestry;
 
     // Get the AGE-specific conditions and attributes needed
     // This allows other mods and macros to override this mod
@@ -916,7 +924,8 @@ const displayOverlay = async (isDamage, tokens, isTargeted = false) => {
   let thumbnails = {}
   if (TH_CONFIG.ENABLE_TOKEN_IMAGES){
     // Show first four thumbnails (4th cut in half) with gradually decreasing opacity
-    thumbnails = tokens.slice(0, 4).map((t, idx) => ({ image: t.data.img, opacity: (1 - 0.15 * idx) }))
+    // V9: thumbnails = tokens.slice(0, 4).map((t, idx) => ({ image: t.data.img, opacity: (1 - 0.15 * idx) }))
+    thumbnails = tokens.slice(0, 4).map((t, idx) => ({ image: t.document.texture.src, opacity: (1 - 0.15 * idx) }))
   }
   // let allowPenetratingDamage = false;
   let helpText = `${i18n('TOKEN_HEALTH.Dialog_Help')}`
