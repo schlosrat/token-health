@@ -50,7 +50,7 @@
   "dependencies": [],
   "socket": false,
   "manifest": "https://raw.githubusercontent.com/schlosrat/token-health/master/module.json",
-  "download": "https://github.com/schlosrat/token-health/archive/refs/tags/0.5.5.zip",
+  "download": "https://github.com/schlosrat/token-health/archive/refs/tags/0.5.6.zip",
   "protected": false,
   "coreTranslation": false,
   "library": false
