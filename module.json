@@ -13,7 +13,6 @@
   "compatibleCoreVersion": "9",
   "scripts": [],
   "esmodules": [
-    "contrib/settings-extender.js",
     "token-health.js"
   ],
   "styles": [
