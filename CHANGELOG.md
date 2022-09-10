@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.5.8 (2022-09-10)
+- Updated code to conform to V10. This version is not compatible with game versions prior to V10
+
 ## 0.5.7 (2022-09-05)
 - Updated code to conform to V10. This version is not compatible with game versions prior to V10
 
