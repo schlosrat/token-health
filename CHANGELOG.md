@@ -1,5 +1,9 @@
 # Changelog
 
+
+## 0.6.0 (2022-09-17)
+- Bump of version number to trigger push of notification to Discor #Package-releases channel. No other changes since 0.5.8
+
 ## 0.5.8 (2022-09-10)
 - Updated code to conform to V10. This version is not compatible with game versions prior to V10
 
