@@ -948,7 +948,7 @@ const displayOverlay = async (isDamage, tokens, isTargeted = false) => {
       callback: html => {
         html.find('input[type="number"][name="damageSubtype"]').each((index, input) => {
           if ($(input).val() == 0) return;
-          applyDamage(html, true, isTargeted, $(input), {
+          applyDamage(html, false, isTargeted, $(input), {
             type: TH_CONFIG[`DAMAGE_SUBTYPE_${index + 1}`].toLowerCase(),
             source: TH_CONFIG[`HITPOINTS_ATTRIBUTE_${index + 1}`],
             maxSource: TH_CONFIG[`MAX_HITPOINTS_ATTRIBUTE_${index + 1}`],
