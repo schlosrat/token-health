@@ -1,8 +1,10 @@
 <form class="form-token-health" id="token-health" autocomplete="off" onsubmit="event.preventDefault();">
-    <div class="form-group" style="flex-direction: column; height: 150px">
+    <div class="form-group" style="height: 30px">
         <div class="flexrow">
             <b><large><label style="margin: 5px" for="token-health-input">{{localize "TOKEN_HEALTH.Amount"}}</label></large></b>
-            <input id="token-health-input" type="number" data-dtype="Number" name="amount" min="0" max="999"/>
+            {{#each damageSubtypes}}
+            <input type="number" data-dtype="Number" name="damageSubtype" data-type="{{@index}}" min="-999" max="999" placeholder="{{this}}"/>
+            {{/each}}
             {{#if damageTypes}}
                 <label style="margin-left: 25px" for="token-health-checkbox">{{localize "TOKEN_HEALTH.damageTypeLabel"}}</label>
                 <select id="token-health-damageType" name="damageType">
@@ -12,13 +14,5 @@
                 </select>
             {{/if}}
         </div>
-        {{#if damageSubtypes}}
-            <div class="row">
-                {{#each damageSubtypes}}
-                    <label style="margin: 15px"><input type="radio" name="damageSubtype" value="{{this}}" {{isChecked @index "0"}}>{{this}}</label>
-                {{/each}}
-            </div>
-        {{/if}}
-        <p><small>{{helpText}}</small></p>
     </div>
 </form>

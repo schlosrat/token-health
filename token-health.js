@@ -15,14 +15,46 @@ let dialog, timer;
  * Extend Dialog class to force focus on the input
  */
 class TokenHealthDialog extends Dialog {
+  static get defaultOptions() {
+		return {
+      ...super.defaultOptions,
+      classes: ['dialog', TH_CONFIG.ENABLE_LEFT_HAND_MODE ? 'token-health-left-handed-mode' : 'token-health-right-handed-mode']
+    }
+  }
+
   activateListeners(html) {
     super.activateListeners(html);
 
     // Focus the input
-    html.find('#token-health-input').focus();
+    html.find('input[type="number"][name="damageSubtype"]').eq(0).focus();
 
     // Add a class to dialog-buttons to be able to style them without breaking other stuff :/
     html.addClass('token-health');
+
+    // Update UI
+    html.find('input[type="number"][name="damageSubtype"]').on('input', event => {
+      if (!TH_CONFIG.ENABLE_DYNAMIC_BUTTON_TEXT) return;
+      let healButton = html.closest('.dialog').find('.dialog-buttons button[data-button="heal"]');
+      let damageButton = html.closest('.dialog').find('.dialog-buttons button[data-button="damage"]');
+      let input1 = html.find('input[type="number"][name="damageSubtype"][data-type="0"]');
+      let input2 = html.find('input[type="number"][name="damageSubtype"][data-type="1"]');
+
+      if (!(!(input1.val() >= 0 && input2.val() < 0) && !(input1.val() < 0 && input2.val() >= 0))) {
+          healButton.toggleClass('heal', true).toggleClass('damage', false);
+          healButton.html(`<i class='fas fa-plus-circle'></i> ${i18n('TOKEN_HEALTH.Heal')}`);
+          damageButton.toggleClass('heal', false).toggleClass('damage', true);
+          damageButton.html(`<i class='fas fa-minus-circle'></i> ${i18n('TOKEN_HEALTH.Damage')}`);
+         return;
+      }
+
+      healButton.toggleClass('heal', input1.val() >= 0);
+      healButton.toggleClass('damage', input1.val() < 0);
+      damageButton.toggleClass('heal', input1.val() < 0);
+      damageButton.toggleClass('damage', input1.val() >= 0);
+
+      healButton.html(input1.val() >= 0 ? `<i class='fas fa-plus-circle'></i> ${i18n('TOKEN_HEALTH.Heal')}` : `<i class='fas fa-minus-circle'></i> ${i18n('TOKEN_HEALTH.Damage')}`);
+      damageButton.html(input1.val() < 0 ? `<i class='fas fa-plus-circle'></i> ${i18n('TOKEN_HEALTH.Heal')}` : `<i class='fas fa-minus-circle'></i> ${i18n('TOKEN_HEALTH.Damage')}`);
+    })
   }
 }
 
@@ -147,8 +179,8 @@ const applyCondition = async (thisActor, condId) => {
  * @param {boolean} isTargeted Is it a targeted token?
  * @returns {Promise<Entity|Entity[]>}
  */
-const applyDamage = async (html, isDamage, isTargeted) => {
-  const value = html.find('input[type=number]').val();
+const applyDamage = async (html, isDamage, isTargeted, input = null, damageTypeConfig = null) => {
+  const value = (input ?? html.find('input[type=number]')).val();
   const damage = isDamage ? Number(value) : Number(value) * -1;
 
   // Set AGE-system specific things
@@ -160,13 +192,14 @@ const applyDamage = async (html, isDamage, isTargeted) => {
   // AGE-System games allow for two damage subtypes
   //   Wound (may actually kill the character)
   //   Stun (may at most render the character unconscious)
-  let damageSubtype = "wound";
+  let damageSubtype = damageTypeConfig?.type ?? "wound";
 
   if (TH_CONFIG.DAMAGE_TYPE_1) {
     damageType = html.find('[name="damageType"]')[0].value;
   }
   let type1;
   let type2;
+
   if (TH_CONFIG.DAMAGE_SUBTYPE_1) {
     type1 = html.find('[name="damageSubtype"]')[0].checked;
     type2 = html.find('[name="damageSubtype"]')[1].checked;
@@ -231,10 +264,10 @@ const applyDamage = async (html, isDamage, isTargeted) => {
     const data = actor.system; // is the AGE System only or all systems in V10?
     // Assume damageSubtype == type 1 and populate health values based on this
 
-    let hpSource = TH_CONFIG.HITPOINTS_ATTRIBUTE_1;
-    let maxSource = TH_CONFIG.MAX_HITPOINTS_ATTRIBUTE_1;
-    let altMaxSource = TH_CONFIG.ALT_MAX_HITPOINTS_ATTRIBUTE_1;
-    let tempSource = TH_CONFIG.TEMP_HITPOINTS_ATTRIBUTE_1; // Handle temp hp if any
+    let hpSource = damageTypeConfig?.source ?? TH_CONFIG.HITPOINTS_ATTRIBUTE_1;
+    let maxSource = damageTypeConfig?.maxSource ?? TH_CONFIG.MAX_HITPOINTS_ATTRIBUTE_1;
+    let altMaxSource = damageTypeConfig?.altMaxSource ?? TH_CONFIG.ALT_MAX_HITPOINTS_ATTRIBUTE_1;
+    let tempSource = damageTypeConfig?.tempSource ?? TH_CONFIG.TEMP_HITPOINTS_ATTRIBUTE_1; // Handle temp hp if any
 
     // If damageSubtype is type 2, then overwrite with the health values for that damage type
     if (type2) {
@@ -447,6 +480,20 @@ const applyDamage = async (html, isDamage, isTargeted) => {
     }
 
     let updates = {}
+
+    // Handle for Shield
+    if (game.system.id == 'pf2e' && (damageTypeConfig?.source ?? '') === "attributes.shield.hp.value") {
+      const { attributes } = actor;
+      const actorShield = "shield" in attributes ? attributes.shield : null;
+      const shield = (() => {
+        const item = actor.items.get(actorShield?.itemId ?? "");
+        return item?.isOfType("armor") ? item : null;
+      })();
+      if (shield) {
+        await shield.update({ "system.hp.value": newHP });
+      }
+    }
+
     if (temp != undefined) {
       updates = {
         _id: actor.id,
@@ -461,6 +508,7 @@ const applyDamage = async (html, isDamage, isTargeted) => {
         [`data.${hpSource || 'attributes.hp.value'}`]: newHP,
       };
     }
+
     // tidx++
     // Prepare the update
     return actor.update(updates);
@@ -896,15 +944,37 @@ const displayOverlay = async (isDamage, tokens, isTargeted = false) => {
   const buttons = {
     heal: {
       icon: "<i class='fas fa-plus-circle'></i>",
-      label: `${i18n('TOKEN_HEALTH.Heal')}  <kbd>⮐</kbd>`,
-      callback: html => applyDamage(html, isDamage, isTargeted),
-      condition: !isDamage,
+      label: `${i18n('TOKEN_HEALTH.Heal')}`,
+      callback: html => {
+        html.find('input[type="number"][name="damageSubtype"]').each((index, input) => {
+          if ($(input).val() == 0) return;
+          applyDamage(html, true, isTargeted, $(input), {
+            type: TH_CONFIG[`DAMAGE_SUBTYPE_${index + 1}`].toLowerCase(),
+            source: TH_CONFIG[`HITPOINTS_ATTRIBUTE_${index + 1}`],
+            maxSource: TH_CONFIG[`MAX_HITPOINTS_ATTRIBUTE_${index + 1}`],
+            altMaxSource: TH_CONFIG[`ALT_MAX_HITPOINTS_ATTRIBUTE_${index + 1}`],
+            tempSource: TH_CONFIG[`TEMP_HITPOINTS_ATTRIBUTE_${index + 1}`],
+          });
+        });
+      },
+      condition: true,
     },
     damage: {
       icon: "<i class='fas fa-minus-circle'></i>",
-      label: `${i18n('TOKEN_HEALTH.Damage')}  <kbd>⮐</kbd>`,
-      callback: html => applyDamage(html, isDamage, isTargeted),
-      condition: isDamage,
+      label: `${i18n('TOKEN_HEALTH.Damage')}`,
+      callback: html =>{
+        html.find('input[type="number"][name="damageSubtype"]').each((index, input) => {
+          if ($(input).val() == 0) return;
+          applyDamage(html, true, isTargeted, $(input), {
+            type: TH_CONFIG[`DAMAGE_SUBTYPE_${index + 1}`].toLowerCase(),
+            source: TH_CONFIG[`HITPOINTS_ATTRIBUTE_${index + 1}`],
+            maxSource: TH_CONFIG[`MAX_HITPOINTS_ATTRIBUTE_${index + 1}`],
+            altMaxSource: TH_CONFIG[`ALT_MAX_HITPOINTS_ATTRIBUTE_${index + 1}`],
+            tempSource: TH_CONFIG[`TEMP_HITPOINTS_ATTRIBUTE_${index + 1}`],
+          });
+        });
+      },
+      condition: true,
     },
   };
 
@@ -925,7 +995,7 @@ const displayOverlay = async (isDamage, tokens, isTargeted = false) => {
   if (TH_CONFIG.ENABLE_TOKEN_IMAGES){
     // Show first four thumbnails (4th cut in half) with gradually decreasing opacity
     // V9: thumbnails = tokens.slice(0, 4).map((t, idx) => ({ image: t.data.img, opacity: (1 - 0.15 * idx) }))
-    thumbnails = tokens.slice(0, 4).map((t, idx) => ({ image: t.document.texture.src, opacity: (1 - 0.15 * idx) }))
+    thumbnails = tokens.map((t, idx) => ({ image: t.document.texture.src, opacity: (1 - 0.15 * idx) }))
   }
   // let allowPenetratingDamage = false;
   let helpText = `${i18n('TOKEN_HEALTH.Dialog_Help')}`
@@ -969,7 +1039,7 @@ const displayOverlay = async (isDamage, tokens, isTargeted = false) => {
       title: i18n(dialogTitle).replace('$1', nameOfTokens),
       buttons,
       content,
-      default: isDamage ? 'damage' : 'heal',
+      default:  'damage', //isDamage ? 'damage' : 'heal',
       close: () => {
         timer = setTimeout(() => {
           tokenHealthDisplayed = false;
@@ -986,7 +1056,7 @@ const displayOverlay = async (isDamage, tokens, isTargeted = false) => {
       title: i18n(dialogTitle).replace('$1', nameOfTokens),
       buttons,
       content,
-      default: isDamage ? 'damage' : 'heal',
+      default:  'damage', //isDamage ? 'damage' : 'heal',
       close: () => {
         timer = setTimeout(() => {
           tokenHealthDisplayed = false;
@@ -1108,6 +1178,18 @@ Hooks.once('ready', async () => {
   // console.log("Updated healTargetedTokens.restricted:", key4new.restricted)
 });
 
+Hooks.on('renderTokenHUD', async (app, html, options) => {
+  document.querySelector('body')?.classList.remove('token-hud-input-has-focus');
+  html.on('focus', 'input', (event) => {
+    document.querySelector('body')?.classList.add('token-hud-input-has-focus');
+  });
+  html.on('blur', 'input', (event) => {
+    setTimeout(() => {
+      document.querySelector('body')?.classList.remove('token-hud-input-has-focus');
+    }, 100);
+  })
+})
+
 Hooks.once('init', async function() {
   // NEW FVTT V9 keybinding system
 	// game.keybindings.register(MODULE_NAME, "sneakyDoor", {
@@ -1134,7 +1216,7 @@ Hooks.once('init', async function() {
   // TOGGLE_KEY_BASE: 'Enter'
   game.keybindings.register(MODULE_NAME, "damageSelectedTokens", {
     // name: "Damage Selected Tokens", // TOKEN_HEALTH.toggleKeyName
-    hint: "Display a dialog to enter damage for selected tokens", // TOKEN_HEALTH.toggleKeyHint
+    hint: "Display a dialog to adjust selected tokens attributes", // TOKEN_HEALTH.toggleKeyHint
 		name: i18n('TOKEN_HEALTH.toggleKeyName'),
     // hint: i18n('TOKEN_HEALTH.toggleKeyHint'),
     // uneditable: [
@@ -1152,6 +1234,7 @@ Hooks.once('init', async function() {
     onDown: self => {
       // Replace this with the code the keybinding should execute when pressed
       // ui.notifications.info(i18n('TOKEN_HEALTH.toggleKeyHint'));
+      if ($('body').hasClass('token-hud-input-has-focus')) return;
       toggle(event);
     },
     onUp: () => {},
@@ -1162,7 +1245,7 @@ Hooks.once('init', async function() {
   });
 
   // TOGGLE_KEY_ALT: 'Shift + Enter'
-  game.keybindings.register(MODULE_NAME, "healSelectedTokens", {
+  /*game.keybindings.register(MODULE_NAME, "healSelectedTokens", {
     // name: "Heal Selected Tokens", // TOKEN_HEALTH.toggleKeyAltName
     hint: "Display a dialog to enter healing for selected tokens", // TOKEN_HEALTH.toggleKeyAltHint
 		name: i18n('TOKEN_HEALTH.toggleKeyAltName'),
@@ -1176,6 +1259,7 @@ Hooks.once('init', async function() {
     onDown: self => {
       // Replace this with the code the keybinding should execute when pressed
       // ui.notifications.info(i18n('TOKEN_HEALTH.toggleKeyAltHint'));
+      if ($('body').hasClass('token-hud-input-has-focus')) return;
       toggle(event, false);
     },
     onUp: () => {},
@@ -1183,12 +1267,12 @@ Hooks.once('init', async function() {
     // restricted: TH_CONFIG.RESTRICT_PLAYER_LAUNCH,
     // reservedModifiers: [ "ALT" ],  // If ALT is pressed, the notification is permanent instead of temporary
     precedence: CONST.KEYBINDING_PRECEDENCE.NORMAL
-  });
+  });*/
 
   // TOGGLE_KEY_TARGET: 'Alt + Enter'
   game.keybindings.register(MODULE_NAME, "damageTargetedTokens", {
     // name: "Damage Targeted Tokens", // TOKEN_HEALTH.toggleKeyTargetName
-    hint: "Display a dialog to enter damage for targeted tokens", // TOKEN_HEALTH.toggleKeyTargetHint
+    hint: "Display a dialog to adjust targeted tokens attributes", // TOKEN_HEALTH.toggleKeyTargetHint
 		name: i18n('TOKEN_HEALTH.toggleKeyTargetName'),
     // hint: i18n('TOKEN_HEALTH.toggleKeyTargetHint'),
     editable: [
@@ -1200,6 +1284,7 @@ Hooks.once('init', async function() {
     onDown: self => {
       // Replace this with the code the keybinding should execute when pressed
       // ui.notifications.info(i18n('TOKEN_HEALTH.toggleKeyTargetHint'));
+      if ($('body').hasClass('token-hud-input-has-focus')) return;
       toggle(event, true, true);
     },
     onUp: () => {},
@@ -1210,7 +1295,7 @@ Hooks.once('init', async function() {
   });
 
   // TOGGLE_KEY_TARGET_ALT: 'Alt + Shift + Enter'
-  game.keybindings.register(MODULE_NAME, "healTargetedTokens", {
+  /*game.keybindings.register(MODULE_NAME, "healTargetedTokens", {
     // name: "Heal Targeted Tokens", // TOKEN_HEALTH.toggleKeyTargetAltName
     hint: "Display a dialog to enter damage for targeted tokens", // TOKEN_HEALTH.toggleKeyTargetAltHint
 		name: i18n('TOKEN_HEALTH.toggleKeyTargetAltName'),
@@ -1224,6 +1309,7 @@ Hooks.once('init', async function() {
     onDown: self => {
       // Replace this with the code the keybinding should execute when pressed
       // ui.notifications.info(i18n('TOKEN_HEALTH.toggleKeyTargetAltHint'));
+      if ($('body').hasClass('token-hud-input-has-focus')) return;
       toggle(event, false, true);
     },
     onUp: () => {},
@@ -1231,6 +1317,6 @@ Hooks.once('init', async function() {
     // restricted: TH_CONFIG.RESTRICT_PLAYER_LAUNCH,
     // reservedModifiers: [ "ALT" ],  // If ALT is pressed, the notification is permanent instead of temporary
     precedence: CONST.KEYBINDING_PRECEDENCE.NORMAL
-  });
+  });*/
 
 });

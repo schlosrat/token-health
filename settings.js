@@ -26,6 +26,8 @@ const DEFAULT = {
   ALLOW_NEGATIVE: false,
   ALLOW_TEMP: false,
   ALLOW_DAMAGE_BUYOFF: false,
+  ENABLE_LEFT_HAND_MODE: false,
+  ENABLE_DYNAMIC_BUTTON_TEXT: false,
   ENABLE_TOKEN_CHAT: true,
   ENABLE_TOKEN_IMAGES: true,
   ENABLE_CONDITIONS: false,
@@ -143,6 +145,32 @@ const initSetting = (key, setting) => {
 export const registerSettings = function () {
   setDefaults();
   CONFIG.TokenHealth = {};
+
+  // Enable/disbale Left Hand Mode
+  TH_CONFIG.ENABLE_LEFT_HAND_MODE = initSetting( 'enableLeftHandMode', {
+    name: i18n('TOKEN_HEALTH.enableLeftHandMode'),
+    hint: i18n('TOKEN_HEALTH.enableLeftHandModeHint'),
+    type: Boolean,
+    default: DEFAULT.ENABLE_LEFT_HAND_MODE,
+    scope: 'world',
+    config: true,
+    onChange: key => {
+      CONFIG.TokenHealth.ENABLE_LEFT_HAND_MODE = key;
+    },
+  });
+
+  // Enable/disbale Dynamic Button Text
+  TH_CONFIG.ENABLE_DYNAMIC_BUTTON_TEXT = initSetting( 'enableDynamicButtonText', {
+    name: i18n('TOKEN_HEALTH.enableDynamicButtonText'),
+    hint: i18n('TOKEN_HEALTH.enableDynamicButtonTextHint'),
+    type: Boolean,
+    default: DEFAULT.ENABLE_DYNAMIC_BUTTON_TEXT,
+    scope: 'world',
+    config: true,
+    onChange: key => {
+      CONFIG.TokenHealth.ENABLE_DYNAMIC_BUTTON_TEXT = key;
+    },
+  });
  
   // Enable/disable display of token thumbnail images in dialog box
   TH_CONFIG.ENABLE_TOKEN_IMAGES = initSetting( 'enableTokenImages', {

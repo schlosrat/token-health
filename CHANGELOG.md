@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.6.1 (2022-10-24)
+- Added check so if user is focused on input on Token HUD and hits `Enter` Token Health Dialog will not appear.
+- Removed keybindings for Heal/Damage and Added both a Heal and Damage Button to the dialog.
+  - Default of Dialog will default to Damage Button
+  - Heal Button will default to the smallest size it can be, hitting enter will default to trigger the `damage` button
+  - Added Left Handed Mode that will flip the buttons to make the primary button on the left side instead of the right.
+- Removed Most of the spacing for a slimmer look and feel
+- Repleaced Checkbox for additional damage types with individual inputs.
+  - Updated `applyDamage` to handle for multiple inputs.
+- @ghost-fvtt Provided logic for updating shield attribute for PF2e System
+
 
 ## 0.6.0 (2022-09-17)
 - Bump of version number to trigger push of notification to Discor #Package-releases channel. No other changes since 0.5.8
