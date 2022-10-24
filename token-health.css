@@ -46,14 +46,14 @@
 .form-token-health .form-group .token-images {
   flex-direction: row;
   min-height: 110px;
-  overflow-x: auto;
+  overflow: hidden;
   text-align: center;
   white-space: nowrap;
   width: 380px;
 }
 .form-token-health .form-group .token-images img {
   border-width: 0px;
-  max-height: 100px;
+  max-height: 92px;
   opacity: 1;
 }
 .form-token-health input[type=number] {

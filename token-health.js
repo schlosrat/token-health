@@ -995,7 +995,7 @@ const displayOverlay = async (isDamage, tokens, isTargeted = false) => {
   if (TH_CONFIG.ENABLE_TOKEN_IMAGES){
     // Show first four thumbnails (4th cut in half) with gradually decreasing opacity
     // V9: thumbnails = tokens.slice(0, 4).map((t, idx) => ({ image: t.data.img, opacity: (1 - 0.15 * idx) }))
-    thumbnails = tokens.map((t, idx) => ({ image: t.document.texture.src, opacity: (1 - 0.15 * idx) }))
+    thumbnails = tokens.slice(0, 4).map((t, idx) => ({ image: t.document.texture.src, opacity: (1 - 0.15 * idx) }))
   }
   // let allowPenetratingDamage = false;
   let helpText = `${i18n('TOKEN_HEALTH.Dialog_Help')}`
