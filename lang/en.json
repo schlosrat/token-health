@@ -14,11 +14,11 @@
   "TOKEN_HEALTH.access": "UI warning if unable to affect",
   "TOKEN_HEALTH.accessHint": "Warning message to players if none of the selected/targeted tokens are owned by them",
   "TOKEN_HEALTH.accessMsg": "Token Health: Access Denied!",
-  "TOKEN_HEALTH.toggleKeyName": "Damage Selected Tokens",
-  "TOKEN_HEALTH.toggleKeyHint": "Display a dialog to enter damage for selected tokens",
+  "TOKEN_HEALTH.toggleKeyName": "Activate for Selected Tokens",
+  "TOKEN_HEALTH.toggleKeyHint": "Display a dialog to adjust selected tokens attributes",
   "TOKEN_HEALTH.toggleKeyAltName": "Heal Selected Tokens",
   "TOKEN_HEALTH.toggleKeyAltHint": "Display a dialog to enter healing for selected tokens",
-  "TOKEN_HEALTH.toggleKeyTargetName": "Damage Targeted Tokens",
+  "TOKEN_HEALTH.toggleKeyTargetName": "Activate for Targeted Tokens",
   "TOKEN_HEALTH.toggleKeyTargetHint": "Display a dialog to enter damage for targeted tokens",
   "TOKEN_HEALTH.toggleKeyTargetAltName": "Heal Targeted Tokens",
   "TOKEN_HEALTH.toggleKeyTargetAltHint": "Display a dialog to enter healing for targeted tokens",
@@ -95,5 +95,9 @@
   "TOKEN_HEALTH.whenDying": "Recipient Dies",
   "TOKEN_HEALTH.dying": "Goodbye cruel world!",
   "TOKEN_HEALTH.whenDead": "Recipient is Already Dead",
-  "TOKEN_HEALTH.dead": "Hey! Don't beat a dead horse!"
+  "TOKEN_HEALTH.dead": "Hey! Don't beat a dead horse!",
+  "TOKEN_HEALTH.enableLeftHandMode": "Enable Left Hand Mode",
+  "TOKEN_HEALTH.enableLeftHandModeHint": "When enabled this will switch the buttons locations to make it more comfortable for left handed users.",
+  "TOKEN_HEALTH.enableDynamicButtonText": "Enable Dynamic Button State",
+  "TOKEN_HEALTH.enableDynamicButtonTextHint": "When enabled the button text will change to reflect if healing or damage will be applied based on if the value is negative or positive."
 }

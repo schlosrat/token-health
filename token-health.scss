@@ -14,7 +14,7 @@ $types: (
   }
 
   @each $type, $color in $types {
-    &[data-button='#{$type}'] {
+    &.#{$type} {
       background-color: $color;
       border-color: darken($color, 20%);
       border-style: solid;
@@ -25,23 +25,56 @@ $types: (
       }
     }
   }
+
+  &[data-button="heal"] {
+    flex: 0;
+    white-space: nowrap;
+  }
 }
+
+.dialog.token-health-left-handed-mode .dialog-buttons {
+  flex-direction: row-reverse;
+
+  button:first-child {
+    margin-right: 0px;
+  }
+  button:last-child {
+    margin-right: 5px;
+  }
+} 
 
 .form-token-health {
   .form-group {
     flex-direction: column;
     align-items: center;
     margin-bottom: 1em;
+
+    .token-images {
+      flex-direction: row;
+      min-height: 110px;
+      overflow: hidden;
+      text-align: center;
+      white-space: nowrap;
+      width: 380px; 
+
+      img {
+        border-width: 0px;
+        max-height: 92px;
+        opacity: 1;
+      }
+    }
   }
 
   input[type='number'] {
     border: 1px solid black;
     box-shadow: none;
     outline: none;
-    padding: 0.5em;
-    font-size: 2em;
+    margin-right: 0.5rem;
+    padding: 0.25rem 0.5rem;
+    font-size: 1rem;
     display: inline-block;
     font-variant-numeric: tabular-nums;
+    min-width: 90px;
   }
 
   small {
